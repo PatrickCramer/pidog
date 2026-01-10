@@ -2,6 +2,8 @@ from robot_hat.stt import *
 
 import time
 import threading
+import queue
+import os
 from pathlib import Path
 import numpy as np
 import sounddevice as sd
@@ -21,24 +23,24 @@ def create_stt(language="en-us", device=None, samplerate=None, wake_words=None):
     stt = STT(language=None, samplerate=samplerate, device=device)
     try:
         stt.update_model_list()
-        small_name = None
+        large_name = None
         for name, lang in zip(stt.available_model_names, stt.available_languages):
-            if lang == language and "small" in name.lower():
-                small_name = name
+            if lang == language and "small" not in name.lower():
+                large_name = name
                 break
-        if small_name is None:
+        if large_name is None:
             base = Path(vosk_module.MODEL_BASE_PATH)
             prefix = f"vosk-model-{language}-"
             candidates = [
                 p.name for p in base.iterdir()
-                if p.is_dir() and p.name.startswith(prefix) and "small" in p.name.lower()
+                if p.is_dir() and p.name.startswith(prefix) and "small" not in p.name.lower()
             ]
             candidates.sort(reverse=True)
             if candidates:
-                small_name = candidates[0]
-        if small_name:
+                large_name = candidates[0]
+        if large_name:
             idx = stt.available_languages.index(language)
-            stt.available_model_names[idx] = small_name
+            stt.available_model_names[idx] = large_name
         stt.set_language(language)
     except Exception:
         if language is not None:
@@ -48,6 +50,77 @@ def create_stt(language="en-us", device=None, samplerate=None, wake_words=None):
             wake_words = [wake_words]
         stt.set_wake_words(wake_words)
     return stt
+
+
+class PorcupineListener:
+    def __init__(
+        self,
+        keyword="jarvis",
+        model_path=None,
+        sensitivity=0.5,
+        device=None,
+    ):
+        try:
+            import pvporcupine
+        except Exception as exc:
+            raise RuntimeError("pvporcupine is not installed") from exc
+        access_key = os.environ.get("PICOVOICE_ACCESS_KEY", "").strip()
+        if not access_key:
+            raise RuntimeError("PICOVOICE_ACCESS_KEY is not set.")
+        self.device = device if device is not None else sd.default.device
+        self.keyword = keyword
+        self.model_path = model_path
+        self.sensitivity = sensitivity
+        if model_path:
+            self.porcupine = pvporcupine.create(
+                access_key=access_key,
+                keyword_paths=[model_path],
+                sensitivities=[sensitivity],
+            )
+        else:
+            self.porcupine = pvporcupine.create(
+                access_key=access_key,
+                keywords=[keyword],
+                sensitivities=[sensitivity],
+            )
+        self.sample_rate = self.porcupine.sample_rate
+        self.frame_length = self.porcupine.frame_length
+        device_info = sd.query_devices(self.device, "input")
+        self.device_rate = int(device_info["default_samplerate"])
+        self.stop_listening_event = threading.Event()
+
+
+def _resample_audio_int16(audio, src_rate, dst_rate, dst_len):
+    if src_rate == dst_rate:
+        if audio.size == dst_len:
+            return audio
+        if audio.size > dst_len:
+            return audio[:dst_len]
+        pad = np.zeros(dst_len - audio.size, dtype=np.int16)
+        return np.concatenate([audio, pad])
+    audio_f = audio.astype(np.float32) / 32768.0
+    resampled = _resample_audio(audio_f, src_rate, dst_rate)
+    if resampled.size > dst_len:
+        resampled = resampled[:dst_len]
+    elif resampled.size < dst_len:
+        pad = np.zeros(dst_len - resampled.size, dtype=np.float32)
+        resampled = np.concatenate([resampled, pad])
+    resampled = np.clip(resampled, -1.0, 1.0)
+    return (resampled * 32767.0).astype(np.int16)
+
+
+def create_porcupine_wakeword(
+    keyword="jarvis",
+    model_path=None,
+    sensitivity=0.5,
+    device=None,
+):
+    return PorcupineListener(
+        keyword=keyword,
+        model_path=model_path,
+        sensitivity=sensitivity,
+        device=device,
+    )
 
 
 class WhisperSTT:
@@ -108,6 +181,54 @@ def listen_for_wake_word(stt, wake_words, device=None, break_event=None):
                 stt.stop_listening_event.set()
                 return word
     return None
+
+
+def listen_for_wake_word_porcupine(listener, break_event=None):
+    listener.stop_listening_event.clear()
+    watcher = None
+    if break_event is not None:
+        def _watch_break():
+            break_event.wait()
+            listener.stop_listening_event.set()
+        watcher = threading.Thread(target=_watch_break, daemon=True)
+        watcher.start()
+
+    q = queue.Queue()
+
+    def callback(indata, frames, time_info, status):
+        if status:
+            return
+        q.put(bytes(indata))
+
+    blocksize = int(round(
+        listener.frame_length * listener.device_rate / float(listener.sample_rate)
+    ))
+    with sd.RawInputStream(
+        samplerate=listener.device_rate,
+        blocksize=blocksize,
+        device=listener.device,
+        dtype="int16",
+        channels=1,
+        callback=callback,
+    ):
+        while True:
+            if listener.stop_listening_event.is_set():
+                return None
+            try:
+                data = q.get(timeout=0.5)
+            except queue.Empty:
+                continue
+            audio = np.frombuffer(data, dtype=np.int16)
+            audio = _resample_audio_int16(
+                audio,
+                listener.device_rate,
+                listener.sample_rate,
+                listener.frame_length,
+            )
+            keyword_index = listener.porcupine.process(audio.tolist())
+            if keyword_index >= 0:
+                listener.stop_listening_event.set()
+                return listener.keyword or "custom"
 
 
 def record_utterance(stt, device=None, max_seconds=8, stream=True):

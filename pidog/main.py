@@ -18,7 +18,9 @@ from pathlib import Path
 from .stt import (
     create_stt,
     create_whisper_stt,
+    create_porcupine_wakeword,
     listen_for_wake_word,
+    listen_for_wake_word_porcupine,
     record_utterance,
     record_utterance_whisper,
     record_audio_wav,
@@ -31,6 +33,10 @@ from robot_hat import utils as rh_utils
 
 
 WAKE_WORDS = ["ziggy", "pidog", "pie dog", "hi dog"]
+WAKE_WORD_ENGINE = "porcupine"  # "porcupine" or "vosk"
+WAKE_WORD_PV_KEYWORD = "jarvis"
+WAKE_WORD_PV_MODEL_PATH = None
+WAKE_WORD_PV_SENSITIVITY = 0.5
 # Fallback index when named device is not found.
 MIC_DEVICE = 2
 MIC_DEVICE_NAME = "USB PnP Sound Device"
@@ -338,14 +344,30 @@ def _init_stt_background(
 ):
     try:
         t0 = time.time()
-        wake_stt = create_stt(language=STT_LANGUAGE, device=device, samplerate=samplerate)
         stt_model = None
+        wake_model = None
+        if WAKE_WORD_ENGINE == "porcupine":
+            wake_stt = create_porcupine_wakeword(
+                keyword=WAKE_WORD_PV_KEYWORD,
+                model_path=WAKE_WORD_PV_MODEL_PATH,
+                sensitivity=WAKE_WORD_PV_SENSITIVITY,
+                device=device,
+            )
+            if WAKE_WORD_PV_MODEL_PATH:
+                wake_model = Path(WAKE_WORD_PV_MODEL_PATH).name
+            else:
+                wake_model = WAKE_WORD_PV_KEYWORD
+        else:
+            wake_stt = create_stt(language=STT_LANGUAGE, device=device, samplerate=samplerate)
         try:
-            stt_model = wake_stt.get_model_name(wake_stt.language())
+            if WAKE_WORD_ENGINE == "vosk":
+                stt_model = wake_stt.get_model_name(wake_stt.language())
         except Exception:
             pass
         stt_state["init_stt_seconds"] = time.time() - t0
         asr_stt = wake_stt
+        if WAKE_WORD_ENGINE == "porcupine":
+            asr_stt = create_stt(language=STT_LANGUAGE, device=device, samplerate=samplerate)
         if STT_ENGINE == "whisper":
             t_whisper = time.time()
             asr_stt = create_whisper_stt(
@@ -354,10 +376,17 @@ def _init_stt_background(
                 samplerate=samplerate,
             )
             stt_state["init_whisper_seconds"] = time.time() - t_whisper
+        if STT_ENGINE != "whisper" and stt_model is None:
+            try:
+                stt_model = asr_stt.get_model_name(asr_stt.language())
+            except Exception:
+                pass
         stt_state["wake_stt"] = wake_stt
         stt_state["asr_stt"] = asr_stt
         stt_state["stt_model"] = stt_model
-        print("STT: Vosk ready.")
+        stt_state["wake_model"] = wake_model
+        if WAKE_WORD_ENGINE == "vosk":
+            print("STT: Vosk ready.")
     except Exception as exc:
         stt_error[0] = exc
     finally:
@@ -374,13 +403,18 @@ def _await_stt(stt_ready, stt_error, stt_state):
         init_stt = stt_state.get("init_stt_seconds")
         if init_stt is not None:
             print(f"Init: STT {init_stt:.2f}s")
+        if WAKE_WORD_ENGINE == "porcupine":
+            wake_model = stt_state.get("wake_model")
+            print(f"Wake: Porcupine {wake_model}" if wake_model else "Wake: Porcupine")
         if STT_ENGINE == "whisper":
-            suffix = f" (wake word: Vosk {stt_state.get('stt_model')})" if stt_state.get("stt_model") else " (wake word: Vosk)"
-            print(f"STT: Whisper {WHISPER_MODEL}{suffix}")
+            wake_suffix = ""
+            if WAKE_WORD_ENGINE == "vosk":
+                wake_suffix = f" (wake word: Vosk {stt_state.get('stt_model')})" if stt_state.get("stt_model") else " (wake word: Vosk)"
+            print(f"STT: Whisper {WHISPER_MODEL}{wake_suffix}")
             init_whisper = stt_state.get("init_whisper_seconds")
             if init_whisper is not None:
                 print(f"Init: Whisper {init_whisper:.2f}s")
-        else:
+        elif STT_ENGINE != "whisper":
             model = stt_state.get("stt_model")
             print(f"STT: Vosk {model}" if model else "STT: Vosk")
         stt_state["printed"] = True
@@ -690,12 +724,27 @@ def main():
         speaker.wait_idle()
         print("Smart mode: pro")
 
-    print(f"Wake words: {WAKE_WORDS}")
+    if WAKE_WORD_ENGINE == "porcupine":
+        if WAKE_WORD_PV_MODEL_PATH:
+            print(f"Wake word: custom ({Path(WAKE_WORD_PV_MODEL_PATH).name})")
+        else:
+            print(f"Wake word: {WAKE_WORD_PV_KEYWORD} (porcupine)")
+    else:
+        print(f"Wake words: {WAKE_WORDS}")
     print("Ready.")
-    try:
+    convo_deadline = None
+    def set_convo_deadline():
+        nonlocal convo_deadline
+        convo_deadline = time.time() + CONVO_WINDOW_SECONDS
+        leds.set_countdown(convo_deadline, CONVO_WINDOW_SECONDS)
+
+    def clear_convo_deadline():
+        nonlocal convo_deadline
         convo_deadline = None
+        leds.clear_countdown()
+    try:
         if use_chatgpt_pro and STT_INIT_ASYNC and SKIP_WAKE_UNTIL_STT_READY:
-            convo_deadline = time.time() + CONVO_WINDOW_SECONDS
+            set_convo_deadline()
             print("Smart mode: pro (wake word enabled after STT init)")
         print(f"Convo window: {CONVO_WINDOW_SECONDS}s")
         while True:
@@ -759,22 +808,28 @@ def main():
                     continue
 
             if convo_deadline is not None and time.time() > convo_deadline:
-                convo_deadline = None
+                clear_convo_deadline()
 
             if convo_deadline is None or time.time() > convo_deadline:
                 print("\nWaiting for wake word...")
                 leds.set_state("wake")
                 idle_event.set()
                 wake_stt, asr_stt, stt_model = _await_stt(stt_ready, stt_error, stt_state)
-                heard = listen_for_wake_word(
-                    wake_stt,
-                    WAKE_WORDS,
-                    device=mic_device,
-                    break_event=interrupt_event if (radio_paused or idle_event.is_set()) else None,
-                )
+                if WAKE_WORD_ENGINE == "porcupine":
+                    heard = listen_for_wake_word_porcupine(
+                        wake_stt,
+                        break_event=interrupt_event if (radio_paused or idle_event.is_set()) else None,
+                    )
+                else:
+                    heard = listen_for_wake_word(
+                        wake_stt,
+                        WAKE_WORDS,
+                        device=mic_device,
+                        break_event=interrupt_event if (radio_paused or idle_event.is_set()) else None,
+                    )
                 idle_event.clear()
                 if heard is not None:
-                    convo_deadline = time.time() + CONVO_WINDOW_SECONDS
+                    set_convo_deadline()
                     just_woke = True
             else:
                 if stt_ready.is_set() or not SKIP_WAKE_UNTIL_STT_READY:
@@ -845,7 +900,7 @@ def main():
                         speaker.say("Sorry, can you repeat that?")
                         speaker.wait_idle()
                         if convo_deadline is not None:
-                            convo_deadline = time.time() + CONVO_WINDOW_SECONDS
+                            set_convo_deadline()
                         continue
                     min_rms = CHATGPT_PRO_WAKE_MIN_RMS if just_woke else CHATGPT_PRO_MIN_RMS
                     if rec.get("rms", 0.0) < min_rms:
@@ -873,7 +928,7 @@ def main():
                     speaker.say("Smart mode needs an API key. Switching to local model.")
                     speaker.wait_idle()
                     if convo_deadline is not None:
-                        convo_deadline = time.time() + CONVO_WINDOW_SECONDS
+                        set_convo_deadline()
                     print("Smart mode: off")
                     continue
                 finally:
@@ -903,7 +958,7 @@ def main():
                 speaker.say("Sorry, can you repeat that?")
                 speaker.wait_idle()
                 if convo_deadline is not None:
-                    convo_deadline = time.time() + CONVO_WINDOW_SECONDS
+                    set_convo_deadline()
                 continue
 
             command = repair_transcript(text)
@@ -914,7 +969,7 @@ def main():
                     speaker.say("Sorry, can you repeat that?")
                     speaker.wait_idle()
                     if convo_deadline is not None:
-                        convo_deadline = time.time() + CONVO_WINDOW_SECONDS
+                        set_convo_deadline()
                     continue
             radio_override = normalize_radio_command(command)
             if radio_override:
@@ -931,7 +986,7 @@ def main():
                 paused_event.clear()
                 interrupt_event.clear()
                 if convo_deadline is not None:
-                    convo_deadline = time.time() + CONVO_WINDOW_SECONDS
+                    set_convo_deadline()
                 continue
             if "play radio" in command or "start radio" in command:
                 if "start radio" in command and "play radio" not in command:
@@ -956,7 +1011,7 @@ def main():
                 else:
                     print(f"Unknown radio command: {text}")
                 if convo_deadline is not None:
-                    convo_deadline = time.time() + CONVO_WINDOW_SECONDS
+                    set_convo_deadline()
                 continue
             if "stop radio" in command:
                 leds.set_state("speak")
@@ -968,7 +1023,7 @@ def main():
                 paused_event.clear()
                 interrupt_event.clear()
                 if convo_deadline is not None:
-                    convo_deadline = time.time() + CONVO_WINDOW_SECONDS
+                    set_convo_deadline()
                 continue
             if "battery" in command:
                 leds.set_state("speak")
@@ -981,7 +1036,7 @@ def main():
                     print("Battery: unavailable")
                 speaker.wait_idle()
                 if convo_deadline is not None:
-                    convo_deadline = time.time() + CONVO_WINDOW_SECONDS
+                    set_convo_deadline()
                 continue
 
             if "stop smart" in command:
@@ -991,7 +1046,7 @@ def main():
                 speaker.say("Switching to local model.")
                 speaker.wait_idle()
                 if convo_deadline is not None:
-                    convo_deadline = time.time() + CONVO_WINDOW_SECONDS
+                    set_convo_deadline()
                 print("Smart mode: off")
                 continue
             if "smart mode pro" in command or "smart dog pro" in command:
@@ -1001,7 +1056,7 @@ def main():
                 speaker.say("Hello, I am a full LLM pipe to ChatGPT.")
                 speaker.wait_idle()
                 if convo_deadline is not None:
-                    convo_deadline = time.time() + CONVO_WINDOW_SECONDS
+                    set_convo_deadline()
                 print("Smart mode: pro")
                 continue
             if "go smart" in command or "smart mode" in command or "smart dog" in command:
@@ -1011,7 +1066,7 @@ def main():
                 speaker.say("ChatGPT here, how can I help?")
                 speaker.wait_idle()
                 if convo_deadline is not None:
-                    convo_deadline = time.time() + CONVO_WINDOW_SECONDS
+                    set_convo_deadline()
                 print("Smart mode: on")
                 continue
 
@@ -1144,7 +1199,7 @@ def main():
                     full_response += cleaned
             speaker.wait_idle()
             print()
-            convo_deadline = time.time() + CONVO_WINDOW_SECONDS
+            set_convo_deadline()
             final_sentences, _ = split_sentences(full_response)
             for sentence in final_sentences[-MEMORY_SENTENCES:]:
                 history.append(sentence)
