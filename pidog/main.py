@@ -26,6 +26,7 @@ from .stt import (
 )
 from .leds import LedController
 from .tts import create_tts, SpeechQueue
+from .video import VideoManager
 from .llm import stream_reply, openai_transcribe, openai_chat_reply, openai_tts_to_file
 from .dual_touch import DualTouch, TouchStyle
 from robot_hat import utils as rh_utils
@@ -110,6 +111,10 @@ PIDFILE = "/tmp/pidog.pid"
 STT_INIT_ASYNC = True
 SKIP_WAKE_UNTIL_STT_READY = True
 TAP_PULSE_COLOR = [0, 140, 255]
+CAMERA_PORT = 9000
+CAMERA_VFLIP = False
+CAMERA_HFLIP = False
+CAMERA_URL_PATH = "/mjpg"
 
 
 LOGGER = logging.getLogger("pidog")
@@ -881,6 +886,12 @@ def main():
     )
     answer_thread.start()
     log_action("touch_watchers_started")
+    video = VideoManager(
+        port=CAMERA_PORT,
+        vflip=CAMERA_VFLIP,
+        hflip=CAMERA_HFLIP,
+        path=CAMERA_URL_PATH,
+    )
 
     if args.mic_test:
         wake_stt, asr_stt, stt_model = _await_stt(stt_ready, stt_error, stt_state)
@@ -1321,6 +1332,38 @@ def main():
                 paused_event.clear()
                 interrupt_event.clear()
                 log_action("radio_stop", source="voice")
+                if _handle_answer_interrupt(answer_interrupt_event, answering_event, speaker, leds):
+                    convo_deadline = None
+                    continue
+                if convo_deadline is not None:
+                    convo_deadline = time.time() + CONVO_WINDOW_SECONDS
+                continue
+            if (
+                command == "camera"
+                or "turn on camera" in command
+                or "turn the camera on" in command
+                or "turn camera on" in command
+            ):
+                _begin_answering(answering_event, answer_interrupt_event, context="camera_on")
+                leds.set_state("speak")
+                url, started, error = video.start()
+                if url:
+                    if started:
+                        msg = f"Camera activated at {url}."
+                    else:
+                        msg = f"Camera already active at {url}."
+                else:
+                    msg = "Sorry, I could not start the camera."
+                speaker.say(msg)
+                _wait_for_speaker_or_interrupt(speaker, answer_interrupt_event)
+                _end_answering(answering_event, context="camera_on")
+                log_action(
+                    "camera_start",
+                    ok=bool(url),
+                    started=started if url else None,
+                    url=url,
+                    error=error,
+                )
                 if _handle_answer_interrupt(answer_interrupt_event, answering_event, speaker, leds):
                     convo_deadline = None
                     continue
