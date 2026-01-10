@@ -1,0 +1,28 @@
+.vscode/*
+dev/*
+photo
+test/photo*
+test/scene/*
+backups/*
+**secret*
+# Python
+__pycache__/
+*.py[cod]
+*.pyd
+
+# Virtual env + secrets
+.venv/
+.env
+
+# Packaging / builds
+build/
+dist/
+*.egg-info/
+
+# Audio / temp
+*.wav
+*.mp3
+*.ogg
+
+# OS
+.DS_Store
