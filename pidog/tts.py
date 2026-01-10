@@ -3,6 +3,7 @@ from robot_hat.tts import *
 import threading
 import queue
 import numpy as np
+import logging
 
 try:
     import pyaudio
@@ -14,6 +15,7 @@ from sunfounder_voice_assistant.tts import Piper, Espeak, Pico2Wave
 from sunfounder_voice_assistant.tts import piper as piper_module
 from piper import config as piper_config
 
+LOGGER = logging.getLogger("pidog")
 
 def create_tts(engine="piper", model="en_US-amy-low", length_scale=None):
     if engine == "piper":
@@ -48,7 +50,17 @@ def _resolve_output_device(pa, device):
     return None
 
 
-def _piper_stream_to_device(tts, text, output_device):
+def _scale_int16(samples, volume):
+    if volume is None:
+        return samples
+    if abs(volume - 1.0) < 0.01:
+        return samples
+    scaled = samples.astype(np.float32) * float(volume)
+    scaled = np.clip(scaled, -32768.0, 32767.0)
+    return scaled.astype(np.int16)
+
+
+def _piper_stream_to_device(tts, text, output_device, volume):
     if pyaudio is None:
         tts.say(text, stream=True)
         return
@@ -86,7 +98,12 @@ def _piper_stream_to_device(tts, text, output_device):
                     x_old = np.linspace(0, 1, num=samples.size, endpoint=False)
                     x_new = np.linspace(0, 1, num=dst_len, endpoint=False)
                     samples = np.interp(x_new, x_old, samples).astype(np.int16)
+                    samples = _scale_int16(samples, volume)
                     data = samples.tobytes()
+            elif volume is not None and abs(volume - 1.0) >= 0.01:
+                samples = np.frombuffer(data, dtype=np.int16)
+                samples = _scale_int16(samples, volume)
+                data = samples.tobytes()
             stream.write(data)
     finally:
         stream.stop_stream()
@@ -94,15 +111,17 @@ def _piper_stream_to_device(tts, text, output_device):
         pa.terminate()
 
 
-def speak_text(tts, text, output_device=None):
+def speak_text(tts, text, output_device=None, volume=None):
     if not text:
         return
     if isinstance(tts, Piper):
         try:
-            _piper_stream_to_device(tts, text, output_device)
+            _piper_stream_to_device(tts, text, output_device, volume)
             return
         except OSError:
             pass
+        except Exception as exc:
+            LOGGER.exception("Piper stream failed: %s", exc)
     tts.say(text)
 
 
@@ -115,6 +134,8 @@ class SpeechQueue:
         self._idle = threading.Event()
         self._idle.set()
         self._thread = threading.Thread(target=self._worker, daemon=True)
+        self._volume = 1.0
+        self._volume_lock = threading.Lock()
 
     def start(self):
         if not self._thread.is_alive():
@@ -124,6 +145,19 @@ class SpeechQueue:
         if text:
             self._idle.clear()
             self._queue.put(text)
+
+    def set_volume(self, volume):
+        with self._volume_lock:
+            self._volume = max(0.2, min(2.0, float(volume)))
+
+    def adjust_volume(self, delta):
+        with self._volume_lock:
+            self._volume = max(0.2, min(2.0, self._volume + float(delta)))
+            return self._volume
+
+    def get_volume(self):
+        with self._volume_lock:
+            return self._volume
 
     def stop(self):
         self._stop.set()
@@ -139,8 +173,13 @@ class SpeechQueue:
             if item is None:
                 return
             try:
-                speak_text(self._tts, item, self._output_device)
-            except Exception:
-                pass
+                volume = self.get_volume()
+                speak_text(self._tts, item, self._output_device, volume=volume)
+            except Exception as exc:
+                LOGGER.exception("SpeechQueue error: %s", exc)
+                try:
+                    self._tts.say(item)
+                except Exception:
+                    pass
             if self._queue.empty():
                 self._idle.set()

@@ -1,6 +1,7 @@
 import argparse
 from collections import deque
 import atexit
+import logging
 import os
 os.environ.setdefault("ORT_LOGGING_LEVEL", "4")
 os.environ.setdefault("ORT_LOG_SEVERITY_LEVEL", "4")
@@ -11,8 +12,10 @@ import threading
 import time
 import tempfile
 import wave
+import array
 import sounddevice as sd
 import signal
+from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
 from .stt import (
@@ -40,7 +43,8 @@ WAKE_WORD_PV_SENSITIVITY = 0.5
 # Fallback index when named device is not found.
 MIC_DEVICE = 2
 MIC_DEVICE_NAME = "USB PnP Sound Device"
-SPEAKER_DEVICE = None
+SPEAKER_DEVICE = 0
+APLAY_DEVICE = "hw:2,0"
 STT_ENGINE = "vosk"  # "vosk" or "whisper"
 STT_LANGUAGE = "en-us"
 WHISPER_MODEL = "tiny"  # tiny/base/small/medium/large
@@ -108,12 +112,16 @@ RADIO_ALIASES = {
     "three": "3",
 }
 VOLUME_STEP = 5
+SPEECH_VOLUME_STEP = 0.1
 TAP_WINDOW_SECONDS = 0.6
 RESUME_TAP_WINDOW_SECONDS = 0.6
 CONVO_WINDOW_SECONDS = 15
 PIDFILE = "/tmp/pidog.pid"
 STT_INIT_ASYNC = True
 SKIP_WAKE_UNTIL_STT_READY = True
+LOG_PATH = Path.home() / ".cache" / "pidog" / "pidog.log"
+
+LOGGER = logging.getLogger("pidog")
 
 
 SENTENCE_END_RE = re.compile(r"[.!?]")
@@ -226,6 +234,34 @@ def wav_seconds(path):
         return 0.0
 
 
+def scale_wav_inplace(path, volume):
+    if volume is None:
+        return
+    if abs(volume - 1.0) < 0.01:
+        return
+    try:
+        with wave.open(path, "rb") as handle:
+            params = handle.getparams()
+            if params.sampwidth != 2:
+                return
+            frames = handle.readframes(params.nframes)
+        samples = array.array("h")
+        samples.frombytes(frames)
+        scale = float(volume)
+        for i in range(len(samples)):
+            val = int(samples[i] * scale)
+            if val > 32767:
+                val = 32767
+            elif val < -32768:
+                val = -32768
+            samples[i] = val
+        with wave.open(path, "wb") as handle:
+            handle.setparams(params)
+            handle.writeframes(samples.tobytes())
+    except Exception:
+        pass
+
+
 def estimate_costs(audio_in_s, audio_out_s, in_tokens, out_tokens):
     stt = (audio_in_s / 60.0) * STT_USD_PER_MIN
     tts = (audio_out_s / 60.0) * TTS_USD_PER_MIN
@@ -252,6 +288,29 @@ def get_battery_status():
     voltage = float(rh_utils.get_battery_voltage())
     percent = estimate_battery_percent(voltage)
     return voltage, percent
+
+
+def setup_logging():
+    if LOGGER.handlers:
+        return
+    try:
+        LOG_PATH.parent.mkdir(parents=True, exist_ok=True)
+    except Exception:
+        return
+    handler = RotatingFileHandler(
+        LOG_PATH,
+        maxBytes=1_000_000,
+        backupCount=3,
+        encoding="ascii",
+    )
+    formatter = logging.Formatter(
+        fmt="%(asctime)s %(levelname)s %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S",
+    )
+    handler.setFormatter(formatter)
+    handler.setLevel(logging.DEBUG)
+    LOGGER.setLevel(logging.INFO)
+    LOGGER.addHandler(handler)
 
 
 def _read_pidfile(path):
@@ -387,8 +446,16 @@ def _init_stt_background(
         stt_state["wake_model"] = wake_model
         if WAKE_WORD_ENGINE == "vosk":
             print("STT: Vosk ready.")
+        LOGGER.info(
+            "STT ready wake_engine=%s wake_model=%s stt_engine=%s stt_model=%s",
+            WAKE_WORD_ENGINE,
+            wake_model,
+            STT_ENGINE,
+            stt_model,
+        )
     except Exception as exc:
         stt_error[0] = exc
+        LOGGER.exception("STT init failed")
     finally:
         stt_ready.set()
 
@@ -398,6 +465,7 @@ def _await_stt(stt_ready, stt_error, stt_state):
         print("STT: waiting for background init...")
         stt_ready.wait()
     if stt_error[0] is not None:
+        LOGGER.error("STT init error: %s", stt_error[0])
         raise stt_error[0]
     if not stt_state.get("printed"):
         init_stt = stt_state.get("init_stt_seconds")
@@ -545,43 +613,51 @@ def wait_for_pet(touch):
     time.sleep(0.05)
 
 
-def touch_resume_watcher(touch, paused_event, resume_event, stop_event, resume_ready_time):
+def touch_gesture_watcher(
+    touch,
+    idle_event,
+    paused_event,
+    resume_event,
+    start_event,
+    interrupt_event,
+    stop_event,
+    resume_ready_time,
+    speaker,
+    radio_mode_event,
+):
     last_val = TouchStyle.NONE
-    last_tap_time = 0.0
+    start_last_tap = 0.0
+    start_tap_count = 0
+    resume_last_tap = 0.0
     while not stop_event.is_set():
-        if not paused_event.is_set():
+        if radio_mode_event.is_set():
             time.sleep(0.05)
             continue
         val = touch.read()
+        if val == TouchStyle.REAR_TO_FRONT:
+            new_volume = speaker.adjust_volume(SPEECH_VOLUME_STEP)
+            LOGGER.info("Speech volume up %.2f", new_volume)
+        elif val == TouchStyle.FRONT_TO_REAR:
+            new_volume = speaker.adjust_volume(-SPEECH_VOLUME_STEP)
+            LOGGER.info("Speech volume down %.2f", new_volume)
         if val in (TouchStyle.REAR, TouchStyle.FRONT) and last_val == TouchStyle.NONE:
             now = time.time()
-            if now >= resume_ready_time[0]:
-                if now - last_tap_time <= RESUME_TAP_WINDOW_SECONDS:
-                    resume_event.set()
-                last_tap_time = now
-        last_val = val
-        time.sleep(0.05)
-
-
-def touch_start_watcher(touch, idle_event, start_event, interrupt_event, stop_event):
-    last_val = TouchStyle.NONE
-    last_tap_time = 0.0
-    tap_count = 0
-    while not stop_event.is_set():
-        if not idle_event.is_set():
-            time.sleep(0.05)
-            continue
-        val = touch.read()
-        if val in (TouchStyle.REAR, TouchStyle.FRONT) and last_val == TouchStyle.NONE:
-            now = time.time()
-            if now - last_tap_time > TAP_WINDOW_SECONDS:
-                tap_count = 0
-            tap_count += 1
-            last_tap_time = now
-            if tap_count >= 2:
-                tap_count = 0
-                start_event.set()
-                interrupt_event.set()
+            if paused_event.is_set():
+                if now >= resume_ready_time[0]:
+                    if now - resume_last_tap <= RESUME_TAP_WINDOW_SECONDS:
+                        resume_event.set()
+                        LOGGER.debug("Touch resume double-tap detected")
+                    resume_last_tap = now
+            elif idle_event.is_set():
+                if now - start_last_tap > TAP_WINDOW_SECONDS:
+                    start_tap_count = 0
+                start_tap_count += 1
+                start_last_tap = now
+                if start_tap_count >= 2:
+                    start_tap_count = 0
+                    start_event.set()
+                    interrupt_event.set()
+                    LOGGER.debug("Touch start double-tap detected")
         last_val = val
         time.sleep(0.05)
 
@@ -592,7 +668,12 @@ def main():
     parser.add_argument("--list-audio", action="store_true", help="List audio devices and exit")
     parser.add_argument("--mic-device", type=int, help="Override mic device index for STT")
     parser.add_argument("--debug-latency", action="store_true", help="Print latency timings for pro mode")
+    parser.add_argument("--debug-log", action="store_true", help="Enable verbose logging to file")
     args = parser.parse_args()
+    setup_logging()
+    if args.debug_log:
+        LOGGER.setLevel(logging.DEBUG)
+        LOGGER.debug("Debug logging enabled")
 
     if args.list_audio:
         print("Audio devices:")
@@ -627,6 +708,7 @@ def main():
         _await_stt(stt_ready, stt_error, stt_state)
     print(f"TTS: {TTS_ENGINE} {TTS_MODEL}")
     print(f"LLM: {LLM_MODEL}")
+    LOGGER.info("Audio output speaker_device=%s aplay_device=%s", SPEAKER_DEVICE, APLAY_DEVICE)
     t1 = time.time()
     tts = create_tts(engine=TTS_ENGINE, model=TTS_MODEL, length_scale=TTS_LENGTH_SCALE)
     print(f"Init: TTS {time.time() - t1:.2f}s")
@@ -668,19 +750,28 @@ def main():
     idle_event = threading.Event()
     start_event = threading.Event()
     watcher_stop = threading.Event()
-    watcher_thread = threading.Thread(
-        target=touch_resume_watcher,
-        args=(touch, paused_event, resume_event, watcher_stop, resume_ready_time),
+    radio_mode_event = threading.Event()
+    gesture_thread = threading.Thread(
+        target=touch_gesture_watcher,
+        args=(
+            touch,
+            idle_event,
+            paused_event,
+            resume_event,
+            start_event,
+            interrupt_event,
+            watcher_stop,
+            resume_ready_time,
+            speaker,
+            radio_mode_event,
+        ),
         daemon=True,
     )
-    watcher_thread.start()
-    start_thread = threading.Thread(
-        target=touch_start_watcher,
-        args=(touch, idle_event, start_event, interrupt_event, watcher_stop),
-        daemon=True,
-    )
-    start_thread.start()
+    gesture_thread.start()
 
+    wake_stt = None
+    asr_stt = None
+    stt_model = None
     if args.mic_test:
         wake_stt, asr_stt, stt_model = _await_stt(stt_ready, stt_error, stt_state)
         print("Mic test: speak into the microphone (Ctrl+C to exit).")
@@ -731,17 +822,20 @@ def main():
             print(f"Wake word: {WAKE_WORD_PV_KEYWORD} (porcupine)")
     else:
         print(f"Wake words: {WAKE_WORDS}")
+    LOGGER.info("Startup wake_engine=%s", WAKE_WORD_ENGINE)
     print("Ready.")
     convo_deadline = None
     def set_convo_deadline():
         nonlocal convo_deadline
         convo_deadline = time.time() + CONVO_WINDOW_SECONDS
         leds.set_countdown(convo_deadline, CONVO_WINDOW_SECONDS)
+        LOGGER.debug("Convo window set deadline=%.2f", convo_deadline)
 
     def clear_convo_deadline():
         nonlocal convo_deadline
         convo_deadline = None
         leds.clear_countdown()
+        LOGGER.debug("Convo window cleared")
     try:
         if use_chatgpt_pro and STT_INIT_ASYNC and SKIP_WAKE_UNTIL_STT_READY:
             set_convo_deadline()
@@ -749,6 +843,7 @@ def main():
         print(f"Convo window: {CONVO_WINDOW_SECONDS}s")
         while True:
             if radio_playing:
+                radio_mode_event.set()
                 leds.set_state("wake")
                 last_tap_time = 0.0
                 tap_count = 0
@@ -765,18 +860,19 @@ def main():
                             tap_count = 0
                         tap_count += 1
                         last_tap_time = now
-                        if tap_count >= 3:
-                            tap_count = 0
-                            if stations:
-                                if radio_station_index is None:
-                                    radio_station_index = 0
-                                radio_station_index = (radio_station_index + 1) % len(stations)
-                                station = stations[radio_station_index]
-                                start_moc_stream(station["url"])
-                                radio_last_url = station["url"]
-                                leds.set_state("speak")
-                                speaker.say(f"Radio: {station['name']}.")
-                                speaker.wait_idle()
+                    if tap_count >= 3:
+                        tap_count = 0
+                        if stations:
+                            if radio_station_index is None:
+                                radio_station_index = 0
+                            radio_station_index = (radio_station_index + 1) % len(stations)
+                            station = stations[radio_station_index]
+                            start_moc_stream(station["url"])
+                            radio_last_url = station["url"]
+                            leds.set_state("speak")
+                            speaker.say(f"Radio: {station['name']}.")
+                            speaker.wait_idle()
+                            LOGGER.debug("Radio triple-tap station=%s", station["name"])
                     last_touch_val = val
                     if tap_count == 2 and time.time() - last_tap_time > TAP_WINDOW_SECONDS:
                         stop_moc_stream()
@@ -789,8 +885,10 @@ def main():
                         leds.set_state("speak")
                         speaker.say("Radio stopped. Double-tap to resume.")
                         speaker.wait_idle()
+                        LOGGER.debug("Radio double-tap stop")
                         break
                     time.sleep(0.05)
+                radio_mode_event.clear()
                 continue
 
             if radio_paused and radio_last_url:
@@ -814,6 +912,8 @@ def main():
                 print("\nWaiting for wake word...")
                 leds.set_state("wake")
                 idle_event.set()
+                LOGGER.info("Wake listening")
+                LOGGER.debug("Wake engine=%s", WAKE_WORD_ENGINE)
                 wake_stt, asr_stt, stt_model = _await_stt(stt_ready, stt_error, stt_state)
                 if WAKE_WORD_ENGINE == "porcupine":
                     heard = listen_for_wake_word_porcupine(
@@ -829,6 +929,7 @@ def main():
                     )
                 idle_event.clear()
                 if heard is not None:
+                    LOGGER.info("Wake heard: %s", heard)
                     set_convo_deadline()
                     just_woke = True
             else:
@@ -866,6 +967,27 @@ def main():
 
             leds.set_state("listen")
             print("Listening...")
+            remaining = None
+            if convo_deadline is not None:
+                remaining = convo_deadline - time.time()
+                if remaining <= 0.0:
+                    clear_convo_deadline()
+                    leds.set_state("wake")
+                    continue
+            max_record_seconds = MAX_UTTERANCE_SECONDS
+            if remaining is not None:
+                if remaining < 0.2:
+                    clear_convo_deadline()
+                    leds.set_state("wake")
+                    continue
+                max_record_seconds = min(MAX_UTTERANCE_SECONDS, remaining)
+            LOGGER.debug(
+                "Listen start remaining=%.2f max_record=%.2f",
+                remaining if remaining is not None else -1.0,
+                max_record_seconds,
+            )
+            if not use_chatgpt_pro and asr_stt is None:
+                wake_stt, asr_stt, stt_model = _await_stt(stt_ready, stt_error, stt_state)
             if use_chatgpt_pro:
                 timing = {
                     "record": 0.0,
@@ -884,13 +1006,19 @@ def main():
                     rec = record_audio_wav(
                         tmp_path,
                         device=mic_device,
-                        max_seconds=MAX_UTTERANCE_SECONDS,
+                        max_seconds=max_record_seconds,
                         silence_threshold=CHATGPT_PRO_SILENCE_THRESHOLD,
                         silence_seconds=CHATGPT_PRO_SILENCE_SECONDS,
                         input_rate=MIC_INPUT_RATE,
                         input_dtype=MIC_INPUT_DTYPE,
                     )
                     timing["record"] = time.perf_counter() - t0
+                    LOGGER.debug(
+                        "Pro rec ok=%s dur=%.2f rms=%.4f",
+                        rec.get("ok"),
+                        rec.get("duration", 0.0),
+                        rec.get("rms", 0.0),
+                    )
                     if CHATGPT_PRO_DEBUG_RECORDING:
                         print(f"Pro rec ok={rec.get('ok')} dur={rec.get('duration'):.2f}s rms={rec.get('rms'):.4f}")
                         if rec.get("ok"):
@@ -908,6 +1036,11 @@ def main():
                             print(
                                 f"Pro: low RMS ({rec.get('rms', 0.0):.4f} < {min_rms:.4f}), skipping."
                             )
+                        LOGGER.info(
+                            "Pro low RMS rms=%.4f threshold=%.4f",
+                            rec.get("rms", 0.0),
+                            min_rms,
+                        )
                         continue
                     just_woke = False
                     t0 = time.perf_counter()
@@ -916,8 +1049,10 @@ def main():
                         model=CHATGPT_STT_MODEL,
                         language=CHATGPT_STT_LANGUAGE,
                     ).strip()
+                    LOGGER.debug("Pro STT text=%r", _clip_text(text))
                     if not is_likely_english(text):
                         print(f"Pro: dropped non-English transcript: {_clip_text(text)!r}")
+                        LOGGER.info("Pro dropped non-English transcript: %r", _clip_text(text))
                         continue
                     timing["stt"] = time.perf_counter() - t0
                     if CHATGPT_PRO_DEBUG_RECORDING:
@@ -941,7 +1076,7 @@ def main():
                 utterance = record_utterance_whisper(
                     asr_stt,
                     device=mic_device,
-                    max_seconds=MAX_UTTERANCE_SECONDS,
+                    max_seconds=max_record_seconds,
                     input_rate=MIC_INPUT_RATE,
                     input_dtype=MIC_INPUT_DTYPE,
                 )
@@ -949,10 +1084,11 @@ def main():
                 utterance = record_utterance(
                     asr_stt,
                     device=mic_device,
-                    max_seconds=MAX_UTTERANCE_SECONDS,
+                    max_seconds=max_record_seconds,
                     stream=True,
                 )
             text = utterance["text"].strip()
+            LOGGER.debug("Utterance text=%r conf=%.2f", _clip_text(text), utterance.get("confidence", 0.0))
             if not text or utterance["confidence"] < CONFIDENCE_THRESHOLD:
                 leds.set_state("speak")
                 speaker.say("Sorry, can you repeat that?")
@@ -975,6 +1111,7 @@ def main():
             if radio_override:
                 command = radio_override
             if "play radio bbc" in command or "start radio bbc" in command:
+                LOGGER.info("Radio command: bbc")
                 leds.set_state("speak")
                 speaker.say("Starting BBC World Service.")
                 speaker.wait_idle()
@@ -989,6 +1126,7 @@ def main():
                     set_convo_deadline()
                 continue
             if "play radio" in command or "start radio" in command:
+                LOGGER.info("Radio command: %s", command)
                 if "start radio" in command and "play radio" not in command:
                     command = command.replace("start radio", "play radio")
                 for word, key in RADIO_ALIASES.items():
@@ -997,6 +1135,7 @@ def main():
                         break
                 for key, url in RADIO_URLS.items():
                     if f"play radio {key}" in command:
+                        LOGGER.info("Radio start %s url=%s", key, url)
                         leds.set_state("speak")
                         speaker.say(f"Starting radio {key}.")
                         speaker.wait_idle()
@@ -1010,10 +1149,12 @@ def main():
                         break
                 else:
                     print(f"Unknown radio command: {text}")
+                    LOGGER.info("Radio command unknown: %r", command)
                 if convo_deadline is not None:
                     set_convo_deadline()
                 continue
             if "stop radio" in command:
+                LOGGER.info("Radio command: stop")
                 leds.set_state("speak")
                 speaker.say("Stopping the radio.")
                 speaker.wait_idle()
@@ -1101,6 +1242,7 @@ def main():
                     audio_out_s = 0.0
                     wav_out_s = 0.0
                     if response_text:
+                        LOGGER.debug("Pro TTS text=%r", _clip_text(response_text))
                         print(response_text)
                         tmp = tempfile.NamedTemporaryFile(delete=False, suffix=".wav")
                         tmp_path = tmp.name
@@ -1114,12 +1256,18 @@ def main():
                                 voice=CHATGPT_TTS_VOICE,
                             )
                             timing["tts"] = time.perf_counter() - t0
+                            scale_wav_inplace(tmp_path, speaker.get_volume())
                             wav_out_s = wav_seconds(tmp_path)
                             if wav_out_s > 120.0:
                                 wav_out_s = 0.0
                             t0 = time.perf_counter()
                             timing["start_play"] = t0 - t_start
-                            subprocess.run(["aplay", "-q", tmp_path], check=False)
+                            aplay_cmd = ["aplay", "-q"]
+                            if APLAY_DEVICE:
+                                aplay_cmd.extend(["-D", APLAY_DEVICE])
+                            aplay_cmd.append(tmp_path)
+                            result = subprocess.run(aplay_cmd, check=False)
+                            LOGGER.debug("Pro aplay returncode=%s", result.returncode)
                             timing["play"] = time.perf_counter() - t0
                             audio_out_s = timing["play"] if timing["play"] > 0.1 else wav_out_s
                         except Exception as exc:
@@ -1181,6 +1329,7 @@ def main():
                         full_response += chunk
                         sentences, buffer = split_sentences(buffer)
                     for sentence in sentences:
+                        LOGGER.debug("Local TTS text=%r", _clip_text(sentence))
                         speaker.say(sanitize_tts_text(sentence))
             except RuntimeError as exc:
                 if "OPENAI_API_KEY" in str(exc):
@@ -1207,8 +1356,7 @@ def main():
         print("\nExiting...")
     finally:
         watcher_stop.set()
-        watcher_thread.join(timeout=1)
-        start_thread.join(timeout=1)
+        gesture_thread.join(timeout=1)
         touch.close()
         leds.stop()
         speaker.stop()
