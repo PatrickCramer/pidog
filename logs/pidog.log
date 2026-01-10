@@ -1768,3 +1768,98 @@
 2026-01-10 22:15:12 INFO action=audio_recorded ok=True duration=4.000 rms=0.002 mode='chatgpt_pro'
 2026-01-10 22:15:12 INFO action=audio_low_rms rms=0.002 threshold=0.004
 2026-01-10 22:15:12 INFO action=wake_listen_start
+2026-01-10 22:15:32 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:15:39 INFO action=audio_recorded ok=True duration=4.200 rms=0.001 mode='chatgpt_pro'
+2026-01-10 22:15:39 INFO action=audio_low_rms rms=0.001 threshold=0.004
+2026-01-10 22:15:39 INFO action=wake_listen_start
+2026-01-10 22:15:59 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:16:05 INFO action=audio_recorded ok=True duration=4.200 rms=0.001 mode='chatgpt_pro'
+2026-01-10 22:16:05 INFO action=audio_low_rms rms=0.001 threshold=0.004
+2026-01-10 22:16:05 INFO action=wake_listen_start
+2026-01-10 22:16:26 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:16:32 INFO action=audio_recorded ok=True duration=4.600 rms=0.002 mode='chatgpt_pro'
+2026-01-10 22:16:32 INFO action=audio_low_rms rms=0.002 threshold=0.004
+2026-01-10 22:16:32 INFO action=wake_listen_start
+2026-01-10 22:16:52 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:16:58 INFO action=audio_recorded ok=True duration=3.000 rms=0.002 mode='chatgpt_pro'
+2026-01-10 22:16:58 INFO action=audio_low_rms rms=0.002 threshold=0.004
+2026-01-10 22:16:58 INFO action=wake_listen_start
+2026-01-10 22:17:13 INFO action=shutdown reason='keyboard_interrupt'
+2026-01-10 22:17:13 INFO action=shutdown reason='cleanup_complete'
+2026-01-10 22:17:15 INFO logging ready path=/home/pat/pidog/logs/pidog.log level=INFO
+2026-01-10 22:17:15 INFO action=startup pid=36749 args={'mic_test': False, 'list_audio': False, 'mic_device': None, 'debug_latency': True} log_path='/home/pat/pidog/logs/pidog.log'
+2026-01-10 22:17:15 INFO action=config_audio max_utterance_seconds=6 silence_threshold=0.007 silence_seconds=0.650 notes='threshold=rms cutoff, silence=end-of-speech window'
+2026-01-10 22:17:16 INFO action=single_instance pidfile='/tmp/pidog.pid' pid=36749
+2026-01-10 22:17:16 INFO action=mic_device_selected index=1 name='USB PnP Sound Device: Audio (hw:3,0)'
+2026-01-10 22:17:16 INFO action=stt_init_start engine='vosk' device=1
+2026-01-10 22:17:16 INFO action=stt_init mode='async' device=1
+2026-01-10 22:17:16 INFO action=models tts_engine='piper' tts_model='en_US-amy-low' llm_model='llama3.2:1b'
+2026-01-10 22:17:17 INFO action=init_tts seconds=1.261 engine='piper' model='en_US-amy-low'
+2026-01-10 22:17:17 INFO action=init_speaker seconds=0.000
+2026-01-10 22:17:17 INFO action=init_leds seconds=0.236
+2026-01-10 22:17:17 INFO action=init_touch seconds=0.005
+2026-01-10 22:17:17 INFO action=battery_status voltage=8.377 percent=99
+2026-01-10 22:17:17 INFO action=stations_loaded count=18 names=['NPO Radio 1 (MP3)', 'NPO Radio 2 (MP3)', 'NPO 3FM (MP3)', 'NPO Klassiek (MP3)', 'NPO Radio 5 (MP3)', 'NPO Blend (MP3)', 'FunX (MP3)', 'BBC World Service (MP3)', 'Frequence 3 (MP3 256)', 'Frequence 3 Urban (MP3 256)', 'Frequence 3 (MP3 128)', 'Frequence 3 Urban (MP3 128)', 'Frequence 3 (AAC 64)', 'Frequence 3 Urban (AAC 64)', 'Frequence 3 Gold (MP3 160)', 'Frequence 3 Gold (AAC 64)', 'Frequence 3 Dance (MP3 160)', 'Frequence 3 Dance (AAC 64)']
+2026-01-10 22:17:17 INFO action=touch_watchers_started
+2026-01-10 22:17:18 INFO action=stt_init_ready engine='vosk' stt_model='vosk-model-small-en-us-0.15' init_stt_seconds=2.259
+2026-01-10 22:17:19 INFO action=mode_smart_pro enabled=True
+2026-01-10 22:17:19 INFO action=ready wake_words=['ziggy', 'pidog', 'pie dog', 'hi dog']
+2026-01-10 22:17:19 INFO action=convo_window seconds=15 wake_word_delayed=True
+2026-01-10 22:17:19 INFO action=convo_active seconds_left=14
+2026-01-10 22:17:19 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:17:26 INFO action=audio_recorded ok=True duration=5.200 rms=0.003 mode='chatgpt_pro'
+2026-01-10 22:17:26 INFO action=audio_low_rms rms=0.003 threshold=0.004
+2026-01-10 22:17:26 INFO action=convo_active seconds_left=8
+2026-01-10 22:17:26 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:17:27 INFO action=audio_recorded ok=True duration=0.600 rms=0.011 mode='chatgpt_pro'
+2026-01-10 22:17:29 INFO action=transcript text='do' engine='openai' language='en'
+2026-01-10 22:17:29 INFO action=command_received raw='do' normalized='do' confidence=1.000 mode='chatgpt_pro'
+2026-01-10 22:17:33 INFO action=response text='I’m here to help! What do you need?' mode='chatgpt_pro'
+2026-01-10 22:17:33 INFO action=convo_active seconds_left=14
+2026-01-10 22:17:33 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:17:38 INFO action=audio_recorded ok=True duration=3.800 rms=0.014 mode='chatgpt_pro'
+2026-01-10 22:17:39 INFO action=transcript text='Tell me about football.' engine='openai' language='en'
+2026-01-10 22:17:39 INFO action=command_received raw='Tell me about football.' normalized='tell me about football.' confidence=1.000 mode='chatgpt_pro'
+2026-01-10 22:17:56 INFO action=response text="Football, also known as soccer in some countries, is a team sport played between two teams of eleven players. The objective is to score goals by getting the ball into the opposing team's net." mode='chatgpt_pro'
+2026-01-10 22:17:56 INFO action=convo_active seconds_left=14
+2026-01-10 22:17:56 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:18:02 INFO action=audio_recorded ok=True duration=3.600 rms=0.002 mode='chatgpt_pro'
+2026-01-10 22:18:02 INFO action=audio_low_rms rms=0.002 threshold=0.004
+2026-01-10 22:18:02 INFO action=convo_active seconds_left=8
+2026-01-10 22:18:02 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:18:08 INFO action=audio_recorded ok=True duration=5.400 rms=0.003 mode='chatgpt_pro'
+2026-01-10 22:18:08 INFO action=audio_low_rms rms=0.003 threshold=0.004
+2026-01-10 22:18:08 INFO action=convo_active seconds_left=2
+2026-01-10 22:18:08 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:18:14 INFO action=audio_recorded ok=True duration=4.400 rms=0.003 mode='chatgpt_pro'
+2026-01-10 22:18:14 INFO action=audio_low_rms rms=0.003 threshold=0.004
+2026-01-10 22:18:14 INFO action=wake_listen_start
+2026-01-10 22:18:14 INFO action=stt_ready engine='vosk' stt_model='vosk-model-small-en-us-0.15'
+2026-01-10 22:18:35 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:18:41 INFO action=audio_recorded ok=True duration=4.400 rms=0.001 mode='chatgpt_pro'
+2026-01-10 22:18:41 INFO action=audio_low_rms rms=0.001 threshold=0.004
+2026-01-10 22:18:41 INFO action=wake_listen_start
+2026-01-10 22:19:11 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:19:18 INFO action=audio_recorded ok=True duration=2.600 rms=0.001 mode='chatgpt_pro'
+2026-01-10 22:19:18 INFO action=audio_low_rms rms=0.001 threshold=0.004
+2026-01-10 22:19:18 INFO action=wake_listen_start
+2026-01-10 22:19:38 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:19:44 INFO action=audio_recorded ok=True duration=4.200 rms=0.002 mode='chatgpt_pro'
+2026-01-10 22:19:44 INFO action=audio_low_rms rms=0.002 threshold=0.004
+2026-01-10 22:19:44 INFO action=wake_listen_start
+2026-01-10 22:20:04 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:20:11 INFO action=audio_recorded ok=True duration=3.600 rms=0.002 mode='chatgpt_pro'
+2026-01-10 22:20:11 INFO action=audio_low_rms rms=0.002 threshold=0.004
+2026-01-10 22:20:11 INFO action=wake_listen_start
+2026-01-10 22:20:31 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:20:37 INFO action=audio_recorded ok=True duration=3.800 rms=0.002 mode='chatgpt_pro'
+2026-01-10 22:20:37 INFO action=audio_low_rms rms=0.002 threshold=0.004
+2026-01-10 22:20:37 INFO action=wake_listen_start
+2026-01-10 22:21:03 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:21:09 INFO action=audio_recorded ok=True duration=4.400 rms=0.002 mode='chatgpt_pro'
+2026-01-10 22:21:09 INFO action=audio_low_rms rms=0.002 threshold=0.004
+2026-01-10 22:21:09 INFO action=wake_listen_start
+2026-01-10 22:21:29 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:21:35 INFO action=audio_recorded ok=True duration=4.600 rms=0.002 mode='chatgpt_pro'
+2026-01-10 22:21:35 INFO action=audio_low_rms rms=0.002 threshold=0.004
+2026-01-10 22:21:35 INFO action=wake_listen_start

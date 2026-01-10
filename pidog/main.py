@@ -724,7 +724,15 @@ def main():
         f"silence_threshold={CHATGPT_PRO_SILENCE_THRESHOLD} "
         f"silence_seconds={CHATGPT_PRO_SILENCE_SECONDS}s"
     )
-    print("Audio params: max_utterance=cap, silence_threshold=rms cutoff, silence_seconds=end-of-speech")
+    print(
+        "Audio params: "
+        f"min_rms={CHATGPT_PRO_MIN_RMS} "
+        f"wake_min_rms={CHATGPT_PRO_WAKE_MIN_RMS}"
+    )
+    print(
+        "Audio params: max_utterance=cap, silence_threshold=rms cutoff, "
+        "silence_seconds=end-of-speech, min_rms=skip quiet audio"
+    )
     log_action("models", tts_engine=TTS_ENGINE, tts_model=TTS_MODEL, llm_model=LLM_MODEL)
     t1 = time.time()
     tts = create_tts(engine=TTS_ENGINE, model=TTS_MODEL, length_scale=TTS_LENGTH_SCALE)
