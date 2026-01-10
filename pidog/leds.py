@@ -1,5 +1,6 @@
 import threading
 import time
+from collections import deque
 
 try:
     from .rgb_strip import RGBStrip
@@ -11,6 +12,8 @@ class LedController:
     def __init__(self, light_num=11):
         self._lock = threading.Lock()
         self._state = "off"
+        self._pulse_queue = deque()
+        self._pulse_active = None
         self._stop = threading.Event()
         self._thread = threading.Thread(target=self._run, daemon=True)
 
@@ -37,6 +40,22 @@ class LedController:
         with self._lock:
             self._state = state
 
+    def pulse(self, color, count=1, on_time=0.08, off_time=0.06):
+        if self._strip is None:
+            return
+        count = int(count) if count is not None else 1
+        if count <= 0:
+            return
+        with self._lock:
+            self._pulse_queue.append(
+                {
+                    "color": color[:],
+                    "count": count,
+                    "on_time": max(0.02, float(on_time)),
+                    "off_time": max(0.02, float(off_time)),
+                }
+            )
+
     def _clear(self):
         if self._strip is None:
             return
@@ -57,10 +76,42 @@ class LedController:
     def _run(self):
         step = 0
         while not self._stop.is_set():
-            with self._lock:
-                state = self._state
             if self._strip is None:
                 time.sleep(0.1)
+                continue
+            now = time.monotonic()
+            with self._lock:
+                if self._pulse_active is None and self._pulse_queue:
+                    next_pulse = self._pulse_queue.popleft()
+                    self._pulse_active = {
+                        "color": next_pulse["color"],
+                        "remaining": next_pulse["count"],
+                        "on_time": next_pulse["on_time"],
+                        "off_time": next_pulse["off_time"],
+                        "phase": "on",
+                        "next_time": now + next_pulse["on_time"],
+                    }
+                pulse = self._pulse_active
+                state = self._state
+
+            if pulse is not None:
+                phase = pulse["phase"]
+                if phase == "on":
+                    self._solid(pulse["color"])
+                    if now >= pulse["next_time"]:
+                        pulse["remaining"] -= 1
+                        pulse["phase"] = "off"
+                        pulse["next_time"] = now + pulse["off_time"]
+                else:
+                    self._clear()
+                    if now >= pulse["next_time"]:
+                        if pulse["remaining"] > 0:
+                            pulse["phase"] = "on"
+                            pulse["next_time"] = now + pulse["on_time"]
+                        else:
+                            with self._lock:
+                                self._pulse_active = None
+                time.sleep(0.02)
                 continue
 
             if state == "wake":

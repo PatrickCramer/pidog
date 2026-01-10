@@ -1,0 +1,826 @@
+2026-01-10 20:25:42 INFO logging ready path=/home/pat/pidog/logs/pidog.log level=INFO
+2026-01-10 20:25:42 INFO action=startup pid=7277 args={'mic_test': False, 'list_audio': False, 'mic_device': None, 'debug_latency': True} log_path='/home/pat/pidog/logs/pidog.log'
+2026-01-10 20:25:42 INFO action=single_instance pidfile='/tmp/pidog.pid' pid=7277
+2026-01-10 20:25:42 INFO action=mic_device_selected index=1 name='USB PnP Sound Device: Audio (hw:3,0)'
+2026-01-10 20:25:42 INFO action=stt_init_start engine='vosk' device=1
+2026-01-10 20:25:42 INFO action=stt_init mode='async' device=1
+2026-01-10 20:25:42 INFO action=models tts_engine='piper' tts_model='en_US-amy-low' llm_model='llama3.2:1b'
+2026-01-10 20:25:43 INFO action=init_tts seconds=1.325 engine='piper' model='en_US-amy-low'
+2026-01-10 20:25:43 INFO action=init_speaker seconds=0.000
+2026-01-10 20:25:43 INFO action=init_leds seconds=0.236
+2026-01-10 20:25:43 INFO action=init_touch seconds=0.005
+2026-01-10 20:25:43 INFO action=battery_status voltage=8.377 percent=99
+2026-01-10 20:25:43 INFO action=stations_loaded count=18 names=['NPO Radio 1 (MP3)', 'NPO Radio 2 (MP3)', 'NPO 3FM (MP3)', 'NPO Klassiek (MP3)', 'NPO Radio 5 (MP3)', 'NPO Blend (MP3)', 'FunX (MP3)', 'BBC World Service (MP3)', 'Frequence 3 (MP3 256)', 'Frequence 3 Urban (MP3 256)', 'Frequence 3 (MP3 128)', 'Frequence 3 Urban (MP3 128)', 'Frequence 3 (AAC 64)', 'Frequence 3 Urban (AAC 64)', 'Frequence 3 Gold (MP3 160)', 'Frequence 3 Gold (AAC 64)', 'Frequence 3 Dance (MP3 160)', 'Frequence 3 Dance (AAC 64)']
+2026-01-10 20:25:43 INFO action=touch_watchers_started
+2026-01-10 20:25:44 INFO action=stt_init_ready engine='vosk' stt_model='vosk-model-small-en-us-0.15' init_stt_seconds=2.325
+2026-01-10 20:25:46 INFO action=mode_smart_pro enabled=True
+2026-01-10 20:25:46 INFO action=ready wake_words=['ziggy', 'pidog', 'pie dog', 'hi dog']
+2026-01-10 20:25:46 INFO action=convo_window seconds=15 wake_word_delayed=True
+2026-01-10 20:25:46 INFO action=convo_active seconds_left=14
+2026-01-10 20:25:46 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 20:25:58 INFO action=audio_recorded ok=True duration=9.600 rms=0.026 mode='chatgpt_pro'
+2026-01-10 20:26:02 INFO action=mode_smart_pro enabled=False reason='openai is not installed. Run `pip install openai` or install the project extra with `pip install -e .[openai]`.'
+2026-01-10 20:26:02 INFO action=convo_active seconds_left=14
+2026-01-10 20:26:02 INFO action=listen_start mode='vosk' mic_device=1
+2026-01-10 20:26:02 INFO action=shutdown reason='cleanup_complete'
+2026-01-10 20:27:37 INFO logging ready path=/home/pat/pidog/logs/pidog.log level=INFO
+2026-01-10 20:27:37 INFO action=startup pid=8138 args={'mic_test': False, 'list_audio': False, 'mic_device': None, 'debug_latency': True} log_path='/home/pat/pidog/logs/pidog.log'
+2026-01-10 20:27:37 INFO action=single_instance pidfile='/tmp/pidog.pid' pid=8138
+2026-01-10 20:27:37 INFO action=mic_device_selected index=1 name='USB PnP Sound Device: Audio (hw:3,0)'
+2026-01-10 20:27:37 INFO action=stt_init_start engine='vosk' device=1
+2026-01-10 20:27:37 INFO action=stt_init mode='async' device=1
+2026-01-10 20:27:37 INFO action=models tts_engine='piper' tts_model='en_US-amy-low' llm_model='llama3.2:1b'
+2026-01-10 20:27:38 INFO action=init_tts seconds=1.242 engine='piper' model='en_US-amy-low'
+2026-01-10 20:27:38 INFO action=init_speaker seconds=0.000
+2026-01-10 20:27:38 INFO action=init_leds seconds=0.237
+2026-01-10 20:27:38 INFO action=init_touch seconds=0.005
+2026-01-10 20:27:38 INFO action=battery_status voltage=8.375 percent=99
+2026-01-10 20:27:38 INFO action=stations_loaded count=18 names=['NPO Radio 1 (MP3)', 'NPO Radio 2 (MP3)', 'NPO 3FM (MP3)', 'NPO Klassiek (MP3)', 'NPO Radio 5 (MP3)', 'NPO Blend (MP3)', 'FunX (MP3)', 'BBC World Service (MP3)', 'Frequence 3 (MP3 256)', 'Frequence 3 Urban (MP3 256)', 'Frequence 3 (MP3 128)', 'Frequence 3 Urban (MP3 128)', 'Frequence 3 (AAC 64)', 'Frequence 3 Urban (AAC 64)', 'Frequence 3 Gold (MP3 160)', 'Frequence 3 Gold (AAC 64)', 'Frequence 3 Dance (MP3 160)', 'Frequence 3 Dance (AAC 64)']
+2026-01-10 20:27:38 INFO action=touch_watchers_started
+2026-01-10 20:27:39 INFO action=stt_init_ready engine='vosk' stt_model='vosk-model-small-en-us-0.15' init_stt_seconds=2.243
+2026-01-10 20:27:40 INFO action=mode_smart_pro enabled=True
+2026-01-10 20:27:40 INFO action=ready wake_words=['ziggy', 'pidog', 'pie dog', 'hi dog']
+2026-01-10 20:27:40 INFO action=convo_window seconds=15 wake_word_delayed=True
+2026-01-10 20:27:40 INFO action=convo_active seconds_left=14
+2026-01-10 20:27:40 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 20:27:53 INFO action=audio_recorded ok=True duration=8.400 rms=0.030 mode='chatgpt_pro'
+2026-01-10 20:27:55 INFO action=transcript text="I'm telling you." engine='openai' language='en'
+2026-01-10 20:27:55 INFO action=command_received raw="I'm telling you." normalized="i'm telling you." confidence=1.000 mode='chatgpt_pro'
+2026-01-10 20:27:59 INFO action=response text="I'm listening! What would you like to share?" mode='chatgpt_pro'
+2026-01-10 20:27:59 INFO action=convo_active seconds_left=14
+2026-01-10 20:27:59 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 20:28:12 INFO action=audio_recorded ok=True duration=7.400 rms=0.029 mode='chatgpt_pro'
+2026-01-10 20:28:13 INFO action=transcript text='Got me burning fire.' engine='openai' language='en'
+2026-01-10 20:28:13 INFO action=command_received raw='Got me burning fire.' normalized='got me burning fire.' confidence=1.000 mode='chatgpt_pro'
+2026-01-10 20:28:18 INFO action=response text="I'm here to listen! What’s igniting that fire for you?" mode='chatgpt_pro'
+2026-01-10 20:28:18 INFO action=convo_active seconds_left=14
+2026-01-10 20:28:18 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 20:28:30 INFO action=audio_recorded ok=True duration=10.400 rms=0.030 mode='chatgpt_pro'
+2026-01-10 20:28:32 INFO action=transcript text='The sun is gonna shine.' engine='openai' language='en'
+2026-01-10 20:28:32 INFO action=command_received raw='The sun is gonna shine.' normalized='the sun is gonna shine.' confidence=1.000 mode='chatgpt_pro'
+2026-01-10 20:28:38 INFO action=response text="That's a great outlook! Embrace the positivity and let it fuel your passion!" mode='chatgpt_pro'
+2026-01-10 20:28:38 INFO action=convo_active seconds_left=14
+2026-01-10 20:28:38 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 20:28:40 INFO action=audio_recorded ok=True duration=1.600 rms=0.002 mode='chatgpt_pro'
+2026-01-10 20:28:40 INFO action=audio_low_rms rms=0.002 threshold=0.004
+2026-01-10 20:28:40 INFO action=convo_active seconds_left=13
+2026-01-10 20:28:40 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 20:28:44 INFO action=audio_recorded ok=True duration=3.600 rms=0.002 mode='chatgpt_pro'
+2026-01-10 20:28:44 INFO action=audio_low_rms rms=0.002 threshold=0.004
+2026-01-10 20:28:44 INFO action=convo_active seconds_left=8
+2026-01-10 20:28:44 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 20:28:49 INFO action=audio_recorded ok=True duration=3.400 rms=0.002 mode='chatgpt_pro'
+2026-01-10 20:28:49 INFO action=audio_low_rms rms=0.002 threshold=0.004
+2026-01-10 20:28:49 INFO action=convo_active seconds_left=3
+2026-01-10 20:28:49 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 20:28:56 INFO action=audio_recorded ok=True duration=4.400 rms=0.004 mode='chatgpt_pro'
+2026-01-10 20:28:56 INFO action=audio_low_rms rms=0.004 threshold=0.004
+2026-01-10 20:28:56 INFO action=wake_listen_start
+2026-01-10 20:28:56 INFO action=stt_ready engine='vosk' stt_model='vosk-model-small-en-us-0.15'
+2026-01-10 20:29:01 INFO action=shutdown reason='keyboard_interrupt'
+2026-01-10 20:29:01 INFO action=shutdown reason='cleanup_complete'
+2026-01-10 20:29:03 INFO logging ready path=/home/pat/pidog/logs/pidog.log level=INFO
+2026-01-10 20:29:03 INFO action=startup pid=9411 args={'mic_test': False, 'list_audio': False, 'mic_device': None, 'debug_latency': True} log_path='/home/pat/pidog/logs/pidog.log'
+2026-01-10 20:29:03 INFO action=single_instance pidfile='/tmp/pidog.pid' pid=9411
+2026-01-10 20:29:03 INFO action=mic_device_selected index=1 name='USB PnP Sound Device: Audio (hw:3,0)'
+2026-01-10 20:29:03 INFO action=stt_init_start engine='vosk' device=1
+2026-01-10 20:29:03 INFO action=stt_init mode='async' device=1
+2026-01-10 20:29:03 INFO action=models tts_engine='piper' tts_model='en_US-amy-low' llm_model='llama3.2:1b'
+2026-01-10 20:29:04 INFO action=init_tts seconds=1.362 engine='piper' model='en_US-amy-low'
+2026-01-10 20:29:04 INFO action=init_speaker seconds=0.000
+2026-01-10 20:29:05 INFO action=init_leds seconds=0.236
+2026-01-10 20:29:05 INFO action=init_touch seconds=0.005
+2026-01-10 20:29:05 INFO action=battery_status voltage=8.362 percent=98
+2026-01-10 20:29:05 INFO action=stations_loaded count=18 names=['NPO Radio 1 (MP3)', 'NPO Radio 2 (MP3)', 'NPO 3FM (MP3)', 'NPO Klassiek (MP3)', 'NPO Radio 5 (MP3)', 'NPO Blend (MP3)', 'FunX (MP3)', 'BBC World Service (MP3)', 'Frequence 3 (MP3 256)', 'Frequence 3 Urban (MP3 256)', 'Frequence 3 (MP3 128)', 'Frequence 3 Urban (MP3 128)', 'Frequence 3 (AAC 64)', 'Frequence 3 Urban (AAC 64)', 'Frequence 3 Gold (MP3 160)', 'Frequence 3 Gold (AAC 64)', 'Frequence 3 Dance (MP3 160)', 'Frequence 3 Dance (AAC 64)']
+2026-01-10 20:29:05 INFO action=touch_watchers_started
+2026-01-10 20:29:05 INFO action=stt_init_ready engine='vosk' stt_model='vosk-model-small-en-us-0.15' init_stt_seconds=2.358
+2026-01-10 20:29:07 INFO action=mode_smart_pro enabled=True
+2026-01-10 20:29:07 INFO action=ready wake_words=['ziggy', 'pidog', 'pie dog', 'hi dog']
+2026-01-10 20:29:07 INFO action=convo_window seconds=15 wake_word_delayed=True
+2026-01-10 20:29:07 INFO action=convo_active seconds_left=14
+2026-01-10 20:29:07 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 20:29:19 INFO action=audio_recorded ok=True duration=7.200 rms=0.002 mode='chatgpt_pro'
+2026-01-10 20:29:19 INFO action=audio_low_rms rms=0.002 threshold=0.004
+2026-01-10 20:29:19 INFO action=convo_active seconds_left=2
+2026-01-10 20:29:19 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 20:29:21 INFO action=audio_recorded ok=True duration=1.200 rms=0.002 mode='chatgpt_pro'
+2026-01-10 20:29:21 INFO action=audio_low_rms rms=0.002 threshold=0.004
+2026-01-10 20:29:21 INFO action=convo_active seconds_left=0
+2026-01-10 20:29:21 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 20:29:29 INFO action=audio_recorded ok=True duration=5.400 rms=0.002 mode='chatgpt_pro'
+2026-01-10 20:29:29 INFO action=audio_low_rms rms=0.002 threshold=0.004
+2026-01-10 20:29:29 INFO action=wake_listen_start
+2026-01-10 20:29:29 INFO action=stt_ready engine='vosk' stt_model='vosk-model-small-en-us-0.15'
+2026-01-10 20:30:13 INFO action=touch_tap zone='rear' count=1 context='idle_start'
+2026-01-10 20:30:14 INFO action=touch_tap zone='rear' count=1 context='idle_start'
+2026-01-10 20:30:14 INFO action=touch_tap zone='rear' count=2 context='idle_start'
+2026-01-10 20:30:14 INFO action=touch_double_tap context='start_radio'
+2026-01-10 20:30:17 INFO action=radio_start source='touch_double_tap' name='NPO Radio 1 (MP3)' url='https://icecast.omroep.nl/radio1-bb-mp3'
+2026-01-10 20:30:30 INFO action=shutdown reason='keyboard_interrupt'
+2026-01-10 20:30:30 INFO action=shutdown reason='cleanup_complete'
+2026-01-10 20:30:32 INFO logging ready path=/home/pat/pidog/logs/pidog.log level=INFO
+2026-01-10 20:30:32 INFO action=startup pid=10265 args={'mic_test': False, 'list_audio': False, 'mic_device': None, 'debug_latency': True} log_path='/home/pat/pidog/logs/pidog.log'
+2026-01-10 20:30:32 INFO action=single_instance pidfile='/tmp/pidog.pid' pid=10265
+2026-01-10 20:30:32 INFO action=mic_device_selected index=1 name='USB PnP Sound Device: Audio (hw:3,0)'
+2026-01-10 20:30:32 INFO action=stt_init_start engine='vosk' device=1
+2026-01-10 20:30:32 INFO action=stt_init mode='async' device=1
+2026-01-10 20:30:32 INFO action=models tts_engine='piper' tts_model='en_US-amy-low' llm_model='llama3.2:1b'
+2026-01-10 20:30:33 INFO action=init_tts seconds=1.236 engine='piper' model='en_US-amy-low'
+2026-01-10 20:30:33 INFO action=init_speaker seconds=0.000
+2026-01-10 20:30:33 INFO action=init_leds seconds=0.237
+2026-01-10 20:30:33 INFO action=init_touch seconds=0.005
+2026-01-10 20:30:33 INFO action=battery_status voltage=8.382 percent=99
+2026-01-10 20:30:33 INFO action=stations_loaded count=18 names=['NPO Radio 1 (MP3)', 'NPO Radio 2 (MP3)', 'NPO 3FM (MP3)', 'NPO Klassiek (MP3)', 'NPO Radio 5 (MP3)', 'NPO Blend (MP3)', 'FunX (MP3)', 'BBC World Service (MP3)', 'Frequence 3 (MP3 256)', 'Frequence 3 Urban (MP3 256)', 'Frequence 3 (MP3 128)', 'Frequence 3 Urban (MP3 128)', 'Frequence 3 (AAC 64)', 'Frequence 3 Urban (AAC 64)', 'Frequence 3 Gold (MP3 160)', 'Frequence 3 Gold (AAC 64)', 'Frequence 3 Dance (MP3 160)', 'Frequence 3 Dance (AAC 64)']
+2026-01-10 20:30:33 INFO action=touch_watchers_started
+2026-01-10 20:30:34 INFO action=stt_init_ready engine='vosk' stt_model='vosk-model-small-en-us-0.15' init_stt_seconds=2.233
+2026-01-10 20:30:35 INFO action=mode_smart_pro enabled=True
+2026-01-10 20:30:35 INFO action=ready wake_words=['ziggy', 'pidog', 'pie dog', 'hi dog']
+2026-01-10 20:30:35 INFO action=convo_window seconds=15 wake_word_delayed=True
+2026-01-10 20:30:35 INFO action=convo_active seconds_left=14
+2026-01-10 20:30:35 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 20:30:47 INFO action=audio_recorded ok=True duration=9.000 rms=0.035 mode='chatgpt_pro'
+2026-01-10 20:30:51 INFO action=transcript text='En zo is Twente weer langszij en is het 86ste minuut.' engine='openai' language='en'
+2026-01-10 20:30:51 INFO action=command_received raw='En zo is Twente weer langszij en is het 86ste minuut.' normalized='en zo is twente weer langszij en is het 86ste minuut.' confidence=1.000 mode='chatgpt_pro'
+2026-01-10 20:30:59 INFO action=response text='It sounds like an exciting match! I hope your team scores soon!' mode='chatgpt_pro'
+2026-01-10 20:30:59 INFO action=convo_active seconds_left=14
+2026-01-10 20:30:59 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 20:31:09 INFO action=audio_recorded ok=True duration=8.200 rms=0.034 mode='chatgpt_pro'
+2026-01-10 20:31:11 INFO action=transcript text='We kregen nog een tip van Mark Kloostra, die zei: die amateurs van Meckelsvideo hebben wat leuks gedaan in de F1.' engine='openai' language='en'
+2026-01-10 20:31:11 INFO action=transcript_dropped reason='non_english' text='We kregen nog een tip van Mark Kloostra, die zei: die amateurs van Meckelsvideo hebben wat leuks gedaan in de F1.'
+2026-01-10 20:31:11 INFO action=convo_active seconds_left=2
+2026-01-10 20:31:11 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 20:31:23 INFO action=audio_recorded ok=True duration=6.800 rms=0.005 mode='chatgpt_pro'
+2026-01-10 20:31:24 INFO action=transcript text='He has a dog.' engine='openai' language='en'
+2026-01-10 20:31:24 INFO action=command_received raw='He has a dog.' normalized='he has a dog.' confidence=1.000 mode='chatgpt_pro'
+2026-01-10 20:31:32 INFO action=response text='Dogs can be great companions during a match! They often bring extra excitement and joy.' mode='chatgpt_pro'
+2026-01-10 20:31:32 INFO action=convo_active seconds_left=14
+2026-01-10 20:31:32 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 20:31:39 INFO action=audio_recorded ok=True duration=3.400 rms=0.002 mode='chatgpt_pro'
+2026-01-10 20:31:39 INFO action=audio_low_rms rms=0.002 threshold=0.004
+2026-01-10 20:31:39 INFO action=convo_active seconds_left=8
+2026-01-10 20:31:39 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 20:31:51 INFO action=audio_recorded ok=True duration=8.800 rms=0.003 mode='chatgpt_pro'
+2026-01-10 20:31:51 INFO action=audio_low_rms rms=0.003 threshold=0.004
+2026-01-10 20:31:51 INFO action=wake_listen_start
+2026-01-10 20:31:51 INFO action=stt_ready engine='vosk' stt_model='vosk-model-small-en-us-0.15'
+2026-01-10 20:31:59 INFO action=touch_tap zone='rear' count=1 context='idle_start'
+2026-01-10 20:31:59 INFO action=touch_tap zone='rear' count=2 context='idle_start'
+2026-01-10 20:31:59 INFO action=touch_double_tap context='start_radio'
+2026-01-10 20:32:02 INFO action=radio_start source='touch_double_tap' name='NPO Radio 1 (MP3)' url='https://icecast.omroep.nl/radio1-bb-mp3'
+2026-01-10 20:38:46 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-10 20:38:46 INFO action=radio_volume delta=5 source='touch_swipe' direction='rear_to_front'
+2026-01-10 20:38:46 INFO action=radio_volume delta=-5 source='touch_swipe' direction='front_to_rear'
+2026-01-10 20:38:46 INFO action=touch_tap zone='rear' count=2 context='radio_playing'
+2026-01-10 20:38:50 INFO action=radio_stop source='touch_double_tap'
+2026-01-10 20:38:50 INFO action=wake_listen_start
+2026-01-10 20:38:51 INFO action=touch_tap zone='rear' count=1 context='idle_start'
+2026-01-10 20:38:51 INFO action=touch_tap zone='rear' context='resume'
+2026-01-10 20:38:51 INFO action=touch_tap zone='rear' count=2 context='idle_start'
+2026-01-10 20:38:51 INFO action=touch_double_tap context='start_radio'
+2026-01-10 20:38:51 INFO action=touch_tap zone='rear' context='resume'
+2026-01-10 20:38:51 INFO action=touch_double_tap context='resume'
+2026-01-10 20:38:55 INFO action=radio_start source='touch_double_tap' name='NPO Radio 1 (MP3)' url='https://icecast.omroep.nl/radio1-bb-mp3'
+2026-01-10 20:38:56 INFO action=touch_tap zone='front' count=1 context='radio_playing'
+2026-01-10 20:38:56 INFO action=radio_volume delta=-5 source='touch_swipe' direction='front_to_rear'
+2026-01-10 20:38:56 INFO action=radio_volume delta=5 source='touch_swipe' direction='rear_to_front'
+2026-01-10 20:38:56 INFO action=radio_volume delta=-5 source='touch_swipe' direction='front_to_rear'
+2026-01-10 20:38:56 INFO action=touch_tap zone='rear' count=2 context='radio_playing'
+2026-01-10 20:39:00 INFO action=radio_stop source='touch_double_tap'
+2026-01-10 20:39:00 INFO action=wake_listen_start
+2026-01-10 20:39:00 INFO action=touch_tap zone='rear' count=1 context='idle_start'
+2026-01-10 20:39:00 INFO action=touch_tap zone='rear' context='resume'
+2026-01-10 20:39:00 INFO action=touch_tap zone='rear' count=2 context='idle_start'
+2026-01-10 20:39:00 INFO action=touch_double_tap context='start_radio'
+2026-01-10 20:39:00 INFO action=touch_tap zone='rear' context='resume'
+2026-01-10 20:39:00 INFO action=touch_double_tap context='resume'
+2026-01-10 20:39:04 INFO action=radio_start source='touch_double_tap' name='NPO Radio 1 (MP3)' url='https://icecast.omroep.nl/radio1-bb-mp3'
+2026-01-10 20:39:05 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-10 20:39:05 INFO action=touch_tap zone='rear' count=2 context='radio_playing'
+2026-01-10 20:39:05 INFO action=touch_tap zone='rear' count=3 context='radio_playing'
+2026-01-10 20:39:08 INFO action=radio_station_next name='NPO Radio 2 (MP3)' url='https://icecast.omroep.nl/radio2-bb-mp3' index=1
+2026-01-10 20:41:30 INFO action=touch_tap zone='front' count=1 context='radio_playing'
+2026-01-10 20:41:31 INFO action=radio_volume delta=-5 source='touch_swipe' direction='front_to_rear'
+2026-01-10 20:41:32 INFO action=touch_tap zone='front' count=1 context='radio_playing'
+2026-01-10 20:41:32 INFO action=radio_volume delta=-5 source='touch_swipe' direction='front_to_rear'
+2026-01-10 20:41:33 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-10 20:41:33 INFO action=radio_volume delta=5 source='touch_swipe' direction='rear_to_front'
+2026-01-10 20:41:37 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-10 20:41:38 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-10 20:41:38 INFO action=touch_tap zone='rear' count=2 context='radio_playing'
+2026-01-10 20:41:42 INFO action=radio_stop source='touch_double_tap'
+2026-01-10 20:41:42 INFO action=wake_listen_start
+2026-01-10 20:41:55 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 20:42:07 INFO action=audio_recorded ok=True duration=8.000 rms=0.039 mode='chatgpt_pro'
+2026-01-10 20:42:08 INFO action=transcript text='Very busy anymore.' engine='openai' language='en'
+2026-01-10 20:42:08 INFO action=command_received raw='Very busy anymore.' normalized='very busy anymore.' confidence=1.000 mode='chatgpt_pro'
+2026-01-10 20:42:18 INFO action=response text='Dogs can definitely enhance the experience of a match! Their energy and enthusiasm are contagious.' mode='chatgpt_pro'
+2026-01-10 20:42:18 INFO action=convo_active seconds_left=14
+2026-01-10 20:42:18 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 20:42:20 INFO action=audio_recorded ok=True duration=1.800 rms=0.002 mode='chatgpt_pro'
+2026-01-10 20:42:20 INFO action=audio_low_rms rms=0.002 threshold=0.004
+2026-01-10 20:42:20 INFO action=convo_active seconds_left=12
+2026-01-10 20:42:20 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 20:42:22 INFO action=shutdown reason='keyboard_interrupt'
+2026-01-10 20:42:23 INFO action=shutdown reason='cleanup_complete'
+2026-01-10 20:43:38 INFO logging ready path=/home/pat/pidog/logs/pidog.log level=INFO
+2026-01-10 20:43:38 INFO action=startup pid=12147 args={'mic_test': False, 'list_audio': False, 'mic_device': None, 'debug_latency': True} log_path='/home/pat/pidog/logs/pidog.log'
+2026-01-10 20:43:38 INFO action=single_instance pidfile='/tmp/pidog.pid' pid=12147
+2026-01-10 20:43:38 INFO action=mic_device_selected index=1 name='USB PnP Sound Device: Audio (hw:3,0)'
+2026-01-10 20:43:38 INFO action=stt_init_start engine='vosk' device=1
+2026-01-10 20:43:38 INFO action=stt_init mode='async' device=1
+2026-01-10 20:43:38 INFO action=models tts_engine='piper' tts_model='en_US-amy-low' llm_model='llama3.2:1b'
+2026-01-10 20:43:39 INFO action=init_tts seconds=1.304 engine='piper' model='en_US-amy-low'
+2026-01-10 20:43:39 INFO action=init_speaker seconds=0.000
+2026-01-10 20:43:39 INFO action=init_leds seconds=0.236
+2026-01-10 20:43:39 INFO action=init_touch seconds=0.005
+2026-01-10 20:43:39 INFO action=battery_status voltage=8.394 percent=100
+2026-01-10 20:43:39 INFO action=stations_loaded count=18 names=['NPO Radio 1 (MP3)', 'NPO Radio 2 (MP3)', 'NPO 3FM (MP3)', 'NPO Klassiek (MP3)', 'NPO Radio 5 (MP3)', 'NPO Blend (MP3)', 'FunX (MP3)', 'BBC World Service (MP3)', 'Frequence 3 (MP3 256)', 'Frequence 3 Urban (MP3 256)', 'Frequence 3 (MP3 128)', 'Frequence 3 Urban (MP3 128)', 'Frequence 3 (AAC 64)', 'Frequence 3 Urban (AAC 64)', 'Frequence 3 Gold (MP3 160)', 'Frequence 3 Gold (AAC 64)', 'Frequence 3 Dance (MP3 160)', 'Frequence 3 Dance (AAC 64)']
+2026-01-10 20:43:39 INFO action=touch_watchers_started
+2026-01-10 20:43:40 INFO action=stt_init_ready engine='vosk' stt_model='vosk-model-small-en-us-0.15' init_stt_seconds=2.341
+2026-01-10 20:43:42 INFO action=mode_smart_pro enabled=True
+2026-01-10 20:43:42 INFO action=ready wake_words=['ziggy', 'pidog', 'pie dog', 'hi dog']
+2026-01-10 20:43:42 INFO action=convo_window seconds=15 wake_word_delayed=True
+2026-01-10 20:43:42 INFO action=convo_active seconds_left=14
+2026-01-10 20:43:42 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 20:43:46 INFO action=audio_recorded ok=True duration=3.400 rms=0.008 mode='chatgpt_pro'
+2026-01-10 20:43:48 INFO action=transcript text='.' engine='openai' language='en'
+2026-01-10 20:43:48 INFO action=transcript_dropped reason='non_english' text='.'
+2026-01-10 20:43:48 INFO action=convo_active seconds_left=8
+2026-01-10 20:43:48 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 20:43:58 INFO action=audio_recorded ok=True duration=7.800 rms=0.008 mode='chatgpt_pro'
+2026-01-10 20:43:59 INFO action=transcript text='What are you doing?' engine='openai' language='en'
+2026-01-10 20:43:59 INFO action=command_received raw='What are you doing?' normalized='what are you doing?' confidence=1.000 mode='chatgpt_pro'
+2026-01-10 20:44:04 INFO action=response text="I'm here to assist you! How can I help you today?" mode='chatgpt_pro'
+2026-01-10 20:44:04 INFO action=convo_active seconds_left=14
+2026-01-10 20:44:04 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 20:44:11 INFO action=audio_recorded ok=True duration=5.200 rms=0.015 mode='chatgpt_pro'
+2026-01-10 20:44:13 INFO action=transcript text='Can you explain to me why?' engine='openai' language='en'
+2026-01-10 20:44:13 INFO action=command_received raw='Can you explain to me why?' normalized='can you explain to me why?' confidence=1.000 mode='chatgpt_pro'
+2026-01-10 20:44:22 INFO action=response text="I'm here to provide support and information. My goal is to assist you with any questions or tasks you have!" mode='chatgpt_pro'
+2026-01-10 20:44:22 INFO action=convo_active seconds_left=14
+2026-01-10 20:44:22 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 20:44:34 INFO action=audio_recorded ok=True duration=9.600 rms=0.019 mode='chatgpt_pro'
+2026-01-10 20:44:37 INFO action=transcript text='Why is sausage healthy?' engine='openai' language='en'
+2026-01-10 20:44:37 INFO action=command_received raw='Why is sausage healthy?' normalized='why is sausage healthy?' confidence=1.000 mode='chatgpt_pro'
+2026-01-10 20:44:52 INFO action=response text="Sausage can be a good source of protein and essential nutrients. However, it's important to choose lean options and consume it in moderation due to high fat and sodium content." mode='chatgpt_pro'
+2026-01-10 20:44:52 INFO action=convo_active seconds_left=14
+2026-01-10 20:44:52 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 20:44:58 INFO action=audio_recorded ok=True duration=4.000 rms=0.024 mode='chatgpt_pro'
+2026-01-10 20:44:59 INFO action=transcript text='Vegetarian sausage?' engine='openai' language='en'
+2026-01-10 20:44:59 INFO action=command_received raw='Vegetarian sausage?' normalized='vegetarian sausage?' confidence=1.000 mode='chatgpt_pro'
+2026-01-10 20:45:14 INFO action=response text='Vegetarian sausage can be a great alternative, often lower in fat and calories. It still provides protein and essential nutrients, but check the labels for sodium content.' mode='chatgpt_pro'
+2026-01-10 20:45:14 INFO action=convo_active seconds_left=14
+2026-01-10 20:45:14 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 20:45:17 INFO action=audio_recorded ok=True duration=3.000 rms=0.002 mode='chatgpt_pro'
+2026-01-10 20:45:17 INFO action=audio_low_rms rms=0.002 threshold=0.004
+2026-01-10 20:45:17 INFO action=convo_active seconds_left=11
+2026-01-10 20:45:17 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 20:45:21 INFO action=audio_recorded ok=True duration=1.600 rms=0.010 mode='chatgpt_pro'
+2026-01-10 20:45:22 INFO action=transcript text='Surely.' engine='openai' language='en'
+2026-01-10 20:45:22 INFO action=command_received raw='Surely.' normalized='surely.' confidence=1.000 mode='chatgpt_pro'
+2026-01-10 20:45:30 INFO action=response text='Vegetarian sausage is a tasty option with health benefits. Just remember to watch the sodium levels!' mode='chatgpt_pro'
+2026-01-10 20:45:30 INFO action=convo_active seconds_left=14
+2026-01-10 20:45:30 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 20:45:35 INFO action=audio_recorded ok=True duration=3.400 rms=0.003 mode='chatgpt_pro'
+2026-01-10 20:45:35 INFO action=audio_low_rms rms=0.003 threshold=0.004
+2026-01-10 20:45:35 INFO action=convo_active seconds_left=10
+2026-01-10 20:45:35 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 20:45:40 INFO action=audio_recorded ok=True duration=4.200 rms=0.003 mode='chatgpt_pro'
+2026-01-10 20:45:40 INFO action=audio_low_rms rms=0.003 threshold=0.004
+2026-01-10 20:45:40 INFO action=convo_active seconds_left=5
+2026-01-10 20:45:40 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 20:45:50 INFO action=audio_recorded ok=True duration=6.600 rms=0.009 mode='chatgpt_pro'
+2026-01-10 20:45:51 INFO action=transcript text='.' engine='openai' language='en'
+2026-01-10 20:45:51 INFO action=transcript_dropped reason='non_english' text='.'
+2026-01-10 20:45:51 INFO action=wake_listen_start
+2026-01-10 20:45:51 INFO action=stt_ready engine='vosk' stt_model='vosk-model-small-en-us-0.15'
+2026-01-10 20:46:34 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 20:46:37 INFO action=audio_recorded ok=True duration=1.200 rms=0.003 mode='chatgpt_pro'
+2026-01-10 20:46:37 INFO action=audio_low_rms rms=0.003 threshold=0.004
+2026-01-10 20:46:37 INFO action=wake_listen_start
+2026-01-10 20:46:39 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 20:46:51 INFO action=audio_recorded ok=True duration=7.600 rms=0.009 mode='chatgpt_pro'
+2026-01-10 20:46:53 INFO action=transcript text='.' engine='openai' language='en'
+2026-01-10 20:46:53 INFO action=transcript_dropped reason='non_english' text='.'
+2026-01-10 20:46:53 INFO action=wake_listen_start
+2026-01-10 20:47:02 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 20:47:05 INFO action=audio_recorded ok=True duration=2.000 rms=0.003 mode='chatgpt_pro'
+2026-01-10 20:47:05 INFO action=audio_low_rms rms=0.003 threshold=0.004
+2026-01-10 20:47:05 INFO action=wake_listen_start
+2026-01-10 20:47:08 INFO action=touch_tap zone='front' count=1 context='idle_start'
+2026-01-10 20:47:08 INFO action=touch_tap zone='rear' count=2 context='idle_start'
+2026-01-10 20:47:08 INFO action=touch_double_tap context='start_radio'
+2026-01-10 20:47:12 INFO action=radio_start source='touch_double_tap' name='NPO Radio 1 (MP3)' url='https://icecast.omroep.nl/radio1-bb-mp3'
+2026-01-10 20:47:19 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-10 20:47:19 INFO action=touch_tap zone='rear' count=2 context='radio_playing'
+2026-01-10 20:47:20 INFO action=touch_tap zone='rear' count=3 context='radio_playing'
+2026-01-10 20:47:23 INFO action=radio_station_next name='NPO Radio 2 (MP3)' url='https://icecast.omroep.nl/radio2-bb-mp3' index=1
+2026-01-10 20:48:50 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-10 20:48:50 INFO action=touch_tap zone='rear' count=2 context='radio_playing'
+2026-01-10 20:48:50 INFO action=touch_tap zone='rear' count=3 context='radio_playing'
+2026-01-10 20:48:54 INFO action=radio_station_next name='NPO 3FM (MP3)' url='https://icecast.omroep.nl/3fm-bb-mp3' index=2
+2026-01-10 20:49:00 INFO action=touch_tap zone='front' count=1 context='radio_playing'
+2026-01-10 20:49:01 INFO action=radio_volume delta=-5 source='touch_swipe' direction='front_to_rear'
+2026-01-10 20:49:07 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-10 20:49:08 INFO action=touch_tap zone='rear' count=2 context='radio_playing'
+2026-01-10 20:49:11 INFO action=radio_stop source='touch_double_tap'
+2026-01-10 20:49:11 INFO action=wake_listen_start
+2026-01-10 20:49:15 INFO action=touch_tap zone='rear' context='resume'
+2026-01-10 20:49:15 INFO action=touch_tap zone='rear' count=1 context='idle_start'
+2026-01-10 20:49:16 INFO action=touch_tap zone='rear' context='resume'
+2026-01-10 20:49:16 INFO action=touch_tap zone='rear' count=1 context='idle_start'
+2026-01-10 20:49:17 INFO action=touch_tap zone='rear' context='resume'
+2026-01-10 20:49:17 INFO action=touch_tap zone='rear' count=1 context='idle_start'
+2026-01-10 20:49:19 INFO action=touch_tap zone='rear' count=1 context='idle_start'
+2026-01-10 20:49:19 INFO action=touch_tap zone='rear' context='resume'
+2026-01-10 20:49:20 INFO action=touch_tap zone='rear' context='resume'
+2026-01-10 20:49:20 INFO action=touch_tap zone='rear' count=1 context='idle_start'
+2026-01-10 20:49:20 INFO action=touch_tap zone='rear' context='resume'
+2026-01-10 20:49:20 INFO action=touch_double_tap context='resume'
+2026-01-10 20:49:20 INFO action=touch_tap zone='rear' count=2 context='idle_start'
+2026-01-10 20:49:20 INFO action=touch_double_tap context='start_radio'
+2026-01-10 20:49:21 INFO action=touch_tap zone='rear' context='resume'
+2026-01-10 20:49:21 INFO action=touch_double_tap context='resume'
+2026-01-10 20:49:23 INFO action=touch_tap zone='rear' context='resume'
+2026-01-10 20:49:23 INFO action=touch_tap zone='rear' context='resume'
+2026-01-10 20:49:23 INFO action=touch_double_tap context='resume'
+2026-01-10 20:49:24 INFO action=radio_start source='touch_double_tap' name='NPO Radio 1 (MP3)' url='https://icecast.omroep.nl/radio1-bb-mp3'
+2026-01-10 20:49:24 INFO action=touch_tap zone='front' count=1 context='radio_playing'
+2026-01-10 20:49:24 INFO action=radio_volume delta=-5 source='touch_swipe' direction='front_to_rear'
+2026-01-10 20:49:24 INFO action=touch_tap zone='rear' count=2 context='radio_playing'
+2026-01-10 20:49:25 INFO action=touch_tap zone='rear' count=3 context='radio_playing'
+2026-01-10 20:49:28 INFO action=radio_station_next name='NPO Radio 2 (MP3)' url='https://icecast.omroep.nl/radio2-bb-mp3' index=1
+2026-01-10 20:49:45 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-10 20:49:45 INFO action=radio_volume delta=5 source='touch_swipe' direction='rear_to_front'
+2026-01-10 20:49:46 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-10 20:49:46 INFO action=radio_volume delta=5 source='touch_swipe' direction='rear_to_front'
+2026-01-10 20:49:49 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-10 20:49:50 INFO action=touch_tap zone='rear' count=2 context='radio_playing'
+2026-01-10 20:49:50 INFO action=touch_tap zone='rear' count=3 context='radio_playing'
+2026-01-10 20:49:53 INFO action=radio_station_next name='NPO 3FM (MP3)' url='https://icecast.omroep.nl/3fm-bb-mp3' index=2
+2026-01-10 20:49:55 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-10 20:49:55 INFO action=touch_tap zone='rear' count=2 context='radio_playing'
+2026-01-10 20:49:56 INFO action=touch_tap zone='rear' count=3 context='radio_playing'
+2026-01-10 20:49:59 INFO action=radio_station_next name='NPO Klassiek (MP3)' url='https://icecast.omroep.nl/radio4-bb-mp3' index=3
+2026-01-10 20:50:01 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-10 20:50:01 INFO action=touch_tap zone='rear' count=2 context='radio_playing'
+2026-01-10 20:50:02 INFO action=touch_tap zone='rear' count=3 context='radio_playing'
+2026-01-10 20:50:05 INFO action=radio_station_next name='NPO Radio 5 (MP3)' url='https://icecast.omroep.nl/radio5-bb-mp3' index=4
+2026-01-10 20:50:06 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-10 20:50:06 INFO action=touch_tap zone='rear' count=2 context='radio_playing'
+2026-01-10 20:50:07 INFO action=touch_tap zone='rear' count=3 context='radio_playing'
+2026-01-10 20:50:09 INFO action=radio_station_next name='NPO Blend (MP3)' url='https://icecast.omroep.nl/npoblend-bb-mp3' index=5
+2026-01-10 20:50:13 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-10 20:50:14 INFO action=touch_tap zone='rear' count=2 context='radio_playing'
+2026-01-10 20:50:14 INFO action=touch_tap zone='rear' count=3 context='radio_playing'
+2026-01-10 20:50:16 INFO action=radio_station_next name='FunX (MP3)' url='https://icecast.omroep.nl/funx-bb-mp3' index=6
+2026-01-10 20:50:23 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-10 20:50:23 INFO action=touch_tap zone='rear' count=2 context='radio_playing'
+2026-01-10 20:50:26 INFO action=radio_stop source='touch_double_tap'
+2026-01-10 20:50:26 INFO action=wake_listen_start
+2026-01-10 20:50:35 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 20:50:47 INFO action=audio_recorded ok=True duration=9.600 rms=0.032 mode='chatgpt_pro'
+2026-01-10 20:50:48 INFO action=transcript text='So that was quick.' engine='openai' language='en'
+2026-01-10 20:50:48 INFO action=command_received raw='So that was quick.' normalized='so that was quick.' confidence=1.000 mode='chatgpt_pro'
+2026-01-10 20:50:57 INFO action=touch_tap zone='rear' context='resume'
+2026-01-10 20:50:57 INFO action=touch_tap zone='rear' context='resume'
+2026-01-10 20:50:57 INFO action=touch_double_tap context='resume'
+2026-01-10 20:50:58 INFO action=response text='Yes, vegetarian sausage can be a delicious choice! Just keep an eye on the sodium content for better health.' mode='chatgpt_pro'
+2026-01-10 20:51:00 INFO action=radio_resume source='touch_double_tap' url='https://icecast.omroep.nl/funx-bb-mp3'
+2026-01-10 20:51:01 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-10 20:51:01 INFO action=touch_tap zone='rear' count=2 context='radio_playing'
+2026-01-10 20:51:05 INFO action=radio_stop source='touch_double_tap'
+2026-01-10 20:51:05 INFO action=convo_active seconds_left=8
+2026-01-10 20:51:05 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 20:51:17 INFO action=audio_recorded ok=True duration=9.000 rms=0.026 mode='chatgpt_pro'
+2026-01-10 20:51:19 INFO action=transcript text="While I'm talking to you, I'm trying to switch off." engine='openai' language='en'
+2026-01-10 20:51:19 INFO action=command_received raw="While I'm talking to you, I'm trying to switch off." normalized="while i'm talking to you, i'm trying to switch off." confidence=1.000 mode='chatgpt_pro'
+2026-01-10 20:51:24 INFO action=response text='That sounds like a good plan! Taking time to relax is important.' mode='chatgpt_pro'
+2026-01-10 20:51:24 INFO action=convo_active seconds_left=14
+2026-01-10 20:51:24 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 20:51:31 INFO action=shutdown reason='keyboard_interrupt'
+2026-01-10 20:51:31 INFO action=shutdown reason='cleanup_complete'
+2026-01-10 21:09:21 INFO logging ready path=/home/pat/pidog/logs/pidog.log level=INFO
+2026-01-10 21:09:21 INFO action=startup pid=14966 args={'mic_test': False, 'list_audio': False, 'mic_device': None, 'debug_latency': True} log_path='/home/pat/pidog/logs/pidog.log'
+2026-01-10 21:09:21 INFO action=single_instance pidfile='/tmp/pidog.pid' pid=14966
+2026-01-10 21:09:21 INFO action=mic_device_selected index=1 name='USB PnP Sound Device: Audio (hw:3,0)'
+2026-01-10 21:09:21 INFO action=stt_init_start engine='vosk' device=1
+2026-01-10 21:09:21 INFO action=stt_init mode='async' device=1
+2026-01-10 21:09:21 INFO action=models tts_engine='piper' tts_model='en_US-amy-low' llm_model='llama3.2:1b'
+2026-01-10 21:09:23 INFO action=init_tts seconds=1.342 engine='piper' model='en_US-amy-low'
+2026-01-10 21:09:23 INFO action=init_speaker seconds=0.000
+2026-01-10 21:09:23 INFO action=init_leds seconds=0.237
+2026-01-10 21:09:23 INFO action=init_touch seconds=0.005
+2026-01-10 21:09:23 INFO action=battery_status voltage=8.382 percent=99
+2026-01-10 21:09:23 INFO action=stations_loaded count=18 names=['NPO Radio 1 (MP3)', 'NPO Radio 2 (MP3)', 'NPO 3FM (MP3)', 'NPO Klassiek (MP3)', 'NPO Radio 5 (MP3)', 'NPO Blend (MP3)', 'FunX (MP3)', 'BBC World Service (MP3)', 'Frequence 3 (MP3 256)', 'Frequence 3 Urban (MP3 256)', 'Frequence 3 (MP3 128)', 'Frequence 3 Urban (MP3 128)', 'Frequence 3 (AAC 64)', 'Frequence 3 Urban (AAC 64)', 'Frequence 3 Gold (MP3 160)', 'Frequence 3 Gold (AAC 64)', 'Frequence 3 Dance (MP3 160)', 'Frequence 3 Dance (AAC 64)']
+2026-01-10 21:09:23 INFO action=touch_watchers_started
+2026-01-10 21:09:24 INFO action=stt_init_ready engine='vosk' stt_model='vosk-model-small-en-us-0.15' init_stt_seconds=2.367
+2026-01-10 21:09:25 INFO action=mode_smart_pro enabled=True
+2026-01-10 21:09:25 INFO action=ready wake_words=['ziggy', 'pidog', 'pie dog', 'hi dog']
+2026-01-10 21:09:25 INFO action=convo_window seconds=15 wake_word_delayed=True
+2026-01-10 21:09:25 INFO action=convo_active seconds_left=14
+2026-01-10 21:09:25 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 21:09:28 INFO action=audio_recorded ok=True duration=1.600 rms=0.002 mode='chatgpt_pro'
+2026-01-10 21:09:28 INFO action=audio_low_rms rms=0.002 threshold=0.004
+2026-01-10 21:09:28 INFO action=convo_active seconds_left=12
+2026-01-10 21:09:28 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 21:09:35 INFO action=audio_recorded ok=True duration=4.800 rms=0.002 mode='chatgpt_pro'
+2026-01-10 21:09:35 INFO action=audio_low_rms rms=0.002 threshold=0.004
+2026-01-10 21:09:35 INFO action=convo_active seconds_left=5
+2026-01-10 21:09:35 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 21:09:40 INFO action=audio_recorded ok=True duration=4.800 rms=0.002 mode='chatgpt_pro'
+2026-01-10 21:09:40 INFO action=audio_low_rms rms=0.002 threshold=0.004
+2026-01-10 21:09:40 INFO action=wake_listen_start
+2026-01-10 21:09:40 INFO action=stt_ready engine='vosk' stt_model='vosk-model-small-en-us-0.15'
+2026-01-10 21:09:44 INFO action=touch_tap zone='rear' count=1 context='idle_start'
+2026-01-10 21:09:44 INFO action=touch_tap zone='rear' count=2 context='idle_start'
+2026-01-10 21:09:44 INFO action=touch_double_tap context='start_radio'
+2026-01-10 21:09:48 INFO action=radio_start source='touch_double_tap' name='NPO Radio 1 (MP3)' url='https://icecast.omroep.nl/radio1-bb-mp3'
+2026-01-10 21:09:51 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-10 21:09:52 INFO action=touch_tap zone='rear' count=2 context='radio_playing'
+2026-01-10 21:09:52 INFO action=touch_tap zone='rear' count=3 context='radio_playing'
+2026-01-10 21:09:55 INFO action=radio_station_next name='NPO Radio 2 (MP3)' url='https://icecast.omroep.nl/radio2-bb-mp3' index=1
+2026-01-10 21:09:57 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-10 21:09:57 INFO action=radio_volume delta=5 source='touch_swipe' direction='rear_to_front'
+2026-01-10 21:09:57 INFO action=radio_volume delta=-5 source='touch_swipe' direction='front_to_rear'
+2026-01-10 21:09:59 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-10 21:09:59 INFO action=touch_tap zone='rear' count=2 context='radio_playing'
+2026-01-10 21:10:00 INFO action=touch_tap zone='rear' context='resume'
+2026-01-10 21:10:01 INFO action=touch_tap zone='rear' context='resume'
+2026-01-10 21:10:02 INFO action=radio_stop source='touch_double_tap'
+2026-01-10 21:10:02 INFO action=wake_listen_start
+2026-01-10 21:10:54 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 21:11:06 INFO action=audio_recorded ok=True duration=9.600 rms=0.002 mode='chatgpt_pro'
+2026-01-10 21:11:06 INFO action=audio_low_rms rms=0.002 threshold=0.004
+2026-01-10 21:11:06 INFO action=wake_listen_start
+2026-01-10 21:11:24 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 21:11:31 INFO action=audio_recorded ok=True duration=3.800 rms=0.004 mode='chatgpt_pro'
+2026-01-10 21:11:31 INFO action=audio_low_rms rms=0.004 threshold=0.004
+2026-01-10 21:11:31 INFO action=wake_listen_start
+2026-01-10 21:11:34 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 21:11:46 INFO action=audio_recorded ok=True duration=9.800 rms=0.016 mode='chatgpt_pro'
+2026-01-10 21:11:49 INFO action=transcript text='Shall I show you one?' engine='openai' language='en'
+2026-01-10 21:11:49 INFO action=command_received raw='Shall I show you one?' normalized='shall i show you one?' confidence=1.000 mode='chatgpt_pro'
+2026-01-10 21:11:53 INFO action=response text='Sure! What would you like to show me?' mode='chatgpt_pro'
+2026-01-10 21:11:53 INFO action=convo_active seconds_left=14
+2026-01-10 21:11:53 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 21:11:58 INFO action=audio_recorded ok=True duration=4.200 rms=0.024 mode='chatgpt_pro'
+2026-01-10 21:11:59 INFO action=transcript text='Sure, show me.' engine='openai' language='en'
+2026-01-10 21:11:59 INFO action=command_received raw='Sure, show me.' normalized='sure, show me.' confidence=1.000 mode='chatgpt_pro'
+2026-01-10 21:12:04 INFO action=touch_tap zone='front' context='resume'
+2026-01-10 21:12:06 INFO action=touch_tap zone='rear' context='resume'
+2026-01-10 21:12:06 INFO action=touch_tap zone='rear' context='resume'
+2026-01-10 21:12:06 INFO action=touch_double_tap context='resume'
+2026-01-10 21:12:07 INFO action=response text="I can help you find information or answer questions! Just let me know what you're interested in." mode='chatgpt_pro'
+2026-01-10 21:12:08 INFO action=touch_tap zone='rear' context='resume'
+2026-01-10 21:12:08 INFO action=radio_resume source='touch_double_tap' url='https://icecast.omroep.nl/radio2-bb-mp3'
+2026-01-10 21:12:12 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-10 21:12:13 INFO action=touch_tap zone='rear' count=2 context='radio_playing'
+2026-01-10 21:12:16 INFO action=radio_stop source='touch_double_tap'
+2026-01-10 21:12:16 INFO action=convo_active seconds_left=5
+2026-01-10 21:12:16 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 21:12:20 INFO action=audio_recorded ok=True duration=3.400 rms=0.007 mode='chatgpt_pro'
+2026-01-10 21:12:24 INFO action=transcript text="I don't like competition." engine='openai' language='en'
+2026-01-10 21:12:24 INFO action=command_received raw="I don't like competition." normalized="i don't like competition." confidence=1.000 mode='chatgpt_pro'
+2026-01-10 21:12:30 INFO action=response text="That's okay! There are many activities that focus on collaboration instead." mode='chatgpt_pro'
+2026-01-10 21:12:30 INFO action=convo_active seconds_left=14
+2026-01-10 21:12:30 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 21:12:32 INFO action=audio_recorded ok=True duration=1.200 rms=0.004 mode='chatgpt_pro'
+2026-01-10 21:12:33 INFO action=transcript text='Ok.' engine='openai' language='en'
+2026-01-10 21:12:33 INFO action=command_received raw='Ok.' normalized='ok.' confidence=1.000 mode='chatgpt_pro'
+2026-01-10 21:12:37 INFO action=shutdown reason='keyboard_interrupt'
+2026-01-10 21:12:37 INFO action=shutdown reason='cleanup_complete'
+2026-01-10 21:24:42 INFO logging ready path=/home/pat/pidog/logs/pidog.log level=INFO
+2026-01-10 21:24:42 INFO action=startup pid=16940 args={'mic_test': False, 'list_audio': False, 'mic_device': None, 'debug_latency': True} log_path='/home/pat/pidog/logs/pidog.log'
+2026-01-10 21:24:42 INFO action=single_instance pidfile='/tmp/pidog.pid' pid=16940
+2026-01-10 21:24:42 INFO action=mic_device_selected index=1 name='USB PnP Sound Device: Audio (hw:3,0)'
+2026-01-10 21:24:42 INFO action=stt_init_start engine='vosk' device=1
+2026-01-10 21:24:42 INFO action=stt_init mode='async' device=1
+2026-01-10 21:24:42 INFO action=models tts_engine='piper' tts_model='en_US-amy-low' llm_model='llama3.2:1b'
+2026-01-10 21:24:43 INFO action=init_tts seconds=1.374 engine='piper' model='en_US-amy-low'
+2026-01-10 21:24:43 INFO action=init_speaker seconds=0.000
+2026-01-10 21:24:44 INFO action=init_leds seconds=0.236
+2026-01-10 21:24:44 INFO action=init_touch seconds=0.005
+2026-01-10 21:24:44 INFO action=battery_status voltage=8.365 percent=98
+2026-01-10 21:24:44 INFO action=stations_loaded count=18 names=['NPO Radio 1 (MP3)', 'NPO Radio 2 (MP3)', 'NPO 3FM (MP3)', 'NPO Klassiek (MP3)', 'NPO Radio 5 (MP3)', 'NPO Blend (MP3)', 'FunX (MP3)', 'BBC World Service (MP3)', 'Frequence 3 (MP3 256)', 'Frequence 3 Urban (MP3 256)', 'Frequence 3 (MP3 128)', 'Frequence 3 Urban (MP3 128)', 'Frequence 3 (AAC 64)', 'Frequence 3 Urban (AAC 64)', 'Frequence 3 Gold (MP3 160)', 'Frequence 3 Gold (AAC 64)', 'Frequence 3 Dance (MP3 160)', 'Frequence 3 Dance (AAC 64)']
+2026-01-10 21:24:44 INFO action=touch_watchers_started
+2026-01-10 21:24:44 INFO action=stt_init_ready engine='vosk' stt_model='vosk-model-small-en-us-0.15' init_stt_seconds=2.381
+2026-01-10 21:24:46 INFO action=mode_smart_pro enabled=True
+2026-01-10 21:24:46 INFO action=ready wake_words=['ziggy', 'pidog', 'pie dog', 'hi dog']
+2026-01-10 21:24:46 INFO action=convo_window seconds=15 wake_word_delayed=True
+2026-01-10 21:24:46 INFO action=convo_active seconds_left=14
+2026-01-10 21:24:46 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 21:24:54 INFO action=audio_recorded ok=True duration=5.800 rms=0.007 mode='chatgpt_pro'
+2026-01-10 21:24:56 INFO action=transcript text='Wow.' engine='openai' language='en'
+2026-01-10 21:24:56 INFO action=command_received raw='Wow.' normalized='wow.' confidence=1.000 mode='chatgpt_pro'
+2026-01-10 21:25:00 INFO action=response text='Wow indeed! What’s on your mind?' mode='chatgpt_pro'
+2026-01-10 21:25:00 INFO action=convo_active seconds_left=14
+2026-01-10 21:25:00 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 21:25:03 INFO action=audio_recorded ok=True duration=1.800 rms=0.003 mode='chatgpt_pro'
+2026-01-10 21:25:03 INFO action=audio_low_rms rms=0.003 threshold=0.004
+2026-01-10 21:25:03 INFO action=convo_active seconds_left=12
+2026-01-10 21:25:03 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 21:25:08 INFO action=audio_recorded ok=True duration=4.200 rms=0.006 mode='chatgpt_pro'
+2026-01-10 21:25:09 INFO action=transcript text='It takes two hours.' engine='openai' language='en'
+2026-01-10 21:25:09 INFO action=command_received raw='It takes two hours.' normalized='it takes two hours.' confidence=1.000 mode='chatgpt_pro'
+2026-01-10 21:25:14 INFO action=response text='That sounds like a long wait! What are you waiting for?' mode='chatgpt_pro'
+2026-01-10 21:25:14 INFO action=convo_active seconds_left=14
+2026-01-10 21:25:14 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 21:25:26 INFO action=audio_recorded ok=True duration=10.400 rms=0.009 mode='chatgpt_pro'
+2026-01-10 21:25:28 INFO action=transcript text='.' engine='openai' language='en'
+2026-01-10 21:25:28 INFO action=transcript_dropped reason='non_english' text='.'
+2026-01-10 21:25:28 INFO action=convo_active seconds_left=1
+2026-01-10 21:25:28 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 21:25:40 INFO action=audio_recorded ok=True duration=10.000 rms=0.010 mode='chatgpt_pro'
+2026-01-10 21:25:42 INFO action=transcript text='İçerisine girdiğinde.' engine='openai' language='en'
+2026-01-10 21:25:42 INFO action=transcript_dropped reason='non_english' text='İçerisine girdiğinde.'
+2026-01-10 21:25:42 INFO action=wake_listen_start
+2026-01-10 21:25:42 INFO action=stt_ready engine='vosk' stt_model='vosk-model-small-en-us-0.15'
+2026-01-10 21:25:45 INFO action=led_pulse count=1 context='idle_tap'
+2026-01-10 21:25:45 INFO action=touch_tap zone='rear' count=1 context='idle_start'
+2026-01-10 21:25:46 INFO action=led_pulse count=1 context='idle_tap'
+2026-01-10 21:25:46 INFO action=touch_tap zone='rear' count=1 context='idle_start'
+2026-01-10 21:25:46 INFO action=led_pulse count=1 context='idle_tap'
+2026-01-10 21:25:46 INFO action=touch_tap zone='rear' count=2 context='idle_start'
+2026-01-10 21:25:46 INFO action=led_pulse count=2 context='idle_double_tap'
+2026-01-10 21:25:46 INFO action=touch_double_tap context='start_radio'
+2026-01-10 21:25:49 INFO action=radio_start source='touch_double_tap' name='NPO Radio 1 (MP3)' url='https://icecast.omroep.nl/radio1-bb-mp3'
+2026-01-10 21:25:51 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-10 21:25:51 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-10 21:25:52 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-10 21:25:52 INFO action=touch_tap zone='front' count=1 context='radio_playing'
+2026-01-10 21:25:52 INFO action=radio_volume delta=-5 source='touch_swipe' direction='front_to_rear'
+2026-01-10 21:25:54 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-10 21:25:54 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-10 21:25:54 INFO action=radio_volume delta=5 source='touch_swipe' direction='rear_to_front'
+2026-01-10 21:25:55 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-10 21:25:55 INFO action=touch_tap zone='front' count=1 context='radio_playing'
+2026-01-10 21:25:55 INFO action=radio_volume delta=-5 source='touch_swipe' direction='front_to_rear'
+2026-01-10 21:25:56 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-10 21:25:56 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-10 21:25:57 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-10 21:25:57 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-10 21:25:57 INFO action=radio_volume delta=5 source='touch_swipe' direction='rear_to_front'
+2026-01-10 21:25:57 INFO action=radio_volume delta=-5 source='touch_swipe' direction='front_to_rear'
+2026-01-10 21:25:57 INFO action=radio_volume delta=5 source='touch_swipe' direction='rear_to_front'
+2026-01-10 21:25:58 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-10 21:25:58 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-10 21:25:58 INFO action=radio_volume delta=5 source='touch_swipe' direction='rear_to_front'
+2026-01-10 21:25:59 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-10 21:25:59 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-10 21:25:59 INFO action=radio_volume delta=5 source='touch_swipe' direction='rear_to_front'
+2026-01-10 21:26:00 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-10 21:26:00 INFO action=touch_tap zone='front' count=1 context='radio_playing'
+2026-01-10 21:26:00 INFO action=radio_volume delta=-5 source='touch_swipe' direction='front_to_rear'
+2026-01-10 21:26:01 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-10 21:26:01 INFO action=touch_tap zone='front' count=1 context='radio_playing'
+2026-01-10 21:26:01 INFO action=radio_volume delta=-5 source='touch_swipe' direction='front_to_rear'
+2026-01-10 21:26:03 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-10 21:26:03 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-10 21:26:03 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-10 21:26:03 INFO action=touch_tap zone='rear' count=2 context='radio_playing'
+2026-01-10 21:26:06 INFO action=led_pulse count=2 context='radio_double_tap'
+2026-01-10 21:26:06 INFO action=radio_stop source='touch_double_tap'
+2026-01-10 21:26:06 INFO action=wake_listen_start
+2026-01-10 21:26:08 INFO action=led_pulse count=1 context='idle_tap'
+2026-01-10 21:26:08 INFO action=touch_tap zone='rear' count=1 context='idle_start'
+2026-01-10 21:26:08 INFO action=led_pulse count=1 context='resume_tap'
+2026-01-10 21:26:08 INFO action=touch_tap zone='rear' context='resume'
+2026-01-10 21:26:08 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 21:26:08 INFO action=led_pulse count=1 context='resume_tap'
+2026-01-10 21:26:08 INFO action=touch_tap zone='rear' context='resume'
+2026-01-10 21:26:08 INFO action=led_pulse count=2 context='resume_double_tap'
+2026-01-10 21:26:08 INFO action=touch_double_tap context='resume'
+2026-01-10 21:26:11 INFO action=led_pulse count=1 context='resume_tap'
+2026-01-10 21:26:11 INFO action=touch_tap zone='rear' context='resume'
+2026-01-10 21:26:12 INFO action=led_pulse count=1 context='resume_tap'
+2026-01-10 21:26:12 INFO action=touch_tap zone='rear' context='resume'
+2026-01-10 21:26:14 INFO action=led_pulse count=1 context='resume_tap'
+2026-01-10 21:26:14 INFO action=touch_tap zone='rear' context='resume'
+2026-01-10 21:26:16 INFO action=led_pulse count=1 context='resume_tap'
+2026-01-10 21:26:16 INFO action=touch_tap zone='rear' context='resume'
+2026-01-10 21:26:16 INFO action=led_pulse count=1 context='resume_tap'
+2026-01-10 21:26:16 INFO action=touch_tap zone='rear' context='resume'
+2026-01-10 21:26:16 INFO action=led_pulse count=2 context='resume_double_tap'
+2026-01-10 21:26:16 INFO action=touch_double_tap context='resume'
+2026-01-10 21:26:18 INFO action=audio_recorded ok=True duration=5.800 rms=0.008 mode='chatgpt_pro'
+2026-01-10 21:26:20 INFO action=transcript text='Each of these' engine='openai' language='en'
+2026-01-10 21:26:20 INFO action=command_received raw='Each of these' normalized='each of these' confidence=1.000 mode='chatgpt_pro'
+2026-01-10 21:26:25 INFO action=response text="I'm waiting for my owner to come home! I can't wait to play fetch!" mode='chatgpt_pro'
+2026-01-10 21:26:27 INFO action=radio_resume source='touch_double_tap' url='https://icecast.omroep.nl/radio1-bb-mp3'
+2026-01-10 21:26:31 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-10 21:26:31 INFO action=touch_tap zone='front' count=1 context='radio_playing'
+2026-01-10 21:26:31 INFO action=radio_volume delta=-5 source='touch_swipe' direction='front_to_rear'
+2026-01-10 21:26:32 INFO action=radio_volume delta=5 source='touch_swipe' direction='rear_to_front'
+2026-01-10 21:26:34 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-10 21:26:34 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-10 21:26:34 INFO action=radio_volume delta=5 source='touch_swipe' direction='rear_to_front'
+2026-01-10 21:26:35 INFO action=radio_volume delta=-5 source='touch_swipe' direction='front_to_rear'
+2026-01-10 21:26:35 INFO action=radio_volume delta=5 source='touch_swipe' direction='rear_to_front'
+2026-01-10 21:26:35 INFO action=radio_volume delta=-5 source='touch_swipe' direction='front_to_rear'
+2026-01-10 21:26:38 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-10 21:26:38 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-10 21:26:38 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-10 21:26:38 INFO action=touch_tap zone='rear' count=2 context='radio_playing'
+2026-01-10 21:26:39 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-10 21:26:39 INFO action=touch_tap zone='rear' count=3 context='radio_playing'
+2026-01-10 21:26:41 INFO action=led_pulse count=3 context='radio_triple_tap'
+2026-01-10 21:26:41 INFO action=radio_station_next name='NPO Radio 2 (MP3)' url='https://icecast.omroep.nl/radio2-bb-mp3' index=1
+2026-01-10 21:27:40 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-10 21:27:40 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-10 21:27:41 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-10 21:27:41 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-10 21:27:43 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-10 21:27:43 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-10 21:27:44 INFO action=radio_volume delta=5 source='touch_swipe' direction='rear_to_front'
+2026-01-10 21:27:44 INFO action=radio_volume delta=-5 source='touch_swipe' direction='front_to_rear'
+2026-01-10 21:27:48 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-10 21:27:48 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-10 21:27:48 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-10 21:27:48 INFO action=touch_tap zone='rear' count=2 context='radio_playing'
+2026-01-10 21:27:51 INFO action=led_pulse count=2 context='radio_double_tap'
+2026-01-10 21:27:51 INFO action=radio_stop source='touch_double_tap'
+2026-01-10 21:27:51 INFO action=wake_listen_start
+2026-01-10 21:27:54 INFO action=led_pulse count=1 context='idle_tap'
+2026-01-10 21:27:54 INFO action=touch_tap zone='rear' count=1 context='idle_start'
+2026-01-10 21:27:54 INFO action=led_pulse count=1 context='resume_tap'
+2026-01-10 21:27:54 INFO action=touch_tap zone='rear' context='resume'
+2026-01-10 21:27:54 INFO action=led_pulse count=1 context='idle_tap'
+2026-01-10 21:27:54 INFO action=touch_tap zone='rear' count=2 context='idle_start'
+2026-01-10 21:27:54 INFO action=led_pulse count=2 context='idle_double_tap'
+2026-01-10 21:27:54 INFO action=touch_double_tap context='start_radio'
+2026-01-10 21:27:54 INFO action=led_pulse count=1 context='resume_tap'
+2026-01-10 21:27:54 INFO action=touch_tap zone='rear' context='resume'
+2026-01-10 21:27:54 INFO action=led_pulse count=2 context='resume_double_tap'
+2026-01-10 21:27:54 INFO action=touch_double_tap context='resume'
+2026-01-10 21:27:58 INFO action=radio_start source='touch_double_tap' name='NPO Radio 1 (MP3)' url='https://icecast.omroep.nl/radio1-bb-mp3'
+2026-01-10 21:27:59 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-10 21:27:59 INFO action=touch_tap zone='front' count=1 context='radio_playing'
+2026-01-10 21:27:59 INFO action=radio_volume delta=-5 source='touch_swipe' direction='front_to_rear'
+2026-01-10 21:28:00 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-10 21:28:00 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-10 21:28:00 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-10 21:28:00 INFO action=touch_tap zone='rear' count=2 context='radio_playing'
+2026-01-10 21:28:02 INFO action=led_pulse count=1 context='resume_tap'
+2026-01-10 21:28:02 INFO action=touch_tap zone='rear' context='resume'
+2026-01-10 21:28:03 INFO action=led_pulse count=2 context='radio_double_tap'
+2026-01-10 21:28:03 INFO action=radio_stop source='touch_double_tap'
+2026-01-10 21:28:04 INFO action=wake_listen_start
+2026-01-10 21:28:07 INFO action=led_pulse count=1 context='resume_tap'
+2026-01-10 21:28:07 INFO action=led_pulse count=1 context='idle_tap'
+2026-01-10 21:28:07 INFO action=touch_tap zone='rear' count=1 context='idle_start'
+2026-01-10 21:28:07 INFO action=touch_tap zone='rear' context='resume'
+2026-01-10 21:28:07 INFO action=led_pulse count=1 context='resume_tap'
+2026-01-10 21:28:07 INFO action=touch_tap zone='rear' context='resume'
+2026-01-10 21:28:07 INFO action=led_pulse count=2 context='resume_double_tap'
+2026-01-10 21:28:07 INFO action=touch_double_tap context='resume'
+2026-01-10 21:28:07 INFO action=led_pulse count=1 context='idle_tap'
+2026-01-10 21:28:07 INFO action=touch_tap zone='rear' count=2 context='idle_start'
+2026-01-10 21:28:07 INFO action=led_pulse count=2 context='idle_double_tap'
+2026-01-10 21:28:07 INFO action=touch_double_tap context='start_radio'
+2026-01-10 21:28:10 INFO action=led_pulse count=1 context='resume_tap'
+2026-01-10 21:28:10 INFO action=touch_tap zone='rear' context='resume'
+2026-01-10 21:28:10 INFO action=led_pulse count=1 context='resume_tap'
+2026-01-10 21:28:10 INFO action=touch_tap zone='rear' context='resume'
+2026-01-10 21:28:10 INFO action=led_pulse count=2 context='resume_double_tap'
+2026-01-10 21:28:10 INFO action=touch_double_tap context='resume'
+2026-01-10 21:28:10 INFO action=led_pulse count=1 context='resume_tap'
+2026-01-10 21:28:10 INFO action=touch_tap zone='rear' context='resume'
+2026-01-10 21:28:10 INFO action=led_pulse count=2 context='resume_double_tap'
+2026-01-10 21:28:10 INFO action=touch_double_tap context='resume'
+2026-01-10 21:28:11 INFO action=radio_start source='touch_double_tap' name='NPO Radio 1 (MP3)' url='https://icecast.omroep.nl/radio1-bb-mp3'
+2026-01-10 21:28:27 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-10 21:28:27 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-10 21:28:27 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-10 21:28:27 INFO action=touch_tap zone='rear' count=2 context='radio_playing'
+2026-01-10 21:28:31 INFO action=led_pulse count=2 context='radio_double_tap'
+2026-01-10 21:28:31 INFO action=radio_stop source='touch_double_tap'
+2026-01-10 21:28:31 INFO action=wake_listen_start
+2026-01-10 21:28:31 INFO action=led_pulse count=1 context='idle_tap'
+2026-01-10 21:28:31 INFO action=touch_tap zone='rear' count=1 context='idle_start'
+2026-01-10 21:28:31 INFO action=led_pulse count=1 context='resume_tap'
+2026-01-10 21:28:31 INFO action=touch_tap zone='rear' context='resume'
+2026-01-10 21:28:31 INFO action=led_pulse count=1 context='resume_tap'
+2026-01-10 21:28:31 INFO action=touch_tap zone='rear' context='resume'
+2026-01-10 21:28:31 INFO action=led_pulse count=2 context='resume_double_tap'
+2026-01-10 21:28:31 INFO action=touch_double_tap context='resume'
+2026-01-10 21:28:31 INFO action=led_pulse count=1 context='idle_tap'
+2026-01-10 21:28:31 INFO action=touch_tap zone='rear' count=2 context='idle_start'
+2026-01-10 21:28:31 INFO action=led_pulse count=2 context='idle_double_tap'
+2026-01-10 21:28:31 INFO action=touch_double_tap context='start_radio'
+2026-01-10 21:28:31 INFO action=led_pulse count=1 context='resume_tap'
+2026-01-10 21:28:31 INFO action=touch_tap zone='rear' context='resume'
+2026-01-10 21:28:31 INFO action=led_pulse count=2 context='resume_double_tap'
+2026-01-10 21:28:31 INFO action=touch_double_tap context='resume'
+2026-01-10 21:28:35 INFO action=radio_start source='touch_double_tap' name='NPO Radio 1 (MP3)' url='https://icecast.omroep.nl/radio1-bb-mp3'
+2026-01-10 21:28:38 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-10 21:28:38 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-10 21:28:38 INFO action=radio_volume delta=5 source='touch_swipe' direction='rear_to_front'
+2026-01-10 21:28:40 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-10 21:28:40 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-10 21:28:40 INFO action=radio_volume delta=5 source='touch_swipe' direction='rear_to_front'
+2026-01-10 21:28:41 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-10 21:28:41 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-10 21:28:41 INFO action=radio_volume delta=5 source='touch_swipe' direction='rear_to_front'
+2026-01-10 21:28:41 INFO action=radio_volume delta=-5 source='touch_swipe' direction='front_to_rear'
+2026-01-10 21:28:42 INFO action=radio_volume delta=5 source='touch_swipe' direction='rear_to_front'
+2026-01-10 21:28:42 INFO action=radio_volume delta=-5 source='touch_swipe' direction='front_to_rear'
+2026-01-10 21:28:44 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-10 21:28:44 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-10 21:28:45 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-10 21:28:45 INFO action=touch_tap zone='rear' count=2 context='radio_playing'
+2026-01-10 21:28:45 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-10 21:28:45 INFO action=touch_tap zone='rear' count=3 context='radio_playing'
+2026-01-10 21:28:48 INFO action=led_pulse count=3 context='radio_triple_tap'
+2026-01-10 21:28:48 INFO action=radio_station_next name='NPO Radio 2 (MP3)' url='https://icecast.omroep.nl/radio2-bb-mp3' index=1
+2026-01-10 21:28:49 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-10 21:28:49 INFO action=touch_tap zone='front' count=1 context='radio_playing'
+2026-01-10 21:28:49 INFO action=radio_volume delta=-5 source='touch_swipe' direction='front_to_rear'
+2026-01-10 21:28:49 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-10 21:28:49 INFO action=touch_tap zone='front' count=1 context='radio_playing'
+2026-01-10 21:28:50 INFO action=radio_volume delta=-5 source='touch_swipe' direction='front_to_rear'
+2026-01-10 21:28:50 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-10 21:28:50 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-10 21:28:50 INFO action=radio_volume delta=5 source='touch_swipe' direction='rear_to_front'
+2026-01-10 21:29:03 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-10 21:29:03 INFO action=touch_tap zone='front' count=1 context='radio_playing'
+2026-01-10 21:29:03 INFO action=radio_volume delta=-5 source='touch_swipe' direction='front_to_rear'
+2026-01-10 21:29:22 INFO action=shutdown reason='keyboard_interrupt'
+2026-01-10 21:29:22 INFO action=shutdown reason='cleanup_complete'
+2026-01-10 21:29:25 INFO logging ready path=/home/pat/pidog/logs/pidog.log level=INFO
+2026-01-10 21:29:25 INFO action=startup pid=18919 args={'mic_test': False, 'list_audio': False, 'mic_device': None, 'debug_latency': True} log_path='/home/pat/pidog/logs/pidog.log'
+2026-01-10 21:29:25 INFO action=single_instance pidfile='/tmp/pidog.pid' pid=18919
+2026-01-10 21:29:25 INFO action=mic_device_selected index=1 name='USB PnP Sound Device: Audio (hw:3,0)'
+2026-01-10 21:29:25 INFO action=stt_init_start engine='vosk' device=1
+2026-01-10 21:29:25 INFO action=stt_init mode='async' device=1
+2026-01-10 21:29:25 INFO action=models tts_engine='piper' tts_model='en_US-amy-low' llm_model='llama3.2:1b'
+2026-01-10 21:29:27 INFO action=init_tts seconds=1.301 engine='piper' model='en_US-amy-low'
+2026-01-10 21:29:27 INFO action=init_speaker seconds=0.000
+2026-01-10 21:29:27 INFO action=init_leds seconds=0.236
+2026-01-10 21:29:27 INFO action=init_touch seconds=0.005
+2026-01-10 21:29:27 INFO action=battery_status voltage=8.355 percent=98
+2026-01-10 21:29:27 INFO action=stations_loaded count=18 names=['NPO Radio 1 (MP3)', 'NPO Radio 2 (MP3)', 'NPO 3FM (MP3)', 'NPO Klassiek (MP3)', 'NPO Radio 5 (MP3)', 'NPO Blend (MP3)', 'FunX (MP3)', 'BBC World Service (MP3)', 'Frequence 3 (MP3 256)', 'Frequence 3 Urban (MP3 256)', 'Frequence 3 (MP3 128)', 'Frequence 3 Urban (MP3 128)', 'Frequence 3 (AAC 64)', 'Frequence 3 Urban (AAC 64)', 'Frequence 3 Gold (MP3 160)', 'Frequence 3 Gold (AAC 64)', 'Frequence 3 Dance (MP3 160)', 'Frequence 3 Dance (AAC 64)']
+2026-01-10 21:29:27 INFO action=touch_watchers_started
+2026-01-10 21:29:28 INFO action=stt_init_ready engine='vosk' stt_model='vosk-model-small-en-us-0.15' init_stt_seconds=2.330
+2026-01-10 21:29:29 INFO action=mode_smart_pro enabled=True
+2026-01-10 21:29:29 INFO action=ready wake_words=['ziggy', 'pidog', 'pie dog', 'hi dog']
+2026-01-10 21:29:29 INFO action=convo_window seconds=15 wake_word_delayed=True
+2026-01-10 21:29:29 INFO action=convo_active seconds_left=14
+2026-01-10 21:29:29 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 21:29:39 INFO action=audio_recorded ok=True duration=7.600 rms=0.006 mode='chatgpt_pro'
+2026-01-10 21:29:41 INFO action=transcript text='Hello.' engine='openai' language='en'
+2026-01-10 21:29:41 INFO action=command_received raw='Hello.' normalized='hello.' confidence=1.000 mode='chatgpt_pro'
+2026-01-10 21:29:44 INFO action=response text='Hello! How can I assist you today?' mode='chatgpt_pro'
+2026-01-10 21:29:44 INFO action=convo_active seconds_left=14
+2026-01-10 21:29:44 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 21:29:46 INFO action=audio_recorded ok=True duration=1.600 rms=0.002 mode='chatgpt_pro'
+2026-01-10 21:29:46 INFO action=audio_low_rms rms=0.002 threshold=0.004
+2026-01-10 21:29:46 INFO action=convo_active seconds_left=12
+2026-01-10 21:29:46 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 21:29:57 INFO action=audio_recorded ok=True duration=7.200 rms=0.002 mode='chatgpt_pro'
+2026-01-10 21:29:57 INFO action=audio_low_rms rms=0.002 threshold=0.004
+2026-01-10 21:29:57 INFO action=convo_active seconds_left=2
+2026-01-10 21:29:57 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 21:30:03 INFO action=audio_recorded ok=True duration=4.400 rms=0.004 mode='chatgpt_pro'
+2026-01-10 21:30:04 INFO action=transcript text='He' engine='openai' language='en'
+2026-01-10 21:30:04 INFO action=command_received raw='He' normalized='he' confidence=1.000 mode='chatgpt_pro'
+2026-01-10 21:30:08 INFO action=response text='Hello! How can I help you today?' mode='chatgpt_pro'
+2026-01-10 21:30:08 INFO action=convo_active seconds_left=14
+2026-01-10 21:30:08 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 21:30:15 INFO action=audio_recorded ok=True duration=5.400 rms=0.003 mode='chatgpt_pro'
+2026-01-10 21:30:15 INFO action=audio_low_rms rms=0.003 threshold=0.004
+2026-01-10 21:30:15 INFO action=convo_active seconds_left=8
+2026-01-10 21:30:15 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 21:30:22 INFO action=audio_recorded ok=True duration=6.200 rms=0.005 mode='chatgpt_pro'
+2026-01-10 21:30:23 INFO action=transcript text='.' engine='openai' language='en'
+2026-01-10 21:30:23 INFO action=transcript_dropped reason='non_english' text='.'
+2026-01-10 21:30:23 INFO action=convo_active seconds_left=0
+2026-01-10 21:30:23 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 21:30:35 INFO action=audio_recorded ok=True duration=10.000 rms=0.003 mode='chatgpt_pro'
+2026-01-10 21:30:35 INFO action=audio_low_rms rms=0.003 threshold=0.004
+2026-01-10 21:30:35 INFO action=wake_listen_start
+2026-01-10 21:30:35 INFO action=stt_ready engine='vosk' stt_model='vosk-model-small-en-us-0.15'
+2026-01-10 21:30:41 INFO action=led_pulse count=1 context='idle_tap'
+2026-01-10 21:30:41 INFO action=touch_tap zone='rear' count=1 context='idle_start'
+2026-01-10 21:30:41 INFO action=led_pulse count=1 context='idle_tap'
+2026-01-10 21:30:41 INFO action=touch_tap zone='rear' count=2 context='idle_start'
+2026-01-10 21:30:41 INFO action=led_pulse count=2 context='idle_double_tap'
+2026-01-10 21:30:41 INFO action=touch_double_tap context='start_radio'
+2026-01-10 21:30:45 INFO action=radio_start source='touch_double_tap' name='NPO Radio 1 (MP3)' url='https://icecast.omroep.nl/radio1-bb-mp3'
+2026-01-10 21:30:50 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-10 21:30:50 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-10 21:30:51 INFO action=radio_volume delta=5 source='touch_swipe' direction='rear_to_front'
+2026-01-10 21:30:53 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-10 21:30:53 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-10 21:30:53 INFO action=radio_volume delta=5 source='touch_swipe' direction='rear_to_front'
+2026-01-10 21:30:53 INFO action=radio_volume delta=-5 source='touch_swipe' direction='front_to_rear'
+2026-01-10 21:30:54 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-10 21:30:54 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-10 21:31:00 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-10 21:31:00 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-10 21:31:01 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-10 21:31:01 INFO action=touch_tap zone='rear' count=2 context='radio_playing'
+2026-01-10 21:31:01 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-10 21:31:01 INFO action=touch_tap zone='rear' count=3 context='radio_playing'
+2026-01-10 21:31:04 INFO action=led_pulse count=3 context='radio_triple_tap'
+2026-01-10 21:31:04 INFO action=radio_station_next name='NPO Radio 2 (MP3)' url='https://icecast.omroep.nl/radio2-bb-mp3' index=1

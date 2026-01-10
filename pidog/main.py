@@ -1,4 +1,5 @@
 import argparse
+import logging
 from collections import deque
 import atexit
 import os
@@ -108,6 +109,84 @@ CONVO_WINDOW_SECONDS = 15
 PIDFILE = "/tmp/pidog.pid"
 STT_INIT_ASYNC = True
 SKIP_WAKE_UNTIL_STT_READY = True
+TAP_PULSE_COLOR = [0, 140, 255]
+
+
+LOGGER = logging.getLogger("pidog")
+
+
+def _setup_logging():
+    log_env = os.environ.get("PIDOG_LOG_FILE")
+    if log_env:
+        log_path = Path(log_env).expanduser()
+    else:
+        log_path = Path(__file__).resolve().parents[1] / "logs" / "pidog.log"
+    try:
+        log_path.parent.mkdir(parents=True, exist_ok=True)
+    except Exception:
+        log_path = Path("/tmp/pidog.log")
+        try:
+            log_path.parent.mkdir(parents=True, exist_ok=True)
+        except Exception:
+            pass
+    level_name = os.environ.get("PIDOG_LOG_LEVEL", "INFO").upper()
+    level = getattr(logging, level_name, logging.INFO)
+    LOGGER.setLevel(level)
+    LOGGER.propagate = False
+    if not LOGGER.handlers:
+        formatter = logging.Formatter(
+            "%(asctime)s %(levelname)s %(message)s",
+            "%Y-%m-%d %H:%M:%S",
+        )
+        handlers_added = False
+        try:
+            file_handler = logging.FileHandler(log_path, encoding="utf-8")
+            file_handler.setFormatter(formatter)
+            LOGGER.addHandler(file_handler)
+            handlers_added = True
+        except Exception:
+            pass
+        if os.environ.get("PIDOG_LOG_STDOUT", "").strip().lower() in ("1", "true", "yes", "on") or not handlers_added:
+            stream_handler = logging.StreamHandler(sys.stdout)
+            stream_handler.setFormatter(formatter)
+            LOGGER.addHandler(stream_handler)
+    LOGGER.info("logging ready path=%s level=%s", log_path, logging.getLevelName(level))
+    return log_path
+
+
+def _touch_label(val):
+    if val == TouchStyle.REAR:
+        return "rear"
+    if val == TouchStyle.FRONT:
+        return "front"
+    if val == TouchStyle.REAR_TO_FRONT:
+        return "rear_to_front"
+    if val == TouchStyle.FRONT_TO_REAR:
+        return "front_to_rear"
+    if val == TouchStyle.NONE:
+        return "none"
+    return str(val)
+
+
+def log_action(action, **fields):
+    if not LOGGER.isEnabledFor(logging.INFO):
+        return
+    parts = [f"action={action}"]
+    for key, value in fields.items():
+        if value is None:
+            continue
+        if isinstance(value, float):
+            parts.append(f"{key}={value:.3f}")
+        else:
+            parts.append(f"{key}={value!r}")
+    LOGGER.info(" ".join(parts))
+
+
+def _pulse_feedback(leds, count=1, context=None):
+    if leds is None:
+        return
+    leds.pulse(TAP_PULSE_COLOR, count=count)
+    log_action("led_pulse", count=count, context=context)
 
 
 SENTENCE_END_RE = re.compile(r"[.!?]")
@@ -337,6 +416,7 @@ def _init_stt_background(
     samplerate,
 ):
     try:
+        log_action("stt_init_start", engine=STT_ENGINE, device=device, samplerate=samplerate)
         t0 = time.time()
         wake_stt = create_stt(language=STT_LANGUAGE, device=device, samplerate=samplerate)
         stt_model = None
@@ -357,9 +437,17 @@ def _init_stt_background(
         stt_state["wake_stt"] = wake_stt
         stt_state["asr_stt"] = asr_stt
         stt_state["stt_model"] = stt_model
+        log_action(
+            "stt_init_ready",
+            engine=STT_ENGINE,
+            stt_model=stt_model,
+            init_stt_seconds=stt_state.get("init_stt_seconds"),
+            init_whisper_seconds=stt_state.get("init_whisper_seconds"),
+        )
         print("STT: Vosk ready.")
     except Exception as exc:
         stt_error[0] = exc
+        LOGGER.exception("stt_init_failed")
     finally:
         stt_ready.set()
 
@@ -367,8 +455,10 @@ def _init_stt_background(
 def _await_stt(stt_ready, stt_error, stt_state):
     if not stt_ready.is_set():
         print("STT: waiting for background init...")
+        log_action("stt_waiting")
         stt_ready.wait()
     if stt_error[0] is not None:
+        LOGGER.error("stt_init_error: %s", stt_error[0])
         raise stt_error[0]
     if not stt_state.get("printed"):
         init_stt = stt_state.get("init_stt_seconds")
@@ -383,6 +473,12 @@ def _await_stt(stt_ready, stt_error, stt_state):
         else:
             model = stt_state.get("stt_model")
             print(f"STT: Vosk {model}" if model else "STT: Vosk")
+        log_action(
+            "stt_ready",
+            engine=STT_ENGINE,
+            stt_model=stt_state.get("stt_model"),
+            whisper_model=WHISPER_MODEL if STT_ENGINE == "whisper" else None,
+        )
         stt_state["printed"] = True
     return stt_state["wake_stt"], stt_state["asr_stt"], stt_state["stt_model"]
 
@@ -511,7 +607,7 @@ def wait_for_pet(touch):
     time.sleep(0.05)
 
 
-def touch_resume_watcher(touch, paused_event, resume_event, stop_event, resume_ready_time):
+def touch_resume_watcher(touch, leds, paused_event, resume_event, stop_event, resume_ready_time):
     last_val = TouchStyle.NONE
     last_tap_time = 0.0
     while not stop_event.is_set():
@@ -521,15 +617,19 @@ def touch_resume_watcher(touch, paused_event, resume_event, stop_event, resume_r
         val = touch.read()
         if val in (TouchStyle.REAR, TouchStyle.FRONT) and last_val == TouchStyle.NONE:
             now = time.time()
+            _pulse_feedback(leds, count=1, context="resume_tap")
+            log_action("touch_tap", zone=_touch_label(val), context="resume")
             if now >= resume_ready_time[0]:
                 if now - last_tap_time <= RESUME_TAP_WINDOW_SECONDS:
                     resume_event.set()
+                    _pulse_feedback(leds, count=2, context="resume_double_tap")
+                    log_action("touch_double_tap", context="resume")
                 last_tap_time = now
         last_val = val
         time.sleep(0.05)
 
 
-def touch_start_watcher(touch, idle_event, start_event, interrupt_event, stop_event):
+def touch_start_watcher(touch, leds, idle_event, start_event, interrupt_event, stop_event):
     last_val = TouchStyle.NONE
     last_tap_time = 0.0
     tap_count = 0
@@ -544,10 +644,14 @@ def touch_start_watcher(touch, idle_event, start_event, interrupt_event, stop_ev
                 tap_count = 0
             tap_count += 1
             last_tap_time = now
+            _pulse_feedback(leds, count=1, context="idle_tap")
+            log_action("touch_tap", zone=_touch_label(val), count=tap_count, context="idle_start")
             if tap_count >= 2:
                 tap_count = 0
                 start_event.set()
                 interrupt_event.set()
+                _pulse_feedback(leds, count=2, context="idle_double_tap")
+                log_action("touch_double_tap", context="start_radio")
         last_val = val
         time.sleep(0.05)
 
@@ -559,15 +663,20 @@ def main():
     parser.add_argument("--mic-device", type=int, help="Override mic device index for STT")
     parser.add_argument("--debug-latency", action="store_true", help="Print latency timings for pro mode")
     args = parser.parse_args()
+    log_path = _setup_logging()
+    log_action("startup", pid=os.getpid(), args=vars(args), log_path=str(log_path))
 
     if args.list_audio:
+        devices = sd.query_devices()
+        log_action("list_audio", count=len(devices), default_device=sd.default.device)
         print("Audio devices:")
-        for i, dev in enumerate(sd.query_devices()):
+        for i, dev in enumerate(devices):
             print(f"{i}: {dev['name']} (in={dev['max_input_channels']}, out={dev['max_output_channels']})")
         print(f"Default device: {sd.default.device}")
         return
 
     _ensure_single_instance(PIDFILE)
+    log_action("single_instance", pidfile=PIDFILE, pid=os.getpid())
 
     mic_device = MIC_DEVICE if args.mic_device is None else args.mic_device
     if args.mic_device is None and MIC_DEVICE_NAME:
@@ -578,6 +687,13 @@ def main():
                     break
         except Exception:
             pass
+    mic_device_name = None
+    try:
+        dev_info = sd.query_devices(mic_device, "input")
+        mic_device_name = dev_info.get("name")
+    except Exception:
+        pass
+    log_action("mic_device_selected", index=mic_device, name=mic_device_name)
     stt_ready = threading.Event()
     stt_error = [None]
     stt_state = {"printed": False}
@@ -587,34 +703,47 @@ def main():
             args=(stt_ready, stt_error, stt_state, mic_device, MIC_SAMPLE_RATE),
             daemon=True,
         ).start()
+        log_action("stt_init", mode="async", device=mic_device, samplerate=MIC_SAMPLE_RATE)
         print("STT: init in background.")
     else:
         _init_stt_background(stt_ready, stt_error, stt_state, mic_device, MIC_SAMPLE_RATE)
         _await_stt(stt_ready, stt_error, stt_state)
+        log_action("stt_init", mode="sync", device=mic_device, samplerate=MIC_SAMPLE_RATE)
     print(f"TTS: {TTS_ENGINE} {TTS_MODEL}")
     print(f"LLM: {LLM_MODEL}")
+    log_action("models", tts_engine=TTS_ENGINE, tts_model=TTS_MODEL, llm_model=LLM_MODEL)
     t1 = time.time()
     tts = create_tts(engine=TTS_ENGINE, model=TTS_MODEL, length_scale=TTS_LENGTH_SCALE)
-    print(f"Init: TTS {time.time() - t1:.2f}s")
+    tts_init_s = time.time() - t1
+    print(f"Init: TTS {tts_init_s:.2f}s")
+    log_action("init_tts", seconds=tts_init_s, engine=TTS_ENGINE, model=TTS_MODEL)
     t2 = time.time()
     speaker = SpeechQueue(tts, output_device=SPEAKER_DEVICE)
     speaker.start()
-    print(f"Init: Speaker {time.time() - t2:.2f}s")
+    speaker_init_s = time.time() - t2
+    print(f"Init: Speaker {speaker_init_s:.2f}s")
+    log_action("init_speaker", seconds=speaker_init_s, device=SPEAKER_DEVICE)
     t3 = time.time()
     leds = LedController()
     leds.start()
-    print(f"Init: LEDs {time.time() - t3:.2f}s")
+    leds_init_s = time.time() - t3
+    print(f"Init: LEDs {leds_init_s:.2f}s")
+    log_action("init_leds", seconds=leds_init_s)
     t4 = time.time()
     touch = DualTouch()
-    print(f"Init: Touch {time.time() - t4:.2f}s")
+    touch_init_s = time.time() - t4
+    print(f"Init: Touch {touch_init_s:.2f}s")
+    log_action("init_touch", seconds=touch_init_s)
     try:
         voltage, percent = get_battery_status()
         if percent <= 5:
             print(f"\033[31mBattery: {voltage:.2f} V (~{percent}%)\033[0m")
         else:
             print(f"Battery: {voltage:.2f} V (~{percent}%)")
+        log_action("battery_status", voltage=voltage, percent=percent)
     except Exception:
         print("Battery: unavailable")
+        log_action("battery_status", error="unavailable")
     stations = load_m3u_stations(M3U_PATH)
     if not stations:
         stations = [
@@ -623,6 +752,7 @@ def main():
             {"name": "Radio 3", "url": RADIO_URLS["3"]},
             {"name": "BBC World Service", "url": BBC_WORLD_SERVICE_URL},
         ]
+    log_action("stations_loaded", count=len(stations), names=[s["name"] for s in stations])
     radio_playing = False
     radio_paused = False
     radio_last_url = None
@@ -636,19 +766,21 @@ def main():
     watcher_stop = threading.Event()
     watcher_thread = threading.Thread(
         target=touch_resume_watcher,
-        args=(touch, paused_event, resume_event, watcher_stop, resume_ready_time),
+        args=(touch, leds, paused_event, resume_event, watcher_stop, resume_ready_time),
         daemon=True,
     )
     watcher_thread.start()
     start_thread = threading.Thread(
         target=touch_start_watcher,
-        args=(touch, idle_event, start_event, interrupt_event, watcher_stop),
+        args=(touch, leds, idle_event, start_event, interrupt_event, watcher_stop),
         daemon=True,
     )
     start_thread.start()
+    log_action("touch_watchers_started")
 
     if args.mic_test:
         wake_stt, asr_stt, stt_model = _await_stt(stt_ready, stt_error, stt_state)
+        log_action("mic_test_start", device=mic_device, engine=STT_ENGINE)
         print("Mic test: speak into the microphone (Ctrl+C to exit).")
         try:
             if STT_ENGINE == "whisper":
@@ -677,6 +809,7 @@ def main():
                             print(f"partial: {partial}", end="\r", flush=True)
         except KeyboardInterrupt:
             print("\nExiting mic test.")
+            log_action("mic_test_stop")
         return
 
     history = deque(maxlen=MEMORY_SENTENCES)
@@ -689,15 +822,20 @@ def main():
         speaker.say("Smart dog pro mode is on.")
         speaker.wait_idle()
         print("Smart mode: pro")
+        log_action("mode_smart_pro", enabled=True)
 
     print(f"Wake words: {WAKE_WORDS}")
     print("Ready.")
+    log_action("ready", wake_words=WAKE_WORDS)
     try:
         convo_deadline = None
+        wake_word_delayed = False
         if use_chatgpt_pro and STT_INIT_ASYNC and SKIP_WAKE_UNTIL_STT_READY:
             convo_deadline = time.time() + CONVO_WINDOW_SECONDS
+            wake_word_delayed = True
             print("Smart mode: pro (wake word enabled after STT init)")
         print(f"Convo window: {CONVO_WINDOW_SECONDS}s")
+        log_action("convo_window", seconds=CONVO_WINDOW_SECONDS, wake_word_delayed=wake_word_delayed)
         while True:
             if radio_playing:
                 leds.set_state("wake")
@@ -708,14 +846,33 @@ def main():
                     val = touch.read()
                     if val == TouchStyle.REAR_TO_FRONT:
                         adjust_moc_volume(VOLUME_STEP)
+                        log_action(
+                            "radio_volume",
+                            delta=VOLUME_STEP,
+                            source="touch_swipe",
+                            direction="rear_to_front",
+                        )
                     elif val == TouchStyle.FRONT_TO_REAR:
                         adjust_moc_volume(-VOLUME_STEP)
+                        log_action(
+                            "radio_volume",
+                            delta=-VOLUME_STEP,
+                            source="touch_swipe",
+                            direction="front_to_rear",
+                        )
                     elif val in (TouchStyle.REAR, TouchStyle.FRONT) and last_touch_val == TouchStyle.NONE:
                         now = time.time()
                         if now - last_tap_time > TAP_WINDOW_SECONDS:
                             tap_count = 0
                         tap_count += 1
                         last_tap_time = now
+                        _pulse_feedback(leds, count=1, context="radio_tap")
+                        log_action(
+                            "touch_tap",
+                            zone=_touch_label(val),
+                            count=tap_count,
+                            context="radio_playing",
+                        )
                         if tap_count >= 3:
                             tap_count = 0
                             if stations:
@@ -728,6 +885,13 @@ def main():
                                 leds.set_state("speak")
                                 speaker.say(f"Radio: {station['name']}.")
                                 speaker.wait_idle()
+                                _pulse_feedback(leds, count=3, context="radio_triple_tap")
+                                log_action(
+                                    "radio_station_next",
+                                    name=station["name"],
+                                    url=station["url"],
+                                    index=radio_station_index,
+                                )
                     last_touch_val = val
                     if tap_count == 2 and time.time() - last_tap_time > TAP_WINDOW_SECONDS:
                         stop_moc_stream()
@@ -740,6 +904,8 @@ def main():
                         leds.set_state("speak")
                         speaker.say("Radio stopped. Double-tap to resume.")
                         speaker.wait_idle()
+                        _pulse_feedback(leds, count=2, context="radio_double_tap")
+                        log_action("radio_stop", source="touch_double_tap")
                         break
                     time.sleep(0.05)
                 continue
@@ -756,6 +922,7 @@ def main():
                     radio_playing = True
                     radio_paused = False
                     paused_event.clear()
+                    log_action("radio_resume", source="touch_double_tap", url=radio_last_url)
                     continue
 
             if convo_deadline is not None and time.time() > convo_deadline:
@@ -765,6 +932,7 @@ def main():
                 print("\nWaiting for wake word...")
                 leds.set_state("wake")
                 idle_event.set()
+                log_action("wake_listen_start")
                 wake_stt, asr_stt, stt_model = _await_stt(stt_ready, stt_error, stt_state)
                 heard = listen_for_wake_word(
                     wake_stt,
@@ -776,13 +944,19 @@ def main():
                 if heard is not None:
                     convo_deadline = time.time() + CONVO_WINDOW_SECONDS
                     just_woke = True
+                    log_action("wake_word_heard", word=heard)
             else:
                 if stt_ready.is_set() or not SKIP_WAKE_UNTIL_STT_READY:
                     heard = "active"
                     print(f"Convo active: {int(convo_deadline - time.time())}s left")
+                    log_action(
+                        "convo_active",
+                        seconds_left=int(convo_deadline - time.time()),
+                    )
                 else:
                     heard = "active"
                     print("Convo active (wake word pending STT init).")
+                    log_action("convo_active", seconds_left=None, wake_word_pending=True)
             if start_event.is_set():
                 start_event.clear()
                 interrupt_event.clear()
@@ -796,6 +970,12 @@ def main():
                 radio_playing = True
                 radio_paused = False
                 paused_event.clear()
+                log_action(
+                    "radio_start",
+                    source="touch_double_tap",
+                    name=station["name"],
+                    url=station["url"],
+                )
                 continue
             if heard is None and radio_paused and resume_event.is_set() and time.time() >= resume_ready_time[0]:
                 resume_event.clear()
@@ -807,10 +987,18 @@ def main():
                 radio_playing = True
                 radio_paused = False
                 paused_event.clear()
+                log_action("radio_resume", source="touch_double_tap", url=radio_last_url)
                 continue
 
             leds.set_state("listen")
             print("Listening...")
+            log_action(
+                "listen_start",
+                mode="chatgpt_pro" if use_chatgpt_pro else STT_ENGINE,
+                mic_device=mic_device,
+            )
+            if not use_chatgpt_pro:
+                wake_stt, asr_stt, stt_model = _await_stt(stt_ready, stt_error, stt_state)
             if use_chatgpt_pro:
                 timing = {
                     "record": 0.0,
@@ -836,6 +1024,13 @@ def main():
                         input_dtype=MIC_INPUT_DTYPE,
                     )
                     timing["record"] = time.perf_counter() - t0
+                    log_action(
+                        "audio_recorded",
+                        ok=rec.get("ok"),
+                        duration=rec.get("duration"),
+                        rms=rec.get("rms"),
+                        mode="chatgpt_pro",
+                    )
                     if CHATGPT_PRO_DEBUG_RECORDING:
                         print(f"Pro rec ok={rec.get('ok')} dur={rec.get('duration'):.2f}s rms={rec.get('rms'):.4f}")
                         if rec.get("ok"):
@@ -844,6 +1039,7 @@ def main():
                         leds.set_state("speak")
                         speaker.say("Sorry, can you repeat that?")
                         speaker.wait_idle()
+                        log_action("prompt_repeat", reason="record_failed")
                         if convo_deadline is not None:
                             convo_deadline = time.time() + CONVO_WINDOW_SECONDS
                         continue
@@ -853,6 +1049,7 @@ def main():
                             print(
                                 f"Pro: low RMS ({rec.get('rms', 0.0):.4f} < {min_rms:.4f}), skipping."
                             )
+                        log_action("audio_low_rms", rms=rec.get("rms"), threshold=min_rms)
                         continue
                     just_woke = False
                     t0 = time.perf_counter()
@@ -861,17 +1058,20 @@ def main():
                         model=CHATGPT_STT_MODEL,
                         language=CHATGPT_STT_LANGUAGE,
                     ).strip()
+                    log_action("transcript", text=text, engine="openai", language=CHATGPT_STT_LANGUAGE)
                     if not is_likely_english(text):
+                        log_action("transcript_dropped", reason="non_english", text=text)
                         print(f"Pro: dropped non-English transcript: {_clip_text(text)!r}")
                         continue
                     timing["stt"] = time.perf_counter() - t0
                     if CHATGPT_PRO_DEBUG_RECORDING:
                         print(f"Pro STT text: {text!r}")
-                except RuntimeError:
+                except RuntimeError as exc:
                     use_chatgpt_pro = False
                     leds.set_state("speak")
                     speaker.say("Smart mode needs an API key. Switching to local model.")
                     speaker.wait_idle()
+                    log_action("mode_smart_pro", enabled=False, reason=str(exc))
                     if convo_deadline is not None:
                         convo_deadline = time.time() + CONVO_WINDOW_SECONDS
                     print("Smart mode: off")
@@ -898,27 +1098,44 @@ def main():
                     stream=True,
                 )
             text = utterance["text"].strip()
+            if not use_chatgpt_pro:
+                log_action(
+                    "transcript",
+                    text=text,
+                    engine=STT_ENGINE,
+                    confidence=utterance.get("confidence"),
+                )
             if not text or utterance["confidence"] < CONFIDENCE_THRESHOLD:
                 leds.set_state("speak")
                 speaker.say("Sorry, can you repeat that?")
                 speaker.wait_idle()
+                log_action("prompt_repeat", reason="low_confidence")
                 if convo_deadline is not None:
                     convo_deadline = time.time() + CONVO_WINDOW_SECONDS
                 continue
 
             command = repair_transcript(text)
             words = command.split()
+            log_action(
+                "command_received",
+                raw=text,
+                normalized=command,
+                confidence=utterance.get("confidence"),
+                mode="chatgpt_pro" if use_chatgpt_pro else ("chatgpt" if use_chatgpt else "local"),
+            )
             if not (use_chatgpt or use_chatgpt_pro):
                 if len(words) < 2 or (len(words) == 1 and words[0] in SHORT_UTTERANCE_WORDS):
                     leds.set_state("speak")
                     speaker.say("Sorry, can you repeat that?")
                     speaker.wait_idle()
+                    log_action("command_rejected", reason="too_short", command=command)
                     if convo_deadline is not None:
                         convo_deadline = time.time() + CONVO_WINDOW_SECONDS
                     continue
             radio_override = normalize_radio_command(command)
             if radio_override:
                 command = radio_override
+                log_action("command_normalized", normalized=command)
             if "play radio bbc" in command or "start radio bbc" in command:
                 leds.set_state("speak")
                 speaker.say("Starting BBC World Service.")
@@ -930,6 +1147,12 @@ def main():
                 radio_station_index = find_station_index(stations, BBC_WORLD_SERVICE_URL)
                 paused_event.clear()
                 interrupt_event.clear()
+                log_action(
+                    "radio_start",
+                    source="voice",
+                    name="BBC World Service",
+                    url=BBC_WORLD_SERVICE_URL,
+                )
                 if convo_deadline is not None:
                     convo_deadline = time.time() + CONVO_WINDOW_SECONDS
                 continue
@@ -952,9 +1175,16 @@ def main():
                         radio_station_index = find_station_index(stations, url)
                         paused_event.clear()
                         interrupt_event.clear()
+                        log_action(
+                            "radio_start",
+                            source="voice",
+                            name=f"Radio {key}",
+                            url=url,
+                        )
                         break
                 else:
                     print(f"Unknown radio command: {text}")
+                    log_action("radio_unknown", text=text, command=command)
                 if convo_deadline is not None:
                     convo_deadline = time.time() + CONVO_WINDOW_SECONDS
                 continue
@@ -967,6 +1197,7 @@ def main():
                 radio_paused = False
                 paused_event.clear()
                 interrupt_event.clear()
+                log_action("radio_stop", source="voice")
                 if convo_deadline is not None:
                     convo_deadline = time.time() + CONVO_WINDOW_SECONDS
                 continue
@@ -976,9 +1207,11 @@ def main():
                     voltage, percent = get_battery_status()
                     speaker.say(f"Battery is at about {percent} percent.")
                     print(f"Battery: {voltage:.2f} V (~{percent}%)")
+                    log_action("battery_query", voltage=voltage, percent=percent)
                 except Exception:
                     speaker.say("Sorry, I cannot read the battery right now.")
                     print("Battery: unavailable")
+                    log_action("battery_query", error="unavailable")
                 speaker.wait_idle()
                 if convo_deadline is not None:
                     convo_deadline = time.time() + CONVO_WINDOW_SECONDS
@@ -990,6 +1223,7 @@ def main():
                 leds.set_state("speak")
                 speaker.say("Switching to local model.")
                 speaker.wait_idle()
+                log_action("mode_smart", enabled=False)
                 if convo_deadline is not None:
                     convo_deadline = time.time() + CONVO_WINDOW_SECONDS
                 print("Smart mode: off")
@@ -1000,6 +1234,7 @@ def main():
                 leds.set_state("speak")
                 speaker.say("Hello, I am a full LLM pipe to ChatGPT.")
                 speaker.wait_idle()
+                log_action("mode_smart_pro", enabled=True)
                 if convo_deadline is not None:
                     convo_deadline = time.time() + CONVO_WINDOW_SECONDS
                 print("Smart mode: pro")
@@ -1010,6 +1245,7 @@ def main():
                 leds.set_state("speak")
                 speaker.say("ChatGPT here, how can I help?")
                 speaker.wait_idle()
+                log_action("mode_smart", enabled=True)
                 if convo_deadline is not None:
                     convo_deadline = time.time() + CONVO_WINDOW_SECONDS
                 print("Smart mode: on")
@@ -1134,6 +1370,7 @@ def main():
                     leds.set_state("speak")
                     speaker.say("Smart mode needs an API key. Switching to local model.")
                     speaker.wait_idle()
+                    log_action("mode_smart", enabled=False, reason="missing_api_key")
                     continue
                 raise
 
@@ -1143,6 +1380,12 @@ def main():
                     speaker.say(cleaned)
                     full_response += cleaned
             speaker.wait_idle()
+            if full_response.strip():
+                log_action(
+                    "response",
+                    text=full_response,
+                    mode="chatgpt_pro" if use_chatgpt_pro else ("chatgpt" if use_chatgpt else "local"),
+                )
             print()
             convo_deadline = time.time() + CONVO_WINDOW_SECONDS
             final_sentences, _ = split_sentences(full_response)
@@ -1150,6 +1393,7 @@ def main():
                 history.append(sentence)
     except KeyboardInterrupt:
         print("\nExiting...")
+        log_action("shutdown", reason="keyboard_interrupt")
     finally:
         watcher_stop.set()
         watcher_thread.join(timeout=1)
@@ -1157,6 +1401,7 @@ def main():
         touch.close()
         leds.stop()
         speaker.stop()
+        log_action("shutdown", reason="cleanup_complete")
 
 
 if __name__ == "__main__":
