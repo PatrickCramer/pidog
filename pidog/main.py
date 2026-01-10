@@ -60,8 +60,8 @@ LLM_OUT_USD_PER_1M = 0.60 # gpt-4o-mini output
 MIC_SAMPLE_RATE = None  # use device default for Vosk
 MIC_INPUT_RATE = 44100
 MIC_INPUT_DTYPE = "int16"
-CHATGPT_PRO_SILENCE_THRESHOLD = 0.003
-CHATGPT_PRO_SILENCE_SECONDS = 1.5
+CHATGPT_PRO_SILENCE_THRESHOLD = 0.005
+CHATGPT_PRO_SILENCE_SECONDS = 0.9
 CHATGPT_PRO_MIN_RMS = 0.004
 CHATGPT_PRO_WAKE_MIN_RMS = 0.0
 
@@ -81,7 +81,7 @@ BATTERY_TABLE_2S = [
 ]
 
 CONFIDENCE_THRESHOLD = 0.5
-MAX_UTTERANCE_SECONDS = 12
+MAX_UTTERANCE_SECONDS = 8
 SYSTEM_PROMPT = (
     "You are a helpful robot dog. Reply in English only, no more than four short phrases. "
     "Keep it friendly, funny and practical."
