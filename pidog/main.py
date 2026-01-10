@@ -242,6 +242,12 @@ def estimate_battery_percent(voltage, table=BATTERY_TABLE_2S):
     return 0
 
 
+def get_battery_status():
+    voltage = float(rh_utils.get_battery_voltage())
+    percent = estimate_battery_percent(voltage)
+    return voltage, percent
+
+
 def _read_pidfile(path):
     try:
         data = Path(path).read_text(encoding="ascii", errors="ignore").strip()
@@ -602,8 +608,7 @@ def main():
     touch = DualTouch()
     print(f"Init: Touch {time.time() - t4:.2f}s")
     try:
-        voltage = float(rh_utils.get_battery_voltage())
-        percent = estimate_battery_percent(voltage)
+        voltage, percent = get_battery_status()
         if percent <= 5:
             print(f"\033[31mBattery: {voltage:.2f} V (~{percent}%)\033[0m")
         else:
@@ -963,6 +968,19 @@ def main():
                 radio_paused = False
                 paused_event.clear()
                 interrupt_event.clear()
+                if convo_deadline is not None:
+                    convo_deadline = time.time() + CONVO_WINDOW_SECONDS
+                continue
+            if "battery" in command:
+                leds.set_state("speak")
+                try:
+                    voltage, percent = get_battery_status()
+                    speaker.say(f"Battery is at about {percent} percent.")
+                    print(f"Battery: {voltage:.2f} V (~{percent}%)")
+                except Exception:
+                    speaker.say("Sorry, I cannot read the battery right now.")
+                    print("Battery: unavailable")
+                speaker.wait_idle()
                 if convo_deadline is not None:
                     convo_deadline = time.time() + CONVO_WINDOW_SECONDS
                 continue
