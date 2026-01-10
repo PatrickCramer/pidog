@@ -21,24 +21,24 @@ def create_stt(language="en-us", device=None, samplerate=None, wake_words=None):
     stt = STT(language=None, samplerate=samplerate, device=device)
     try:
         stt.update_model_list()
-        large_name = None
+        small_name = None
         for name, lang in zip(stt.available_model_names, stt.available_languages):
-            if lang == language and "small" not in name.lower():
-                large_name = name
+            if lang == language and "small" in name.lower():
+                small_name = name
                 break
-        if large_name is None:
+        if small_name is None:
             base = Path(vosk_module.MODEL_BASE_PATH)
             prefix = f"vosk-model-{language}-"
             candidates = [
                 p.name for p in base.iterdir()
-                if p.is_dir() and p.name.startswith(prefix) and "small" not in p.name.lower()
+                if p.is_dir() and p.name.startswith(prefix) and "small" in p.name.lower()
             ]
             candidates.sort(reverse=True)
             if candidates:
-                large_name = candidates[0]
-        if large_name:
+                small_name = candidates[0]
+        if small_name:
             idx = stt.available_languages.index(language)
-            stt.available_model_names[idx] = large_name
+            stt.available_model_names[idx] = small_name
         stt.set_language(language)
     except Exception:
         if language is not None:
