@@ -1863,3 +1863,26 @@
 2026-01-10 22:21:35 INFO action=audio_recorded ok=True duration=4.600 rms=0.002 mode='chatgpt_pro'
 2026-01-10 22:21:35 INFO action=audio_low_rms rms=0.002 threshold=0.004
 2026-01-10 22:21:35 INFO action=wake_listen_start
+2026-01-10 22:21:56 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:22:02 INFO action=audio_recorded ok=True duration=5.800 rms=0.002 mode='chatgpt_pro'
+2026-01-10 22:22:02 INFO action=audio_low_rms rms=0.002 threshold=0.004
+2026-01-10 22:22:02 INFO action=wake_listen_start
+2026-01-10 22:22:22 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:22:28 INFO action=audio_recorded ok=True duration=3.800 rms=0.003 mode='chatgpt_pro'
+2026-01-10 22:22:28 INFO action=audio_low_rms rms=0.003 threshold=0.004
+2026-01-10 22:22:28 INFO action=wake_listen_start
+2026-01-10 22:22:49 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:22:55 INFO action=audio_recorded ok=True duration=3.400 rms=0.002 mode='chatgpt_pro'
+2026-01-10 22:22:55 INFO action=audio_low_rms rms=0.002 threshold=0.004
+2026-01-10 22:22:55 INFO action=wake_listen_start
+2026-01-10 22:23:15 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:23:21 INFO action=audio_recorded ok=True duration=4.800 rms=0.002 mode='chatgpt_pro'
+2026-01-10 22:23:21 INFO action=audio_low_rms rms=0.002 threshold=0.004
+2026-01-10 22:23:21 INFO action=wake_listen_start
+2026-01-10 22:23:41 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:23:47 INFO action=audio_recorded ok=True duration=4.200 rms=0.002 mode='chatgpt_pro'
+2026-01-10 22:23:47 INFO action=audio_low_rms rms=0.002 threshold=0.004
+2026-01-10 22:23:47 INFO action=wake_listen_start
+2026-01-10 22:24:08 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:24:12 INFO action=shutdown reason='keyboard_interrupt'
+2026-01-10 22:24:12 INFO action=shutdown reason='cleanup_complete'

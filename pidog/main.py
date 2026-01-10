@@ -189,6 +189,49 @@ def _pulse_feedback(leds, count=1, context=None):
     log_action("led_pulse", count=count, context=context)
 
 
+def _wait_for_speaker_or_interrupt(speaker, interrupt_event, poll=0.05):
+    if speaker is None:
+        return True
+    while not speaker.is_idle():
+        if interrupt_event.is_set():
+            speaker.cancel()
+            return False
+        speaker.wait_idle(timeout=poll)
+    return True
+
+
+def _sync_radio_mode(radio_mode_event, radio_playing, radio_paused):
+    if radio_playing or radio_paused:
+        radio_mode_event.set()
+    else:
+        radio_mode_event.clear()
+
+
+def _begin_answering(answering_event, interrupt_event, context=None):
+    interrupt_event.clear()
+    answering_event.set()
+    log_action("answering", active=True, context=context)
+
+
+def _end_answering(answering_event, context=None):
+    answering_event.clear()
+    log_action("answering", active=False, context=context)
+
+
+def _handle_answer_interrupt(answer_interrupt_event, answering_event, speaker, leds):
+    if not answer_interrupt_event.is_set():
+        return False
+    answer_interrupt_event.clear()
+    if speaker is not None:
+        speaker.cancel()
+    if leds is not None:
+        leds.set_state("wake")
+    log_action("answer_interrupted", reason="tap")
+    if answering_event.is_set():
+        _end_answering(answering_event, context="interrupt")
+    return True
+
+
 SENTENCE_END_RE = re.compile(r"[.!?]")
 
 MISHEAR_MAP = {
@@ -297,6 +340,21 @@ def wav_seconds(path):
             return handle.getnframes() / float(handle.getframerate())
     except Exception:
         return 0.0
+
+
+def _play_wav_interruptible(path, interrupt_event):
+    proc = subprocess.Popen(["aplay", "-q", path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    while True:
+        if interrupt_event.is_set():
+            proc.terminate()
+            try:
+                proc.wait(timeout=0.5)
+            except subprocess.TimeoutExpired:
+                proc.kill()
+            return False
+        if proc.poll() is not None:
+            return True
+        time.sleep(0.05)
 
 
 def estimate_costs(audio_in_s, audio_out_s, in_tokens, out_tokens):
@@ -656,6 +714,21 @@ def touch_start_watcher(touch, leds, idle_event, start_event, interrupt_event, s
         time.sleep(0.05)
 
 
+def touch_answer_interrupt_watcher(touch, leds, answering_event, interrupt_event, stop_event, radio_mode_event):
+    last_val = TouchStyle.NONE
+    while not stop_event.is_set():
+        if not answering_event.is_set() or radio_mode_event.is_set():
+            time.sleep(0.05)
+            continue
+        val = touch.read()
+        if val in (TouchStyle.REAR, TouchStyle.FRONT) and last_val == TouchStyle.NONE:
+            _pulse_feedback(leds, count=1, context="answer_interrupt")
+            log_action("touch_tap", zone=_touch_label(val), context="answer_interrupt")
+            interrupt_event.set()
+        last_val = val
+        time.sleep(0.05)
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--mic-test", action="store_true", help="Print live STT partials from the mic")
@@ -779,10 +852,13 @@ def main():
     radio_paused = False
     radio_last_url = None
     radio_station_index = None
+    radio_mode_event = threading.Event()
     resume_ready_time = [0.0]
     paused_event = threading.Event()
     resume_event = threading.Event()
     interrupt_event = threading.Event()
+    answer_interrupt_event = threading.Event()
+    answering_event = threading.Event()
     idle_event = threading.Event()
     start_event = threading.Event()
     watcher_stop = threading.Event()
@@ -798,6 +874,12 @@ def main():
         daemon=True,
     )
     start_thread.start()
+    answer_thread = threading.Thread(
+        target=touch_answer_interrupt_watcher,
+        args=(touch, leds, answering_event, answer_interrupt_event, watcher_stop, radio_mode_event),
+        daemon=True,
+    )
+    answer_thread.start()
     log_action("touch_watchers_started")
 
     if args.mic_test:
@@ -919,6 +1001,7 @@ def main():
                         stop_moc_stream()
                         radio_playing = False
                         radio_paused = True
+                        _sync_radio_mode(radio_mode_event, radio_playing, radio_paused)
                         paused_event.set()
                         resume_event.clear()
                         interrupt_event.clear()
@@ -943,6 +1026,7 @@ def main():
                     radio_station_index = find_station_index(stations, radio_last_url)
                     radio_playing = True
                     radio_paused = False
+                    _sync_radio_mode(radio_mode_event, radio_playing, radio_paused)
                     paused_event.clear()
                     log_action("radio_resume", source="touch_double_tap", url=radio_last_url)
                     continue
@@ -991,6 +1075,7 @@ def main():
                 radio_station_index = find_station_index(stations, station["url"])
                 radio_playing = True
                 radio_paused = False
+                _sync_radio_mode(radio_mode_event, radio_playing, radio_paused)
                 paused_event.clear()
                 log_action(
                     "radio_start",
@@ -1008,6 +1093,7 @@ def main():
                 start_moc_stream(radio_last_url)
                 radio_playing = True
                 radio_paused = False
+                _sync_radio_mode(radio_mode_event, radio_playing, radio_paused)
                 paused_event.clear()
                 log_action("radio_resume", source="touch_double_tap", url=radio_last_url)
                 continue
@@ -1159,14 +1245,17 @@ def main():
                 command = radio_override
                 log_action("command_normalized", normalized=command)
             if "play radio bbc" in command or "start radio bbc" in command:
+                _begin_answering(answering_event, answer_interrupt_event, context="radio_start")
                 leds.set_state("speak")
                 speaker.say("Starting BBC World Service.")
-                speaker.wait_idle()
+                _wait_for_speaker_or_interrupt(speaker, answer_interrupt_event)
+                _end_answering(answering_event, context="radio_start")
                 start_moc_stream(BBC_WORLD_SERVICE_URL)
                 radio_playing = True
                 radio_paused = False
                 radio_last_url = BBC_WORLD_SERVICE_URL
                 radio_station_index = find_station_index(stations, BBC_WORLD_SERVICE_URL)
+                _sync_radio_mode(radio_mode_event, radio_playing, radio_paused)
                 paused_event.clear()
                 interrupt_event.clear()
                 log_action(
@@ -1175,6 +1264,9 @@ def main():
                     name="BBC World Service",
                     url=BBC_WORLD_SERVICE_URL,
                 )
+                if _handle_answer_interrupt(answer_interrupt_event, answering_event, speaker, leds):
+                    convo_deadline = None
+                    continue
                 if convo_deadline is not None:
                     convo_deadline = time.time() + CONVO_WINDOW_SECONDS
                 continue
@@ -1187,14 +1279,17 @@ def main():
                         break
                 for key, url in RADIO_URLS.items():
                     if f"play radio {key}" in command:
+                        _begin_answering(answering_event, answer_interrupt_event, context="radio_start")
                         leds.set_state("speak")
                         speaker.say(f"Starting radio {key}.")
-                        speaker.wait_idle()
+                        _wait_for_speaker_or_interrupt(speaker, answer_interrupt_event)
+                        _end_answering(answering_event, context="radio_start")
                         start_moc_stream(url)
                         radio_playing = True
                         radio_paused = False
                         radio_last_url = url
                         radio_station_index = find_station_index(stations, url)
+                        _sync_radio_mode(radio_mode_event, radio_playing, radio_paused)
                         paused_event.clear()
                         interrupt_event.clear()
                         log_action(
@@ -1203,6 +1298,9 @@ def main():
                             name=f"Radio {key}",
                             url=url,
                         )
+                        if _handle_answer_interrupt(answer_interrupt_event, answering_event, speaker, leds):
+                            convo_deadline = None
+                            break
                         break
                 else:
                     print(f"Unknown radio command: {text}")
@@ -1211,19 +1309,26 @@ def main():
                     convo_deadline = time.time() + CONVO_WINDOW_SECONDS
                 continue
             if "stop radio" in command:
+                _begin_answering(answering_event, answer_interrupt_event, context="radio_stop")
                 leds.set_state("speak")
                 speaker.say("Stopping the radio.")
-                speaker.wait_idle()
+                _wait_for_speaker_or_interrupt(speaker, answer_interrupt_event)
+                _end_answering(answering_event, context="radio_stop")
                 stop_moc_stream()
                 radio_playing = False
                 radio_paused = False
+                _sync_radio_mode(radio_mode_event, radio_playing, radio_paused)
                 paused_event.clear()
                 interrupt_event.clear()
                 log_action("radio_stop", source="voice")
+                if _handle_answer_interrupt(answer_interrupt_event, answering_event, speaker, leds):
+                    convo_deadline = None
+                    continue
                 if convo_deadline is not None:
                     convo_deadline = time.time() + CONVO_WINDOW_SECONDS
                 continue
             if "battery" in command:
+                _begin_answering(answering_event, answer_interrupt_event, context="battery")
                 leds.set_state("speak")
                 try:
                     voltage, percent = get_battery_status()
@@ -1234,7 +1339,11 @@ def main():
                     speaker.say("Sorry, I cannot read the battery right now.")
                     print("Battery: unavailable")
                     log_action("battery_query", error="unavailable")
-                speaker.wait_idle()
+                _wait_for_speaker_or_interrupt(speaker, answer_interrupt_event)
+                _end_answering(answering_event, context="battery")
+                if _handle_answer_interrupt(answer_interrupt_event, answering_event, speaker, leds):
+                    convo_deadline = None
+                    continue
                 if convo_deadline is not None:
                     convo_deadline = time.time() + CONVO_WINDOW_SECONDS
                 continue
@@ -1242,10 +1351,15 @@ def main():
             if "stop smart" in command:
                 use_chatgpt = False
                 use_chatgpt_pro = False
+                _begin_answering(answering_event, answer_interrupt_event, context="smart_off")
                 leds.set_state("speak")
                 speaker.say("Switching to local model.")
-                speaker.wait_idle()
+                _wait_for_speaker_or_interrupt(speaker, answer_interrupt_event)
+                _end_answering(answering_event, context="smart_off")
                 log_action("mode_smart", enabled=False)
+                if _handle_answer_interrupt(answer_interrupt_event, answering_event, speaker, leds):
+                    convo_deadline = None
+                    continue
                 if convo_deadline is not None:
                     convo_deadline = time.time() + CONVO_WINDOW_SECONDS
                 print("Smart mode: off")
@@ -1253,10 +1367,15 @@ def main():
             if "smart mode pro" in command or "smart dog pro" in command:
                 use_chatgpt = False
                 use_chatgpt_pro = True
+                _begin_answering(answering_event, answer_interrupt_event, context="smart_pro_on")
                 leds.set_state("speak")
                 speaker.say("Hello, I am a full LLM pipe to ChatGPT.")
-                speaker.wait_idle()
+                _wait_for_speaker_or_interrupt(speaker, answer_interrupt_event)
+                _end_answering(answering_event, context="smart_pro_on")
                 log_action("mode_smart_pro", enabled=True)
+                if _handle_answer_interrupt(answer_interrupt_event, answering_event, speaker, leds):
+                    convo_deadline = None
+                    continue
                 if convo_deadline is not None:
                     convo_deadline = time.time() + CONVO_WINDOW_SECONDS
                 print("Smart mode: pro")
@@ -1264,10 +1383,15 @@ def main():
             if "go smart" in command or "smart mode" in command or "smart dog" in command:
                 use_chatgpt = True
                 use_chatgpt_pro = False
+                _begin_answering(answering_event, answer_interrupt_event, context="smart_on")
                 leds.set_state("speak")
                 speaker.say("ChatGPT here, how can I help?")
-                speaker.wait_idle()
+                _wait_for_speaker_or_interrupt(speaker, answer_interrupt_event)
+                _end_answering(answering_event, context="smart_on")
                 log_action("mode_smart", enabled=True)
+                if _handle_answer_interrupt(answer_interrupt_event, answering_event, speaker, leds):
+                    convo_deadline = None
+                    continue
                 if convo_deadline is not None:
                     convo_deadline = time.time() + CONVO_WINDOW_SECONDS
                 print("Smart mode: on")
@@ -1277,13 +1401,18 @@ def main():
             prompt_text = f"{build_context(history)}{command}"
             buffer = ""
             full_response = ""
+            _begin_answering(answering_event, answer_interrupt_event, context="response")
             leds.set_state("speak")
+            answer_interrupted = False
+            api_key_missing = False
             try:
                 active_prompt = None if use_chatgpt else SYSTEM_PROMPT
                 active_max_phrases = None if use_chatgpt else 4
                 active_max_chars = None if use_chatgpt else 260
                 active_max_words = None if use_chatgpt else 32
                 if use_chatgpt_pro:
+                    if answer_interrupt_event.is_set():
+                        raise RuntimeError("answer_interrupt")
                     t0 = time.perf_counter()
                     response_text, usage = openai_chat_reply(
                         prompt_text,
@@ -1292,6 +1421,8 @@ def main():
                             "You are a helpful robot dog. Reply in English only, no more than two short sentences."
                         ),
                     )
+                    if answer_interrupt_event.is_set():
+                        raise RuntimeError("answer_interrupt")
                     timing["llm"] = time.perf_counter() - t0
                     response_text = sanitize_tts_text(response_text)
                     sentences, remainder = split_sentences(response_text)
@@ -1316,19 +1447,24 @@ def main():
                                 model=CHATGPT_TTS_MODEL,
                                 voice=CHATGPT_TTS_VOICE,
                             )
+                            if answer_interrupt_event.is_set():
+                                raise RuntimeError("answer_interrupt")
                             timing["tts"] = time.perf_counter() - t0
                             wav_out_s = wav_seconds(tmp_path)
                             if wav_out_s > 120.0:
                                 wav_out_s = 0.0
                             t0 = time.perf_counter()
                             timing["start_play"] = t0 - t_start
-                            subprocess.run(["aplay", "-q", tmp_path], check=False)
+                            if not _play_wav_interruptible(tmp_path, answer_interrupt_event):
+                                raise RuntimeError("answer_interrupt")
                             timing["play"] = time.perf_counter() - t0
                             audio_out_s = timing["play"] if timing["play"] > 0.1 else wav_out_s
                         except Exception as exc:
-                            print(f"Pro TTS failed: {exc}")
+                            if str(exc) != "answer_interrupt":
+                                print(f"Pro TTS failed: {exc}")
                             timing["start_play"] = time.perf_counter() - t_start
-                            speaker.say(response_text)
+                            if response_text:
+                                speaker.say(response_text)
                         finally:
                             try:
                                 os.unlink(tmp_path)
@@ -1370,6 +1506,8 @@ def main():
                             f"(in={audio_in_s:.2f}s out={audio_out_s:.2f}s)"
                         )
                 else:
+                    if answer_interrupt_event.is_set():
+                        raise RuntimeError("answer_interrupt")
                     for chunk in stream_reply(
                         prompt_text,
                         model=CHATGPT_MODEL if use_chatgpt else LLM_MODEL,
@@ -1378,30 +1516,47 @@ def main():
                         max_chars=active_max_chars,
                         max_words=active_max_words,
                     ):
+                        if answer_interrupt_event.is_set():
+                            raise RuntimeError("answer_interrupt")
                         sys.stdout.write(chunk)
                         sys.stdout.flush()
                         buffer += chunk
                         full_response += chunk
                         sentences, buffer = split_sentences(buffer)
                     for sentence in sentences:
+                        if answer_interrupt_event.is_set():
+                            raise RuntimeError("answer_interrupt")
                         speaker.say(sanitize_tts_text(sentence))
             except RuntimeError as exc:
-                if "OPENAI_API_KEY" in str(exc):
+                if str(exc) == "answer_interrupt":
+                    answer_interrupted = True
+                elif "OPENAI_API_KEY" in str(exc):
                     use_chatgpt = False
                     use_chatgpt_pro = False
                     leds.set_state("speak")
                     speaker.say("Smart mode needs an API key. Switching to local model.")
-                    speaker.wait_idle()
+                    _wait_for_speaker_or_interrupt(speaker, answer_interrupt_event)
                     log_action("mode_smart", enabled=False, reason="missing_api_key")
+                    api_key_missing = True
+                else:
+                    raise
+
+            if api_key_missing:
+                _end_answering(answering_event, context="response")
+                if _handle_answer_interrupt(answer_interrupt_event, answering_event, speaker, leds):
+                    convo_deadline = None
+                continue
+            if answer_interrupted:
+                if _handle_answer_interrupt(answer_interrupt_event, answering_event, speaker, leds):
+                    convo_deadline = None
                     continue
-                raise
 
             if buffer.strip():
                 cleaned = sanitize_tts_text(buffer)
                 if cleaned:
                     speaker.say(cleaned)
                     full_response += cleaned
-            speaker.wait_idle()
+            _wait_for_speaker_or_interrupt(speaker, answer_interrupt_event)
             if full_response.strip():
                 log_action(
                     "response",
@@ -1409,6 +1564,10 @@ def main():
                     mode="chatgpt_pro" if use_chatgpt_pro else ("chatgpt" if use_chatgpt else "local"),
                 )
             print()
+            _end_answering(answering_event, context="response")
+            if _handle_answer_interrupt(answer_interrupt_event, answering_event, speaker, leds):
+                convo_deadline = None
+                continue
             convo_deadline = time.time() + CONVO_WINDOW_SECONDS
             final_sentences, _ = split_sentences(full_response)
             for sentence in final_sentences[-MEMORY_SENTENCES:]:
@@ -1420,6 +1579,7 @@ def main():
         watcher_stop.set()
         watcher_thread.join(timeout=1)
         start_thread.join(timeout=1)
+        answer_thread.join(timeout=1)
         touch.close()
         leds.stop()
         speaker.stop()

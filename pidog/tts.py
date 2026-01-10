@@ -48,12 +48,16 @@ def _resolve_output_device(pa, device):
     return None
 
 
-def _piper_stream_to_device(tts, text, output_device):
+def _piper_stream_to_device(tts, text, output_device, stop_event=None):
     if pyaudio is None:
+        if stop_event is not None and stop_event.is_set():
+            return
         tts.say(text, stream=True)
         return
     if tts.piper is None:
         raise ValueError("Piper model not initialized. Call set_model first.")
+    if stop_event is not None and stop_event.is_set():
+        return
 
     length_scale = getattr(tts, "_length_scale", None)
     syn_config = None
@@ -77,6 +81,8 @@ def _piper_stream_to_device(tts, text, output_device):
     )
     try:
         for chunk in tts.piper.synthesize(text, syn_config=syn_config):
+            if stop_event is not None and stop_event.is_set():
+                break
             data = chunk.audio_int16_bytes
             if target_rate != tts.piper.config.sample_rate:
                 samples = np.frombuffer(data, dtype=np.int16)
@@ -94,12 +100,14 @@ def _piper_stream_to_device(tts, text, output_device):
         pa.terminate()
 
 
-def speak_text(tts, text, output_device=None):
+def speak_text(tts, text, output_device=None, stop_event=None):
     if not text:
+        return
+    if stop_event is not None and stop_event.is_set():
         return
     if isinstance(tts, Piper):
         try:
-            _piper_stream_to_device(tts, text, output_device)
+            _piper_stream_to_device(tts, text, output_device, stop_event=stop_event)
             return
         except OSError:
             pass
@@ -112,6 +120,8 @@ class SpeechQueue:
         self._output_device = output_device
         self._queue = queue.Queue()
         self._stop = threading.Event()
+        self._cancel = threading.Event()
+        self._speaking = threading.Event()
         self._idle = threading.Event()
         self._idle.set()
         self._thread = threading.Thread(target=self._worker, daemon=True)
@@ -124,6 +134,19 @@ class SpeechQueue:
         if text:
             self._idle.clear()
             self._queue.put(text)
+
+    def cancel(self):
+        self._cancel.set()
+        while True:
+            try:
+                self._queue.get_nowait()
+            except queue.Empty:
+                break
+        if not self._speaking.is_set():
+            self._idle.set()
+
+    def is_idle(self):
+        return self._idle.is_set()
 
     def stop(self):
         self._stop.set()
@@ -138,9 +161,12 @@ class SpeechQueue:
             item = self._queue.get()
             if item is None:
                 return
+            self._cancel.clear()
+            self._speaking.set()
             try:
-                speak_text(self._tts, item, self._output_device)
+                speak_text(self._tts, item, self._output_device, stop_event=self._cancel)
             except Exception:
                 pass
+            self._speaking.clear()
             if self._queue.empty():
                 self._idle.set()
