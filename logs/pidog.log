@@ -1488,3 +1488,283 @@
 2026-01-10 22:03:04 INFO action=audio_recorded ok=True duration=4.600 rms=0.002 mode='chatgpt_pro'
 2026-01-10 22:03:04 INFO action=audio_low_rms rms=0.002 threshold=0.004
 2026-01-10 22:03:04 INFO action=wake_listen_start
+2026-01-10 22:03:11 INFO action=shutdown reason='keyboard_interrupt'
+2026-01-10 22:03:11 INFO action=shutdown reason='cleanup_complete'
+2026-01-10 22:03:20 INFO logging ready path=/home/pat/pidog/logs/pidog.log level=INFO
+2026-01-10 22:03:20 INFO action=startup pid=30415 args={'mic_test': False, 'list_audio': False, 'mic_device': None, 'debug_latency': True} log_path='/home/pat/pidog/logs/pidog.log'
+2026-01-10 22:03:20 INFO action=config_audio max_utterance_seconds=6 silence_threshold=0.007 silence_seconds=0.650 notes='threshold=rms cutoff, silence=end-of-speech window'
+2026-01-10 22:03:20 INFO action=single_instance pidfile='/tmp/pidog.pid' pid=30415
+2026-01-10 22:03:20 INFO action=mic_device_selected index=1 name='USB PnP Sound Device: Audio (hw:3,0)'
+2026-01-10 22:03:20 INFO action=stt_init_start engine='vosk' device=1
+2026-01-10 22:03:20 INFO action=stt_init mode='async' device=1
+2026-01-10 22:03:20 INFO action=models tts_engine='piper' tts_model='en_US-amy-low' llm_model='llama3.2:1b'
+2026-01-10 22:03:21 INFO action=init_tts seconds=1.337 engine='piper' model='en_US-amy-low'
+2026-01-10 22:03:21 INFO action=init_speaker seconds=0.000
+2026-01-10 22:03:22 INFO action=init_leds seconds=0.236
+2026-01-10 22:03:22 INFO action=init_touch seconds=0.005
+2026-01-10 22:03:22 INFO action=battery_status voltage=8.362 percent=98
+2026-01-10 22:03:22 INFO action=stations_loaded count=18 names=['NPO Radio 1 (MP3)', 'NPO Radio 2 (MP3)', 'NPO 3FM (MP3)', 'NPO Klassiek (MP3)', 'NPO Radio 5 (MP3)', 'NPO Blend (MP3)', 'FunX (MP3)', 'BBC World Service (MP3)', 'Frequence 3 (MP3 256)', 'Frequence 3 Urban (MP3 256)', 'Frequence 3 (MP3 128)', 'Frequence 3 Urban (MP3 128)', 'Frequence 3 (AAC 64)', 'Frequence 3 Urban (AAC 64)', 'Frequence 3 Gold (MP3 160)', 'Frequence 3 Gold (AAC 64)', 'Frequence 3 Dance (MP3 160)', 'Frequence 3 Dance (AAC 64)']
+2026-01-10 22:03:22 INFO action=touch_watchers_started
+2026-01-10 22:03:22 INFO action=stt_init_ready engine='vosk' stt_model='vosk-model-small-en-us-0.15' init_stt_seconds=2.373
+2026-01-10 22:03:24 INFO action=mode_smart_pro enabled=True
+2026-01-10 22:03:24 INFO action=ready wake_words=['ziggy', 'pidog', 'pie dog', 'hi dog']
+2026-01-10 22:03:24 INFO action=convo_window seconds=15 wake_word_delayed=True
+2026-01-10 22:03:24 INFO action=convo_active seconds_left=14
+2026-01-10 22:03:24 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:03:30 INFO action=audio_recorded ok=True duration=4.800 rms=0.001 mode='chatgpt_pro'
+2026-01-10 22:03:30 INFO action=audio_low_rms rms=0.001 threshold=0.004
+2026-01-10 22:03:30 INFO action=convo_active seconds_left=8
+2026-01-10 22:03:30 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:03:36 INFO action=audio_recorded ok=True duration=4.400 rms=0.002 mode='chatgpt_pro'
+2026-01-10 22:03:36 INFO action=audio_low_rms rms=0.002 threshold=0.004
+2026-01-10 22:03:36 INFO action=convo_active seconds_left=2
+2026-01-10 22:03:36 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:03:42 INFO action=audio_recorded ok=True duration=5.000 rms=0.001 mode='chatgpt_pro'
+2026-01-10 22:03:42 INFO action=audio_low_rms rms=0.001 threshold=0.004
+2026-01-10 22:03:42 INFO action=wake_listen_start
+2026-01-10 22:03:42 INFO action=stt_ready engine='vosk' stt_model='vosk-model-small-en-us-0.15'
+2026-01-10 22:04:21 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:04:28 INFO action=audio_recorded ok=True duration=4.400 rms=0.001 mode='chatgpt_pro'
+2026-01-10 22:04:28 INFO action=audio_low_rms rms=0.001 threshold=0.004
+2026-01-10 22:04:28 INFO action=wake_listen_start
+2026-01-10 22:04:53 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:04:59 INFO action=audio_recorded ok=True duration=3.200 rms=0.003 mode='chatgpt_pro'
+2026-01-10 22:04:59 INFO action=audio_low_rms rms=0.003 threshold=0.004
+2026-01-10 22:04:59 INFO action=wake_listen_start
+2026-01-10 22:05:19 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:05:25 INFO action=audio_recorded ok=True duration=3.800 rms=0.006 mode='chatgpt_pro'
+2026-01-10 22:05:27 INFO action=transcript text='.' engine='openai' language='en'
+2026-01-10 22:05:27 INFO action=transcript_dropped reason='non_english' text='.'
+2026-01-10 22:05:27 INFO action=wake_listen_start
+2026-01-10 22:06:12 INFO action=shutdown reason='keyboard_interrupt'
+2026-01-10 22:06:12 INFO action=shutdown reason='cleanup_complete'
+2026-01-10 22:06:19 INFO logging ready path=/home/pat/pidog/logs/pidog.log level=INFO
+2026-01-10 22:06:19 INFO action=startup pid=31602 args={'mic_test': False, 'list_audio': False, 'mic_device': None, 'debug_latency': True} log_path='/home/pat/pidog/logs/pidog.log'
+2026-01-10 22:06:19 INFO action=config_audio max_utterance_seconds=6 silence_threshold=0.007 silence_seconds=0.650 notes='threshold=rms cutoff, silence=end-of-speech window'
+2026-01-10 22:06:19 INFO action=single_instance pidfile='/tmp/pidog.pid' pid=31602
+2026-01-10 22:06:19 INFO action=mic_device_selected index=1 name='USB PnP Sound Device: Audio (hw:3,0)'
+2026-01-10 22:06:19 INFO action=stt_init_start engine='vosk' device=1
+2026-01-10 22:06:19 INFO action=stt_init mode='async' device=1
+2026-01-10 22:06:19 INFO action=models tts_engine='piper' tts_model='en_US-amy-low' llm_model='llama3.2:1b'
+2026-01-10 22:06:21 INFO action=init_tts seconds=1.262 engine='piper' model='en_US-amy-low'
+2026-01-10 22:06:21 INFO action=init_speaker seconds=0.000
+2026-01-10 22:06:21 INFO action=init_leds seconds=0.236
+2026-01-10 22:06:21 INFO action=init_touch seconds=0.005
+2026-01-10 22:06:21 INFO action=battery_status voltage=8.372 percent=99
+2026-01-10 22:06:21 INFO action=stations_loaded count=18 names=['NPO Radio 1 (MP3)', 'NPO Radio 2 (MP3)', 'NPO 3FM (MP3)', 'NPO Klassiek (MP3)', 'NPO Radio 5 (MP3)', 'NPO Blend (MP3)', 'FunX (MP3)', 'BBC World Service (MP3)', 'Frequence 3 (MP3 256)', 'Frequence 3 Urban (MP3 256)', 'Frequence 3 (MP3 128)', 'Frequence 3 Urban (MP3 128)', 'Frequence 3 (AAC 64)', 'Frequence 3 Urban (AAC 64)', 'Frequence 3 Gold (MP3 160)', 'Frequence 3 Gold (AAC 64)', 'Frequence 3 Dance (MP3 160)', 'Frequence 3 Dance (AAC 64)']
+2026-01-10 22:06:21 INFO action=touch_watchers_started
+2026-01-10 22:06:22 INFO action=stt_init_ready engine='vosk' stt_model='vosk-model-small-en-us-0.15' init_stt_seconds=2.267
+2026-01-10 22:06:23 INFO action=mode_smart_pro enabled=True
+2026-01-10 22:06:23 INFO action=ready wake_words=['ziggy', 'pidog', 'pie dog', 'hi dog']
+2026-01-10 22:06:23 INFO action=convo_window seconds=15 wake_word_delayed=True
+2026-01-10 22:06:23 INFO action=convo_active seconds_left=14
+2026-01-10 22:06:23 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:06:29 INFO action=audio_recorded ok=True duration=4.800 rms=0.001 mode='chatgpt_pro'
+2026-01-10 22:06:29 INFO action=audio_low_rms rms=0.001 threshold=0.004
+2026-01-10 22:06:29 INFO action=convo_active seconds_left=8
+2026-01-10 22:06:29 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:06:36 INFO action=audio_recorded ok=True duration=4.600 rms=0.001 mode='chatgpt_pro'
+2026-01-10 22:06:36 INFO action=audio_low_rms rms=0.001 threshold=0.004
+2026-01-10 22:06:36 INFO action=convo_active seconds_left=2
+2026-01-10 22:06:36 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:06:42 INFO action=audio_recorded ok=True duration=3.400 rms=0.001 mode='chatgpt_pro'
+2026-01-10 22:06:42 INFO action=audio_low_rms rms=0.001 threshold=0.004
+2026-01-10 22:06:42 INFO action=wake_listen_start
+2026-01-10 22:06:42 INFO action=stt_ready engine='vosk' stt_model='vosk-model-small-en-us-0.15'
+2026-01-10 22:07:02 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:07:08 INFO action=audio_recorded ok=True duration=3.600 rms=0.001 mode='chatgpt_pro'
+2026-01-10 22:07:08 INFO action=audio_low_rms rms=0.001 threshold=0.004
+2026-01-10 22:07:08 INFO action=wake_listen_start
+2026-01-10 22:07:13 INFO action=shutdown reason='keyboard_interrupt'
+2026-01-10 22:07:13 INFO action=shutdown reason='cleanup_complete'
+2026-01-10 22:07:19 INFO logging ready path=/home/pat/pidog/logs/pidog.log level=INFO
+2026-01-10 22:07:19 INFO action=startup pid=32384 args={'mic_test': False, 'list_audio': False, 'mic_device': None, 'debug_latency': True} log_path='/home/pat/pidog/logs/pidog.log'
+2026-01-10 22:07:19 INFO action=config_audio max_utterance_seconds=6 silence_threshold=0.007 silence_seconds=0.650 notes='threshold=rms cutoff, silence=end-of-speech window'
+2026-01-10 22:07:19 INFO action=single_instance pidfile='/tmp/pidog.pid' pid=32384
+2026-01-10 22:07:19 INFO action=mic_device_selected index=1 name='USB PnP Sound Device: Audio (hw:3,0)'
+2026-01-10 22:07:19 INFO action=stt_init_start engine='vosk' device=1
+2026-01-10 22:07:19 INFO action=stt_init mode='async' device=1
+2026-01-10 22:07:19 INFO action=models tts_engine='piper' tts_model='en_US-amy-low' llm_model='llama3.2:1b'
+2026-01-10 22:07:20 INFO action=init_tts seconds=1.280 engine='piper' model='en_US-amy-low'
+2026-01-10 22:07:20 INFO action=init_speaker seconds=0.000
+2026-01-10 22:07:20 INFO action=init_leds seconds=0.237
+2026-01-10 22:07:20 INFO action=init_touch seconds=0.005
+2026-01-10 22:07:20 INFO action=battery_status voltage=8.375 percent=99
+2026-01-10 22:07:20 INFO action=stations_loaded count=18 names=['NPO Radio 1 (MP3)', 'NPO Radio 2 (MP3)', 'NPO 3FM (MP3)', 'NPO Klassiek (MP3)', 'NPO Radio 5 (MP3)', 'NPO Blend (MP3)', 'FunX (MP3)', 'BBC World Service (MP3)', 'Frequence 3 (MP3 256)', 'Frequence 3 Urban (MP3 256)', 'Frequence 3 (MP3 128)', 'Frequence 3 Urban (MP3 128)', 'Frequence 3 (AAC 64)', 'Frequence 3 Urban (AAC 64)', 'Frequence 3 Gold (MP3 160)', 'Frequence 3 Gold (AAC 64)', 'Frequence 3 Dance (MP3 160)', 'Frequence 3 Dance (AAC 64)']
+2026-01-10 22:07:20 INFO action=touch_watchers_started
+2026-01-10 22:07:21 INFO action=stt_init_ready engine='vosk' stt_model='vosk-model-small-en-us-0.15' init_stt_seconds=2.304
+2026-01-10 22:07:23 INFO action=mode_smart_pro enabled=True
+2026-01-10 22:07:23 INFO action=ready wake_words=['ziggy', 'pidog', 'pie dog', 'hi dog']
+2026-01-10 22:07:23 INFO action=convo_window seconds=15 wake_word_delayed=True
+2026-01-10 22:07:23 INFO action=convo_active seconds_left=14
+2026-01-10 22:07:23 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:07:29 INFO action=audio_recorded ok=True duration=4.800 rms=0.001 mode='chatgpt_pro'
+2026-01-10 22:07:29 INFO action=audio_low_rms rms=0.001 threshold=0.004
+2026-01-10 22:07:29 INFO action=convo_active seconds_left=8
+2026-01-10 22:07:29 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:07:35 INFO action=audio_recorded ok=True duration=4.200 rms=0.001 mode='chatgpt_pro'
+2026-01-10 22:07:35 INFO action=audio_low_rms rms=0.001 threshold=0.004
+2026-01-10 22:07:35 INFO action=convo_active seconds_left=2
+2026-01-10 22:07:35 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:07:41 INFO action=audio_recorded ok=True duration=5.000 rms=0.001 mode='chatgpt_pro'
+2026-01-10 22:07:41 INFO action=audio_low_rms rms=0.001 threshold=0.004
+2026-01-10 22:07:41 INFO action=wake_listen_start
+2026-01-10 22:07:41 INFO action=stt_ready engine='vosk' stt_model='vosk-model-small-en-us-0.15'
+2026-01-10 22:07:56 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:08:02 INFO action=audio_recorded ok=True duration=4.200 rms=0.001 mode='chatgpt_pro'
+2026-01-10 22:08:02 INFO action=audio_low_rms rms=0.001 threshold=0.004
+2026-01-10 22:08:02 INFO action=wake_listen_start
+2026-01-10 22:08:22 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:08:28 INFO action=audio_recorded ok=True duration=3.200 rms=0.001 mode='chatgpt_pro'
+2026-01-10 22:08:28 INFO action=audio_low_rms rms=0.001 threshold=0.004
+2026-01-10 22:08:28 INFO action=wake_listen_start
+2026-01-10 22:08:48 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:08:53 INFO action=audio_recorded ok=True duration=4.200 rms=0.008 mode='chatgpt_pro'
+2026-01-10 22:08:55 INFO action=transcript text='Help me explain what is happening.' engine='openai' language='en'
+2026-01-10 22:08:55 INFO action=command_received raw='Help me explain what is happening.' normalized='help me explain what is happening.' confidence=1.000 mode='chatgpt_pro'
+2026-01-10 22:09:01 INFO action=response text="Sure! Please provide more details about the situation you'd like help with." mode='chatgpt_pro'
+2026-01-10 22:09:01 INFO action=convo_active seconds_left=14
+2026-01-10 22:09:01 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:09:05 INFO action=audio_recorded ok=True duration=1.800 rms=0.009 mode='chatgpt_pro'
+2026-01-10 22:09:05 INFO action=transcript text='Telepræent.' engine='openai' language='en'
+2026-01-10 22:09:05 INFO action=transcript_dropped reason='non_english' text='Telepræent.'
+2026-01-10 22:09:05 INFO action=convo_active seconds_left=10
+2026-01-10 22:09:05 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:09:12 INFO action=audio_recorded ok=True duration=4.600 rms=0.001 mode='chatgpt_pro'
+2026-01-10 22:09:12 INFO action=audio_low_rms rms=0.001 threshold=0.004
+2026-01-10 22:09:12 INFO action=convo_active seconds_left=4
+2026-01-10 22:09:12 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:09:18 INFO action=audio_recorded ok=True duration=3.800 rms=0.004 mode='chatgpt_pro'
+2026-01-10 22:09:19 INFO action=transcript text='See what' engine='openai' language='en'
+2026-01-10 22:09:19 INFO action=command_received raw='See what' normalized='see what' confidence=1.000 mode='chatgpt_pro'
+2026-01-10 22:09:27 INFO action=response text='I need more information to assist you better. What specific situation are you referring to?' mode='chatgpt_pro'
+2026-01-10 22:09:27 INFO action=convo_active seconds_left=14
+2026-01-10 22:09:27 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:09:33 INFO action=audio_recorded ok=True duration=5.200 rms=0.001 mode='chatgpt_pro'
+2026-01-10 22:09:33 INFO action=audio_low_rms rms=0.001 threshold=0.004
+2026-01-10 22:09:33 INFO action=convo_active seconds_left=8
+2026-01-10 22:09:33 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:09:39 INFO action=audio_recorded ok=True duration=3.200 rms=0.001 mode='chatgpt_pro'
+2026-01-10 22:09:39 INFO action=audio_low_rms rms=0.001 threshold=0.004
+2026-01-10 22:09:39 INFO action=convo_active seconds_left=2
+2026-01-10 22:09:39 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:09:45 INFO action=audio_recorded ok=True duration=5.000 rms=0.001 mode='chatgpt_pro'
+2026-01-10 22:09:45 INFO action=audio_low_rms rms=0.001 threshold=0.004
+2026-01-10 22:09:45 INFO action=wake_listen_start
+2026-01-10 22:10:05 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:10:07 INFO action=audio_recorded ok=True duration=1.600 rms=0.004 mode='chatgpt_pro'
+2026-01-10 22:10:08 INFO action=transcript text='.' engine='openai' language='en'
+2026-01-10 22:10:08 INFO action=transcript_dropped reason='non_english' text='.'
+2026-01-10 22:10:08 INFO action=wake_listen_start
+2026-01-10 22:10:28 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:10:34 INFO action=audio_recorded ok=True duration=3.400 rms=0.001 mode='chatgpt_pro'
+2026-01-10 22:10:34 INFO action=audio_low_rms rms=0.001 threshold=0.004
+2026-01-10 22:10:34 INFO action=wake_listen_start
+2026-01-10 22:10:53 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:10:59 INFO action=audio_recorded ok=True duration=3.800 rms=0.002 mode='chatgpt_pro'
+2026-01-10 22:10:59 INFO action=audio_low_rms rms=0.002 threshold=0.004
+2026-01-10 22:10:59 INFO action=wake_listen_start
+2026-01-10 22:11:11 INFO action=shutdown reason='keyboard_interrupt'
+2026-01-10 22:11:11 INFO action=shutdown reason='cleanup_complete'
+2026-01-10 22:11:15 INFO logging ready path=/home/pat/pidog/logs/pidog.log level=INFO
+2026-01-10 22:11:15 INFO action=startup pid=34122 args={'mic_test': False, 'list_audio': False, 'mic_device': None, 'debug_latency': True} log_path='/home/pat/pidog/logs/pidog.log'
+2026-01-10 22:11:15 INFO action=config_audio max_utterance_seconds=6 silence_threshold=0.007 silence_seconds=0.650 notes='threshold=rms cutoff, silence=end-of-speech window'
+2026-01-10 22:11:15 INFO action=single_instance pidfile='/tmp/pidog.pid' pid=34122
+2026-01-10 22:11:15 INFO action=mic_device_selected index=1 name='USB PnP Sound Device: Audio (hw:3,0)'
+2026-01-10 22:11:15 INFO action=stt_init_start engine='vosk' device=1
+2026-01-10 22:11:15 INFO action=stt_init mode='async' device=1
+2026-01-10 22:11:15 INFO action=models tts_engine='piper' tts_model='en_US-amy-low' llm_model='llama3.2:1b'
+2026-01-10 22:11:16 INFO action=init_tts seconds=1.271 engine='piper' model='en_US-amy-low'
+2026-01-10 22:11:16 INFO action=init_speaker seconds=0.000
+2026-01-10 22:11:16 INFO action=init_leds seconds=0.236
+2026-01-10 22:11:16 INFO action=init_touch seconds=0.005
+2026-01-10 22:11:16 INFO action=battery_status voltage=8.375 percent=99
+2026-01-10 22:11:16 INFO action=stations_loaded count=18 names=['NPO Radio 1 (MP3)', 'NPO Radio 2 (MP3)', 'NPO 3FM (MP3)', 'NPO Klassiek (MP3)', 'NPO Radio 5 (MP3)', 'NPO Blend (MP3)', 'FunX (MP3)', 'BBC World Service (MP3)', 'Frequence 3 (MP3 256)', 'Frequence 3 Urban (MP3 256)', 'Frequence 3 (MP3 128)', 'Frequence 3 Urban (MP3 128)', 'Frequence 3 (AAC 64)', 'Frequence 3 Urban (AAC 64)', 'Frequence 3 Gold (MP3 160)', 'Frequence 3 Gold (AAC 64)', 'Frequence 3 Dance (MP3 160)', 'Frequence 3 Dance (AAC 64)']
+2026-01-10 22:11:16 INFO action=touch_watchers_started
+2026-01-10 22:11:17 INFO action=stt_init_ready engine='vosk' stt_model='vosk-model-small-en-us-0.15' init_stt_seconds=2.317
+2026-01-10 22:11:19 INFO action=mode_smart_pro enabled=True
+2026-01-10 22:11:19 INFO action=ready wake_words=['ziggy', 'pidog', 'pie dog', 'hi dog']
+2026-01-10 22:11:19 INFO action=convo_window seconds=15 wake_word_delayed=True
+2026-01-10 22:11:19 INFO action=convo_active seconds_left=14
+2026-01-10 22:11:19 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:11:25 INFO action=audio_recorded ok=True duration=4.400 rms=0.002 mode='chatgpt_pro'
+2026-01-10 22:11:25 INFO action=audio_low_rms rms=0.002 threshold=0.004
+2026-01-10 22:11:25 INFO action=convo_active seconds_left=8
+2026-01-10 22:11:25 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:11:31 INFO action=audio_recorded ok=True duration=3.000 rms=0.002 mode='chatgpt_pro'
+2026-01-10 22:11:31 INFO action=audio_low_rms rms=0.002 threshold=0.004
+2026-01-10 22:11:31 INFO action=convo_active seconds_left=2
+2026-01-10 22:11:31 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:11:38 INFO action=audio_recorded ok=True duration=4.200 rms=0.002 mode='chatgpt_pro'
+2026-01-10 22:11:38 INFO action=audio_low_rms rms=0.002 threshold=0.004
+2026-01-10 22:11:38 INFO action=wake_listen_start
+2026-01-10 22:11:38 INFO action=stt_ready engine='vosk' stt_model='vosk-model-small-en-us-0.15'
+2026-01-10 22:11:58 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:12:04 INFO action=audio_recorded ok=True duration=4.600 rms=0.001 mode='chatgpt_pro'
+2026-01-10 22:12:04 INFO action=audio_low_rms rms=0.001 threshold=0.004
+2026-01-10 22:12:04 INFO action=wake_listen_start
+2026-01-10 22:12:25 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:12:31 INFO action=audio_recorded ok=True duration=4.200 rms=0.001 mode='chatgpt_pro'
+2026-01-10 22:12:31 INFO action=audio_low_rms rms=0.001 threshold=0.004
+2026-01-10 22:12:31 INFO action=wake_listen_start
+2026-01-10 22:12:38 INFO action=shutdown reason='keyboard_interrupt'
+2026-01-10 22:12:38 INFO action=shutdown reason='cleanup_complete'
+2026-01-10 22:12:41 INFO logging ready path=/home/pat/pidog/logs/pidog.log level=INFO
+2026-01-10 22:12:41 INFO action=startup pid=34985 args={'mic_test': False, 'list_audio': False, 'mic_device': None, 'debug_latency': True} log_path='/home/pat/pidog/logs/pidog.log'
+2026-01-10 22:12:41 INFO action=config_audio max_utterance_seconds=6 silence_threshold=0.007 silence_seconds=0.650 notes='threshold=rms cutoff, silence=end-of-speech window'
+2026-01-10 22:12:41 INFO action=single_instance pidfile='/tmp/pidog.pid' pid=34985
+2026-01-10 22:12:41 INFO action=mic_device_selected index=1 name='USB PnP Sound Device: Audio (hw:3,0)'
+2026-01-10 22:12:41 INFO action=stt_init_start engine='vosk' device=1
+2026-01-10 22:12:41 INFO action=stt_init mode='async' device=1
+2026-01-10 22:12:41 INFO action=models tts_engine='piper' tts_model='en_US-amy-low' llm_model='llama3.2:1b'
+2026-01-10 22:12:42 INFO action=init_tts seconds=1.338 engine='piper' model='en_US-amy-low'
+2026-01-10 22:12:42 INFO action=init_speaker seconds=0.000
+2026-01-10 22:12:42 INFO action=init_leds seconds=0.236
+2026-01-10 22:12:42 INFO action=init_touch seconds=0.005
+2026-01-10 22:12:42 INFO action=battery_status voltage=8.370 percent=98
+2026-01-10 22:12:42 INFO action=stations_loaded count=18 names=['NPO Radio 1 (MP3)', 'NPO Radio 2 (MP3)', 'NPO 3FM (MP3)', 'NPO Klassiek (MP3)', 'NPO Radio 5 (MP3)', 'NPO Blend (MP3)', 'FunX (MP3)', 'BBC World Service (MP3)', 'Frequence 3 (MP3 256)', 'Frequence 3 Urban (MP3 256)', 'Frequence 3 (MP3 128)', 'Frequence 3 Urban (MP3 128)', 'Frequence 3 (AAC 64)', 'Frequence 3 Urban (AAC 64)', 'Frequence 3 Gold (MP3 160)', 'Frequence 3 Gold (AAC 64)', 'Frequence 3 Dance (MP3 160)', 'Frequence 3 Dance (AAC 64)']
+2026-01-10 22:12:42 INFO action=touch_watchers_started
+2026-01-10 22:12:43 INFO action=stt_init_ready engine='vosk' stt_model='vosk-model-small-en-us-0.15' init_stt_seconds=2.407
+2026-01-10 22:12:45 INFO action=mode_smart_pro enabled=True
+2026-01-10 22:12:45 INFO action=ready wake_words=['ziggy', 'pidog', 'pie dog', 'hi dog']
+2026-01-10 22:12:45 INFO action=convo_window seconds=15 wake_word_delayed=True
+2026-01-10 22:12:45 INFO action=convo_active seconds_left=14
+2026-01-10 22:12:45 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:12:51 INFO action=audio_recorded ok=True duration=4.400 rms=0.002 mode='chatgpt_pro'
+2026-01-10 22:12:51 INFO action=audio_low_rms rms=0.002 threshold=0.004
+2026-01-10 22:12:51 INFO action=convo_active seconds_left=8
+2026-01-10 22:12:51 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:12:57 INFO action=audio_recorded ok=True duration=3.600 rms=0.002 mode='chatgpt_pro'
+2026-01-10 22:12:57 INFO action=audio_low_rms rms=0.002 threshold=0.004
+2026-01-10 22:12:57 INFO action=convo_active seconds_left=2
+2026-01-10 22:12:57 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:13:03 INFO action=audio_recorded ok=True duration=2.600 rms=0.003 mode='chatgpt_pro'
+2026-01-10 22:13:03 INFO action=audio_low_rms rms=0.003 threshold=0.004
+2026-01-10 22:13:03 INFO action=wake_listen_start
+2026-01-10 22:13:03 INFO action=stt_ready engine='vosk' stt_model='vosk-model-small-en-us-0.15'
+2026-01-10 22:13:42 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:13:48 INFO action=audio_recorded ok=True duration=3.000 rms=0.002 mode='chatgpt_pro'
+2026-01-10 22:13:48 INFO action=audio_low_rms rms=0.002 threshold=0.004
+2026-01-10 22:13:48 INFO action=wake_listen_start
+2026-01-10 22:14:08 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:14:14 INFO action=audio_recorded ok=True duration=3.400 rms=0.001 mode='chatgpt_pro'
+2026-01-10 22:14:14 INFO action=audio_low_rms rms=0.001 threshold=0.004
+2026-01-10 22:14:14 INFO action=wake_listen_start
+2026-01-10 22:14:25 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:14:32 INFO action=audio_recorded ok=True duration=3.800 rms=0.024 mode='chatgpt_pro'
+2026-01-10 22:14:33 INFO action=transcript text='about Iron Man 2.' engine='openai' language='en'
+2026-01-10 22:14:33 INFO action=command_received raw='about Iron Man 2.' normalized='about iron man 2.' confidence=1.000 mode='chatgpt_pro'
+2026-01-10 22:14:53 INFO action=response text='"Iron Man 2" follows Tony Stark as he faces new threats while dealing with his declining health due to the arc reactor in his chest. The film introduces characters like Black Widow and Whiplash, expanding the Marvel Cinematic Universe.' mode='chatgpt_pro'
+2026-01-10 22:14:53 INFO action=convo_active seconds_left=14
+2026-01-10 22:14:53 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:15:00 INFO action=audio_recorded ok=True duration=3.600 rms=0.001 mode='chatgpt_pro'
+2026-01-10 22:15:00 INFO action=audio_low_rms rms=0.001 threshold=0.004
+2026-01-10 22:15:00 INFO action=convo_active seconds_left=8
+2026-01-10 22:15:00 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:15:06 INFO action=audio_recorded ok=True duration=3.600 rms=0.002 mode='chatgpt_pro'
+2026-01-10 22:15:06 INFO action=audio_low_rms rms=0.002 threshold=0.004
+2026-01-10 22:15:06 INFO action=convo_active seconds_left=2
+2026-01-10 22:15:06 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:15:12 INFO action=audio_recorded ok=True duration=4.000 rms=0.002 mode='chatgpt_pro'
+2026-01-10 22:15:12 INFO action=audio_low_rms rms=0.002 threshold=0.004
+2026-01-10 22:15:12 INFO action=wake_listen_start

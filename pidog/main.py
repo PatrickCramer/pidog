@@ -718,6 +718,13 @@ def main():
         log_action("stt_init", mode="sync", device=mic_device, samplerate=MIC_SAMPLE_RATE)
     print(f"TTS: {TTS_ENGINE} {TTS_MODEL}")
     print(f"LLM: {LLM_MODEL}")
+    print(
+        "Audio params: "
+        f"max_utterance={MAX_UTTERANCE_SECONDS}s "
+        f"silence_threshold={CHATGPT_PRO_SILENCE_THRESHOLD} "
+        f"silence_seconds={CHATGPT_PRO_SILENCE_SECONDS}s"
+    )
+    print("Audio params: max_utterance=cap, silence_threshold=rms cutoff, silence_seconds=end-of-speech")
     log_action("models", tts_engine=TTS_ENGINE, tts_model=TTS_MODEL, llm_model=LLM_MODEL)
     t1 = time.time()
     tts = create_tts(engine=TTS_ENGINE, model=TTS_MODEL, length_scale=TTS_LENGTH_SCALE)
