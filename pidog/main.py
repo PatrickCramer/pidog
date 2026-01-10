@@ -27,6 +27,7 @@ from .leds import LedController
 from .tts import create_tts, SpeechQueue
 from .llm import stream_reply, openai_transcribe, openai_chat_reply, openai_tts_to_file
 from .dual_touch import DualTouch, TouchStyle
+from robot_hat import utils as rh_utils
 
 
 WAKE_WORDS = ["ziggy", "pidog", "pie dog", "hi dog"]
@@ -59,12 +60,27 @@ MIC_SAMPLE_RATE = None  # use device default for Vosk
 MIC_INPUT_RATE = 44100
 MIC_INPUT_DTYPE = "int16"
 CHATGPT_PRO_SILENCE_THRESHOLD = 0.003
-CHATGPT_PRO_SILENCE_SECONDS = 1.0
-CHATGPT_PRO_MIN_RMS = 0.006
+CHATGPT_PRO_SILENCE_SECONDS = 1.5
+CHATGPT_PRO_MIN_RMS = 0.004
 CHATGPT_PRO_WAKE_MIN_RMS = 0.0
 
+BATTERY_TABLE_2S = [
+    (8.40, 100),
+    (8.20, 90),
+    (8.00, 80),
+    (7.90, 70),
+    (7.80, 60),
+    (7.70, 50),
+    (7.60, 40),
+    (7.50, 30),
+    (7.30, 20),
+    (7.10, 10),
+    (6.80, 5),
+    (6.00, 0),
+]
+
 CONFIDENCE_THRESHOLD = 0.5
-MAX_UTTERANCE_SECONDS = 10
+MAX_UTTERANCE_SECONDS = 12
 SYSTEM_PROMPT = (
     "You are a helpful robot dog. Reply in English only, no more than four short phrases. "
     "Keep it friendly, funny and practical."
@@ -191,9 +207,9 @@ def is_likely_english(text):
         return False
     hits = sum(1 for t in tokens if t in COMMON_ENGLISH_WORDS)
     ratio = hits / len(tokens)
-    if len(tokens) <= 2:
-        return ratio >= 0.5
-    return ratio >= 0.2
+    if len(tokens) <= 3:
+        return True
+    return ratio >= 0.1
 
 
 def wav_seconds(path):
@@ -212,6 +228,18 @@ def estimate_costs(audio_in_s, audio_out_s, in_tokens, out_tokens):
         llm = (in_tokens / 1_000_000.0) * LLM_IN_USD_PER_1M
         llm += (out_tokens / 1_000_000.0) * LLM_OUT_USD_PER_1M
     return stt, tts, llm, (stt + tts + llm)
+
+
+def estimate_battery_percent(voltage, table=BATTERY_TABLE_2S):
+    if voltage >= table[0][0]:
+        return 100
+    if voltage <= table[-1][0]:
+        return 0
+    for (v1, p1), (v2, p2) in zip(table, table[1:]):
+        if v1 >= voltage >= v2:
+            t = (voltage - v2) / (v1 - v2)
+            return int(round(p2 + t * (p1 - p2)))
+    return 0
 
 
 def _read_pidfile(path):
@@ -573,6 +601,15 @@ def main():
     t4 = time.time()
     touch = DualTouch()
     print(f"Init: Touch {time.time() - t4:.2f}s")
+    try:
+        voltage = float(rh_utils.get_battery_voltage())
+        percent = estimate_battery_percent(voltage)
+        if percent <= 5:
+            print(f"\033[31mBattery: {voltage:.2f} V (~{percent}%)\033[0m")
+        else:
+            print(f"Battery: {voltage:.2f} V (~{percent}%)")
+    except Exception:
+        print("Battery: unavailable")
     stations = load_m3u_stations(M3U_PATH)
     if not stations:
         stations = [
