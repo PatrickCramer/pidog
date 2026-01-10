@@ -1319,3 +1319,172 @@
 2026-01-10 21:54:36 INFO action=audio_low_rms rms=0.001 threshold=0.004
 2026-01-10 21:54:36 INFO action=wake_listen_start
 2026-01-10 21:54:57 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 21:55:05 INFO action=audio_recorded ok=True duration=6.400 rms=0.001 mode='chatgpt_pro'
+2026-01-10 21:55:05 INFO action=audio_low_rms rms=0.001 threshold=0.004
+2026-01-10 21:55:05 INFO action=wake_listen_start
+2026-01-10 21:55:08 INFO action=shutdown reason='keyboard_interrupt'
+2026-01-10 21:55:08 INFO action=shutdown reason='cleanup_complete'
+2026-01-10 21:55:23 INFO logging ready path=/home/pat/pidog/logs/pidog.log level=INFO
+2026-01-10 21:55:23 INFO action=startup pid=27405 args={'mic_test': False, 'list_audio': False, 'mic_device': None, 'debug_latency': True} log_path='/home/pat/pidog/logs/pidog.log'
+2026-01-10 21:55:23 INFO action=single_instance pidfile='/tmp/pidog.pid' pid=27405
+2026-01-10 21:55:23 INFO action=mic_device_selected index=1 name='USB PnP Sound Device: Audio (hw:3,0)'
+2026-01-10 21:55:23 INFO action=stt_init_start engine='vosk' device=1
+2026-01-10 21:55:23 INFO action=stt_init mode='async' device=1
+2026-01-10 21:55:23 INFO action=models tts_engine='piper' tts_model='en_US-amy-low' llm_model='llama3.2:1b'
+2026-01-10 21:55:24 INFO action=init_tts seconds=1.251 engine='piper' model='en_US-amy-low'
+2026-01-10 21:55:24 INFO action=init_speaker seconds=0.000
+2026-01-10 21:55:24 INFO action=init_leds seconds=0.236
+2026-01-10 21:55:24 INFO action=init_touch seconds=0.005
+2026-01-10 21:55:24 INFO action=battery_status voltage=8.379 percent=99
+2026-01-10 21:55:24 INFO action=stations_loaded count=18 names=['NPO Radio 1 (MP3)', 'NPO Radio 2 (MP3)', 'NPO 3FM (MP3)', 'NPO Klassiek (MP3)', 'NPO Radio 5 (MP3)', 'NPO Blend (MP3)', 'FunX (MP3)', 'BBC World Service (MP3)', 'Frequence 3 (MP3 256)', 'Frequence 3 Urban (MP3 256)', 'Frequence 3 (MP3 128)', 'Frequence 3 Urban (MP3 128)', 'Frequence 3 (AAC 64)', 'Frequence 3 Urban (AAC 64)', 'Frequence 3 Gold (MP3 160)', 'Frequence 3 Gold (AAC 64)', 'Frequence 3 Dance (MP3 160)', 'Frequence 3 Dance (AAC 64)']
+2026-01-10 21:55:24 INFO action=touch_watchers_started
+2026-01-10 21:55:25 INFO action=stt_init_ready engine='vosk' stt_model='vosk-model-small-en-us-0.15' init_stt_seconds=2.241
+2026-01-10 21:55:27 INFO action=mode_smart_pro enabled=True
+2026-01-10 21:55:27 INFO action=ready wake_words=['ziggy', 'pidog', 'pie dog', 'hi dog']
+2026-01-10 21:55:27 INFO action=convo_window seconds=15 wake_word_delayed=True
+2026-01-10 21:55:27 INFO action=convo_active seconds_left=14
+2026-01-10 21:55:27 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 21:55:33 INFO action=audio_recorded ok=True duration=5.200 rms=0.001 mode='chatgpt_pro'
+2026-01-10 21:55:33 INFO action=audio_low_rms rms=0.001 threshold=0.004
+2026-01-10 21:55:33 INFO action=convo_active seconds_left=8
+2026-01-10 21:55:33 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 21:55:37 INFO action=audio_recorded ok=True duration=1.400 rms=0.033 mode='chatgpt_pro'
+2026-01-10 21:55:38 INFO action=transcript text='Louisa.' engine='openai' language='en'
+2026-01-10 21:55:38 INFO action=command_received raw='Louisa.' normalized='louisa.' confidence=1.000 mode='chatgpt_pro'
+2026-01-10 21:55:42 INFO action=response text='Hello! How can I assist you today?' mode='chatgpt_pro'
+2026-01-10 21:55:42 INFO action=convo_active seconds_left=14
+2026-01-10 21:55:42 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 21:55:46 INFO action=audio_recorded ok=True duration=3.000 rms=0.030 mode='chatgpt_pro'
+2026-01-10 21:55:47 INFO action=transcript text='Hello doggy, shall we go out?' engine='openai' language='en'
+2026-01-10 21:55:47 INFO action=command_received raw='Hello doggy, shall we go out?' normalized='hello doggy, shall we go out?' confidence=1.000 mode='chatgpt_pro'
+2026-01-10 21:55:54 INFO action=response text="Woof! Yes, let's go for a walk!" mode='chatgpt_pro'
+2026-01-10 21:55:54 INFO action=convo_active seconds_left=14
+2026-01-10 21:55:54 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 21:55:56 INFO action=audio_recorded ok=True duration=2.200 rms=0.027 mode='chatgpt_pro'
+2026-01-10 21:55:57 INFO action=transcript text='Do you want' engine='openai' language='en'
+2026-01-10 21:55:57 INFO action=command_received raw='Do you want' normalized='do you want' confidence=1.000 mode='chatgpt_pro'
+2026-01-10 21:56:02 INFO action=response text='Woof! I’d love to go for a walk!' mode='chatgpt_pro'
+2026-01-10 21:56:02 INFO action=convo_active seconds_left=14
+2026-01-10 21:56:02 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 21:56:05 INFO action=audio_recorded ok=True duration=2.600 rms=0.054 mode='chatgpt_pro'
+2026-01-10 21:56:06 INFO action=transcript text='Do you want to play?' engine='openai' language='en'
+2026-01-10 21:56:06 INFO action=command_received raw='Do you want to play?' normalized='do you want to play?' confidence=1.000 mode='chatgpt_pro'
+2026-01-10 21:56:09 INFO action=response text="Woof! Yes, let's play!" mode='chatgpt_pro'
+2026-01-10 21:56:09 INFO action=convo_active seconds_left=14
+2026-01-10 21:56:09 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 21:56:13 INFO action=audio_recorded ok=True duration=2.800 rms=0.040 mode='chatgpt_pro'
+2026-01-10 21:56:14 INFO action=transcript text='What kind of game?' engine='openai' language='en'
+2026-01-10 21:56:14 INFO action=command_received raw='What kind of game?' normalized='what kind of game?' confidence=1.000 mode='chatgpt_pro'
+2026-01-10 21:56:20 INFO action=response text='How about a game of fetch? Or we could play hide and seek!' mode='chatgpt_pro'
+2026-01-10 21:56:20 INFO action=convo_active seconds_left=14
+2026-01-10 21:56:20 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 21:56:23 INFO action=audio_recorded ok=True duration=1.800 rms=0.033 mode='chatgpt_pro'
+2026-01-10 21:56:24 INFO action=transcript text='Something else.' engine='openai' language='en'
+2026-01-10 21:56:24 INFO action=command_received raw='Something else.' normalized='something else.' confidence=1.000 mode='chatgpt_pro'
+2026-01-10 21:56:30 INFO action=response text="How about a tug-of-war? It's always fun to play together!" mode='chatgpt_pro'
+2026-01-10 21:56:30 INFO action=convo_active seconds_left=14
+2026-01-10 21:56:30 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 21:56:36 INFO action=audio_recorded ok=True duration=4.800 rms=0.036 mode='chatgpt_pro'
+2026-01-10 21:56:38 INFO action=transcript text='Okay, I think I like... I love you.' engine='openai' language='en'
+2026-01-10 21:56:38 INFO action=command_received raw='Okay, I think I like... I love you.' normalized='okay, i think i like... i love you.' confidence=1.000 mode='chatgpt_pro'
+2026-01-10 21:56:43 INFO action=response text="I love you too! Let's play and have fun together!" mode='chatgpt_pro'
+2026-01-10 21:56:43 INFO action=convo_active seconds_left=14
+2026-01-10 21:56:43 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 21:56:49 INFO action=audio_recorded ok=True duration=5.200 rms=0.001 mode='chatgpt_pro'
+2026-01-10 21:56:49 INFO action=audio_low_rms rms=0.001 threshold=0.004
+2026-01-10 21:56:49 INFO action=convo_active seconds_left=8
+2026-01-10 21:56:49 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 21:56:55 INFO action=audio_recorded ok=True duration=3.800 rms=0.001 mode='chatgpt_pro'
+2026-01-10 21:56:55 INFO action=audio_low_rms rms=0.001 threshold=0.004
+2026-01-10 21:56:55 INFO action=convo_active seconds_left=2
+2026-01-10 21:56:55 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 21:57:01 INFO action=audio_recorded ok=True duration=4.800 rms=0.002 mode='chatgpt_pro'
+2026-01-10 21:57:01 INFO action=audio_low_rms rms=0.002 threshold=0.004
+2026-01-10 21:57:01 INFO action=wake_listen_start
+2026-01-10 21:57:01 INFO action=stt_ready engine='vosk' stt_model='vosk-model-small-en-us-0.15'
+2026-01-10 21:57:21 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 21:57:27 INFO action=audio_recorded ok=True duration=4.600 rms=0.001 mode='chatgpt_pro'
+2026-01-10 21:57:27 INFO action=audio_low_rms rms=0.001 threshold=0.004
+2026-01-10 21:57:27 INFO action=wake_listen_start
+2026-01-10 21:57:48 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 21:57:54 INFO action=audio_recorded ok=True duration=3.400 rms=0.001 mode='chatgpt_pro'
+2026-01-10 21:57:54 INFO action=audio_low_rms rms=0.001 threshold=0.004
+2026-01-10 21:57:54 INFO action=wake_listen_start
+2026-01-10 21:58:14 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 21:58:20 INFO action=audio_recorded ok=True duration=3.800 rms=0.001 mode='chatgpt_pro'
+2026-01-10 21:58:20 INFO action=audio_low_rms rms=0.001 threshold=0.004
+2026-01-10 21:58:20 INFO action=wake_listen_start
+2026-01-10 21:58:31 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 21:58:37 INFO action=audio_recorded ok=True duration=3.800 rms=0.022 mode='chatgpt_pro'
+2026-01-10 21:58:39 INFO action=transcript text='Can you explain where the name Jarvis come?' engine='openai' language='en'
+2026-01-10 21:58:39 INFO action=command_received raw='Can you explain where the name Jarvis come?' normalized='can you explain where the name jarvis come?' confidence=1.000 mode='chatgpt_pro'
+2026-01-10 21:58:49 INFO action=response text='The name Jarvis is derived from the surname of a character in Marvel Comics, J. A.' mode='chatgpt_pro'
+2026-01-10 21:58:49 INFO action=convo_active seconds_left=14
+2026-01-10 21:58:49 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 21:58:55 INFO action=audio_recorded ok=True duration=4.800 rms=0.001 mode='chatgpt_pro'
+2026-01-10 21:58:55 INFO action=audio_low_rms rms=0.001 threshold=0.004
+2026-01-10 21:58:55 INFO action=convo_active seconds_left=8
+2026-01-10 21:58:55 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 21:59:01 INFO action=audio_recorded ok=True duration=3.800 rms=0.036 mode='chatgpt_pro'
+2026-01-10 21:59:02 INFO action=transcript text='Know of any other vo comics?' engine='openai' language='en'
+2026-01-10 21:59:02 INFO action=command_received raw='Know of any other vo comics?' normalized='know of any other vo comics?' confidence=1.000 mode='chatgpt_pro'
+2026-01-10 21:59:16 INFO action=response text='Yes, other popular voiceover characters in comics include Alfred Pennyworth from Batman and Jarvis from Iron Man. They often provide support and guidance to the main heroes.' mode='chatgpt_pro'
+2026-01-10 21:59:16 INFO action=convo_active seconds_left=14
+2026-01-10 21:59:16 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 21:59:22 INFO action=audio_recorded ok=True duration=5.200 rms=0.032 mode='chatgpt_pro'
+2026-01-10 21:59:23 INFO action=transcript text='Ah, Jarvis is van een man.' engine='openai' language='en'
+2026-01-10 21:59:23 INFO action=command_received raw='Ah, Jarvis is van een man.' normalized='ah, jarvis is van een man.' confidence=1.000 mode='chatgpt_pro'
+2026-01-10 21:59:36 INFO action=response text='Yes, Jarvis is an AI created by Tony Stark, but he often takes on a human-like persona. He provides support and assistance to Iron Man.' mode='chatgpt_pro'
+2026-01-10 21:59:36 INFO action=convo_active seconds_left=14
+2026-01-10 21:59:36 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 21:59:42 INFO action=audio_recorded ok=True duration=5.400 rms=0.001 mode='chatgpt_pro'
+2026-01-10 21:59:42 INFO action=audio_low_rms rms=0.001 threshold=0.004
+2026-01-10 21:59:42 INFO action=convo_active seconds_left=8
+2026-01-10 21:59:42 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 21:59:48 INFO action=audio_recorded ok=True duration=3.400 rms=0.001 mode='chatgpt_pro'
+2026-01-10 21:59:48 INFO action=audio_low_rms rms=0.001 threshold=0.004
+2026-01-10 21:59:48 INFO action=convo_active seconds_left=2
+2026-01-10 21:59:48 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 21:59:54 INFO action=audio_recorded ok=True duration=3.400 rms=0.018 mode='chatgpt_pro'
+2026-01-10 21:59:56 INFO action=transcript text='entreprises.' engine='openai' language='en'
+2026-01-10 21:59:56 INFO action=command_received raw='entreprises.' normalized='entreprises.' confidence=1.000 mode='chatgpt_pro'
+2026-01-10 22:00:08 INFO action=response text="Jarvis is a sophisticated AI that enhances Iron Man's capabilities. He acts almost like a partner, offering guidance and support in various situations." mode='chatgpt_pro'
+2026-01-10 22:00:08 INFO action=convo_active seconds_left=14
+2026-01-10 22:00:08 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:00:14 INFO action=audio_recorded ok=True duration=4.000 rms=0.011 mode='chatgpt_pro'
+2026-01-10 22:00:15 INFO action=transcript text='Okay, thank you.' engine='openai' language='en'
+2026-01-10 22:00:15 INFO action=command_received raw='Okay, thank you.' normalized='okay, thank you.' confidence=1.000 mode='chatgpt_pro'
+2026-01-10 22:00:20 INFO action=response text="You're welcome! If you have any more questions, feel free to ask!" mode='chatgpt_pro'
+2026-01-10 22:00:20 INFO action=convo_active seconds_left=14
+2026-01-10 22:00:20 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:00:26 INFO action=audio_recorded ok=True duration=5.000 rms=0.001 mode='chatgpt_pro'
+2026-01-10 22:00:26 INFO action=audio_low_rms rms=0.001 threshold=0.004
+2026-01-10 22:00:26 INFO action=convo_active seconds_left=8
+2026-01-10 22:00:26 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:00:32 INFO action=audio_recorded ok=True duration=3.000 rms=0.001 mode='chatgpt_pro'
+2026-01-10 22:00:32 INFO action=audio_low_rms rms=0.001 threshold=0.004
+2026-01-10 22:00:32 INFO action=convo_active seconds_left=2
+2026-01-10 22:00:32 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:00:38 INFO action=audio_recorded ok=True duration=4.200 rms=0.001 mode='chatgpt_pro'
+2026-01-10 22:00:38 INFO action=audio_low_rms rms=0.001 threshold=0.004
+2026-01-10 22:00:38 INFO action=wake_listen_start
+2026-01-10 22:00:59 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:01:05 INFO action=audio_recorded ok=True duration=5.200 rms=0.002 mode='chatgpt_pro'
+2026-01-10 22:01:05 INFO action=audio_low_rms rms=0.002 threshold=0.004
+2026-01-10 22:01:05 INFO action=wake_listen_start
+2026-01-10 22:01:22 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:01:29 INFO action=audio_recorded ok=True duration=4.200 rms=0.001 mode='chatgpt_pro'
+2026-01-10 22:01:29 INFO action=audio_low_rms rms=0.001 threshold=0.004
+2026-01-10 22:01:29 INFO action=wake_listen_start
+2026-01-10 22:01:47 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:01:53 INFO action=audio_recorded ok=True duration=4.600 rms=0.002 mode='chatgpt_pro'
+2026-01-10 22:01:53 INFO action=audio_low_rms rms=0.002 threshold=0.004
+2026-01-10 22:01:53 INFO action=wake_listen_start
+2026-01-10 22:02:26 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:02:32 INFO action=audio_recorded ok=True duration=5.200 rms=0.002 mode='chatgpt_pro'
+2026-01-10 22:02:32 INFO action=audio_low_rms rms=0.002 threshold=0.004
+2026-01-10 22:02:32 INFO action=wake_listen_start
+2026-01-10 22:02:57 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-10 22:03:04 INFO action=audio_recorded ok=True duration=4.600 rms=0.002 mode='chatgpt_pro'
+2026-01-10 22:03:04 INFO action=audio_low_rms rms=0.002 threshold=0.004
+2026-01-10 22:03:04 INFO action=wake_listen_start

@@ -60,8 +60,8 @@ LLM_OUT_USD_PER_1M = 0.60 # gpt-4o-mini output
 MIC_SAMPLE_RATE = None  # use device default for Vosk
 MIC_INPUT_RATE = 44100
 MIC_INPUT_DTYPE = "int16"
-CHATGPT_PRO_SILENCE_THRESHOLD = 0.006
-CHATGPT_PRO_SILENCE_SECONDS = 0.75
+CHATGPT_PRO_SILENCE_THRESHOLD = 0.007
+CHATGPT_PRO_SILENCE_SECONDS = 0.65
 CHATGPT_PRO_MIN_RMS = 0.004
 CHATGPT_PRO_WAKE_MIN_RMS = 0.0
 
@@ -81,7 +81,7 @@ BATTERY_TABLE_2S = [
 ]
 
 CONFIDENCE_THRESHOLD = 0.5
-MAX_UTTERANCE_SECONDS = 8
+MAX_UTTERANCE_SECONDS = 6
 SYSTEM_PROMPT = (
     "You are a helpful robot dog. Reply in English only, no more than four short phrases. "
     "Keep it friendly, funny and practical."
@@ -665,6 +665,13 @@ def main():
     args = parser.parse_args()
     log_path = _setup_logging()
     log_action("startup", pid=os.getpid(), args=vars(args), log_path=str(log_path))
+    log_action(
+        "config_audio",
+        max_utterance_seconds=MAX_UTTERANCE_SECONDS,
+        silence_threshold=CHATGPT_PRO_SILENCE_THRESHOLD,
+        silence_seconds=CHATGPT_PRO_SILENCE_SECONDS,
+        notes="threshold=rms cutoff, silence=end-of-speech window",
+    )
 
     if args.list_audio:
         devices = sd.query_devices()
