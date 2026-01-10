@@ -71,7 +71,7 @@ MIC_INPUT_RATE = 44100
 MIC_INPUT_DTYPE = "int16"
 CHATGPT_PRO_SILENCE_THRESHOLD = 0.003
 CHATGPT_PRO_SILENCE_SECONDS = 1.5
-CHATGPT_PRO_MIN_RMS = 0.004
+CHATGPT_PRO_MIN_RMS = 0.002
 CHATGPT_PRO_WAKE_MIN_RMS = 0.0
 
 BATTERY_TABLE_2S = [
@@ -715,6 +715,8 @@ def main():
     t2 = time.time()
     speaker = SpeechQueue(tts, output_device=SPEAKER_DEVICE)
     speaker.start()
+    speaker.set_volume(1.0)
+    LOGGER.info("Speech volume set %.2f", speaker.get_volume())
     print(f"Init: Speaker {time.time() - t2:.2f}s")
     t3 = time.time()
     leds = LedController()
