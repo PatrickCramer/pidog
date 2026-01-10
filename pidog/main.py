@@ -758,6 +758,9 @@ def main():
                     paused_event.clear()
                     continue
 
+            if convo_deadline is not None and time.time() > convo_deadline:
+                convo_deadline = None
+
             if convo_deadline is None or time.time() > convo_deadline:
                 print("\nWaiting for wake word...")
                 leds.set_state("wake")
@@ -804,10 +807,6 @@ def main():
                 radio_playing = True
                 radio_paused = False
                 paused_event.clear()
-                continue
-
-            if convo_deadline is not None and time.time() > convo_deadline:
-                convo_deadline = None
                 continue
 
             leds.set_state("listen")
