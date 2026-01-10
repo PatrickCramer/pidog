@@ -66,7 +66,7 @@ CHATGPT_PRO_WAKE_MIN_RMS = 0.0
 CONFIDENCE_THRESHOLD = 0.5
 MAX_UTTERANCE_SECONDS = 10
 SYSTEM_PROMPT = (
-    "You are a helpful robot dog. Reply in no more than four short phrases. "
+    "You are a helpful robot dog. Reply in English only, no more than four short phrases. "
     "Keep it friendly, funny and practical."
 )
 
@@ -942,7 +942,7 @@ def main():
                         prompt_text,
                         model=CHATGPT_MODEL,
                         system_prompt=(
-                            "You are a helpful robot dog. Reply in no more than two short sentences."
+                            "You are a helpful robot dog. Reply in English only, no more than two short sentences."
                         ),
                     )
                     timing["llm"] = time.perf_counter() - t0
