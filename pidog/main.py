@@ -115,6 +115,15 @@ SHORT_UTTERANCE_WORDS = {
     "the", "a", "an", "and", "uh", "um", "er", "hmm", "hey",
 }
 
+COMMON_ENGLISH_WORDS = {
+    "a", "about", "after", "again", "all", "also", "and", "any", "are", "as", "at", "be",
+    "because", "been", "before", "but", "by", "can", "could", "do", "does", "for", "from",
+    "get", "go", "good", "have", "hello", "help", "here", "hi", "how", "i", "if", "in",
+    "is", "it", "just", "like", "me", "my", "no", "not", "of", "ok", "okay", "on", "or",
+    "please", "say", "see", "so", "some", "tell", "thanks", "that", "the", "this", "to",
+    "up", "want", "we", "what", "when", "where", "who", "why", "yes", "you", "your",
+}
+
 
 def split_sentences(buffer):
     sentences = []
@@ -162,6 +171,29 @@ def build_context(history):
 
 def sanitize_tts_text(text):
     return text.replace("*", "").strip()
+
+
+def _clip_text(text, limit=120):
+    if len(text) <= limit:
+        return text
+    if limit <= 3:
+        return text[:limit]
+    return text[:limit - 3] + "..."
+
+
+def is_likely_english(text):
+    if not text:
+        return False
+    if any(ord(ch) > 127 for ch in text):
+        return False
+    tokens = re.findall(r"[a-z']+", text.lower())
+    if not tokens:
+        return False
+    hits = sum(1 for t in tokens if t in COMMON_ENGLISH_WORDS)
+    ratio = hits / len(tokens)
+    if len(tokens) <= 2:
+        return ratio >= 0.5
+    return ratio >= 0.2
 
 
 def wav_seconds(path):
@@ -788,6 +820,9 @@ def main():
                         model=CHATGPT_STT_MODEL,
                         language=CHATGPT_STT_LANGUAGE,
                     ).strip()
+                    if not is_likely_english(text):
+                        print(f"Pro: dropped non-English transcript: {_clip_text(text)!r}")
+                        continue
                     timing["stt"] = time.perf_counter() - t0
                     if CHATGPT_PRO_DEBUG_RECORDING:
                         print(f"Pro STT text: {text!r}")
