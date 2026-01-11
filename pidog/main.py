@@ -36,6 +36,9 @@ from robot_hat import utils as rh_utils
 USE_PICOVOICE_WAKE_WORD = True
 PICOVOICE_KEYWORD = "jarvis"
 PICOVOICE_SENSITIVITY = 0.5
+BARGE_IN_ENABLED = True
+BARGE_IN_KEYWORD = "jarvis"
+BARGE_IN_SENSITIVITY = 0.4
 WAKE_WORDS = ["jarvis"]
 WAKE_WORDS_STRICT = True
 # Fallback index when named device is not found.
@@ -231,12 +234,15 @@ def _end_answering(answering_event, context=None):
 def _handle_answer_interrupt(answer_interrupt_event, answering_event, speaker, leds):
     if not answer_interrupt_event.is_set():
         return False
+    reason = getattr(answer_interrupt_event, "reason", "interrupt")
     answer_interrupt_event.clear()
+    if hasattr(answer_interrupt_event, "reason"):
+        answer_interrupt_event.reason = None
     if speaker is not None:
         speaker.cancel()
     if leds is not None:
         leds.set_state("wake")
-    log_action("answer_interrupted", reason="tap")
+    log_action("answer_interrupted", reason=reason)
     if answering_event.is_set():
         _end_answering(answering_event, context="interrupt")
     return True
@@ -782,9 +788,49 @@ def touch_answer_interrupt_watcher(touch, leds, answering_event, interrupt_event
         if val in (TouchStyle.REAR, TouchStyle.FRONT) and last_val == TouchStyle.NONE:
             _pulse_feedback(leds, count=1, context="answer_interrupt")
             log_action("touch_tap", zone=_touch_label(val), context="answer_interrupt")
+            interrupt_event.reason = "tap"
             interrupt_event.set()
         last_val = val
         time.sleep(0.05)
+
+
+def voice_answer_interrupt_watcher(answering_event, interrupt_event, stop_event, radio_mode_event, device):
+    cooldown_until = 0.0
+    while not stop_event.is_set():
+        if not answering_event.is_set() or radio_mode_event.is_set():
+            time.sleep(0.05)
+            continue
+        if time.time() < cooldown_until:
+            time.sleep(0.05)
+            continue
+        listen_stop = threading.Event()
+
+        def _watch_end():
+            while not stop_event.is_set():
+                if not answering_event.is_set() or radio_mode_event.is_set():
+                    listen_stop.set()
+                    return
+                time.sleep(0.05)
+
+        threading.Thread(target=_watch_end, daemon=True).start()
+        try:
+            heard = listen_for_wake_word_picovoice(
+                keyword=BARGE_IN_KEYWORD,
+                sensitivity=BARGE_IN_SENSITIVITY,
+                device=device,
+                break_event=listen_stop,
+            )
+        except RuntimeError as exc:
+            log_action("barge_in_error", error=str(exc))
+            time.sleep(1.0)
+            continue
+        if heard and answering_event.is_set() and not radio_mode_event.is_set():
+            interrupt_event.reason = "voice"
+            interrupt_event.set()
+            log_action("barge_in_heard", word=heard)
+            cooldown_until = time.time() + 1.0
+            while answering_event.is_set() and not stop_event.is_set():
+                time.sleep(0.05)
 
 
 def main():
@@ -939,6 +985,15 @@ def main():
         daemon=True,
     )
     answer_thread.start()
+    voice_answer_thread = None
+    if BARGE_IN_ENABLED and USE_PICOVOICE_WAKE_WORD:
+        voice_answer_thread = threading.Thread(
+            target=voice_answer_interrupt_watcher,
+            args=(answering_event, answer_interrupt_event, watcher_stop, radio_mode_event, mic_device),
+            daemon=True,
+        )
+        voice_answer_thread.start()
+        log_action("voice_barge_in_started", keyword=BARGE_IN_KEYWORD, sensitivity=BARGE_IN_SENSITIVITY)
     log_action("touch_watchers_started")
     video = VideoManager(
         port=CAMERA_PORT,
@@ -1764,6 +1819,8 @@ def main():
         watcher_thread.join(timeout=1)
         start_thread.join(timeout=1)
         answer_thread.join(timeout=1)
+        if voice_answer_thread is not None:
+            voice_answer_thread.join(timeout=1)
         touch.close()
         leds.stop()
         speaker.stop()

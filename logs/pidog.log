@@ -4154,3 +4154,274 @@
 2026-01-11 14:25:18 INFO action=audio_recorded ok=True duration=6.000 rms=0.003 mode='chatgpt_pro'
 2026-01-11 14:25:18 INFO action=audio_low_rms rms=0.003 threshold=0.008
 2026-01-11 14:25:18 INFO action=wake_listen_start
+2026-01-11 14:31:04 INFO action=wake_word_heard word='jarvis' source='picovoice'
+2026-01-11 14:31:04 INFO action=listen_start mode='chatgpt_pro' mic_device=2
+2026-01-11 14:31:06 INFO action=audio_recorded ok=True duration=2.600 rms=0.008 mode='chatgpt_pro'
+2026-01-11 14:31:07 INFO action=transcript text='Play radio 2' engine='openai' language='en'
+2026-01-11 14:31:07 INFO action=command_received raw='Play radio 2' normalized='play radio 2' confidence=1.000 mode='chatgpt_pro'
+2026-01-11 14:31:07 INFO action=command_normalized normalized='play radio 2'
+2026-01-11 14:31:07 INFO action=answering active=True context='radio_start'
+2026-01-11 14:31:09 INFO action=answering active=False context='radio_start'
+2026-01-11 14:31:09 INFO action=radio_start source='voice' name='Radio 2' url='https://icecast.omroep.nl/radio2-bb-mp3'
+2026-01-11 14:54:29 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-11 14:54:29 INFO action=touch_tap zone='front' count=1 context='radio_playing'
+2026-01-11 14:54:29 INFO action=radio_volume delta=-5 source='touch_swipe' direction='front_to_rear'
+2026-01-11 14:54:29 INFO action=radio_volume delta=5 source='touch_swipe' direction='rear_to_front'
+2026-01-11 14:54:32 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-11 14:54:32 INFO action=touch_tap zone='front' count=1 context='radio_playing'
+2026-01-11 14:54:32 INFO action=radio_volume delta=-5 source='touch_swipe' direction='front_to_rear'
+2026-01-11 14:54:33 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-11 14:54:33 INFO action=touch_tap zone='rear' count=2 context='radio_playing'
+2026-01-11 14:54:36 INFO action=led_pulse count=2 context='radio_double_tap'
+2026-01-11 14:54:36 INFO action=radio_stop source='touch_double_tap'
+2026-01-11 14:54:36 INFO action=wake_listen_start
+2026-01-11 14:54:38 INFO action=wake_word_heard word='jarvis' source='picovoice'
+2026-01-11 14:54:38 INFO action=listen_start mode='chatgpt_pro' mic_device=2
+2026-01-11 14:54:40 INFO action=audio_recorded ok=True duration=1.800 rms=0.013 mode='chatgpt_pro'
+2026-01-11 14:54:41 INFO action=transcript text='Battery' engine='openai' language='en'
+2026-01-11 14:54:41 INFO action=command_received raw='Battery' normalized='battery' confidence=1.000 mode='chatgpt_pro'
+2026-01-11 14:54:41 INFO action=answering active=True context='battery'
+2026-01-11 14:54:41 INFO action=battery_query voltage=7.422 percent=26
+2026-01-11 14:54:44 INFO action=answering active=False context='battery'
+2026-01-11 14:54:44 INFO action=convo_active seconds_left=4
+2026-01-11 14:54:44 INFO action=listen_start mode='chatgpt_pro' mic_device=2
+2026-01-11 14:54:50 INFO action=audio_recorded ok=True duration=6.000 rms=0.005 mode='chatgpt_pro'
+2026-01-11 14:54:50 INFO action=audio_low_rms rms=0.005 threshold=0.008
+2026-01-11 14:54:50 INFO action=wake_listen_start
+2026-01-11 14:54:53 INFO action=wake_word_heard word='jarvis' source='picovoice'
+2026-01-11 14:54:53 INFO action=listen_start mode='chatgpt_pro' mic_device=2
+2026-01-11 14:54:59 INFO action=audio_recorded ok=True duration=6.000 rms=0.004 mode='chatgpt_pro'
+2026-01-11 14:54:59 INFO action=audio_low_rms rms=0.004 threshold=0.006
+2026-01-11 14:54:59 INFO action=wake_listen_start
+2026-01-11 14:56:02 INFO action=shutdown reason='keyboard_interrupt'
+2026-01-11 14:56:02 INFO action=shutdown reason='cleanup_complete'
+2026-01-11 14:56:04 INFO logging ready path=/home/pat/pidog/logs/pidog.log level=INFO
+2026-01-11 14:56:04 INFO action=startup pid=20514 args={'mic_test': False, 'list_audio': False, 'mic_device': None, 'debug_latency': True} log_path='/home/pat/pidog/logs/pidog.log'
+2026-01-11 14:56:04 INFO action=config_audio max_utterance_seconds=6 silence_threshold=0.012 silence_seconds=0.650 notes='threshold=rms cutoff, silence=end-of-speech window'
+2026-01-11 14:56:04 INFO action=single_instance pidfile='/tmp/pidog.pid' pid=20514
+2026-01-11 14:56:04 INFO action=mic_device_selected index=2 name='pulse'
+2026-01-11 14:56:05 INFO action=pro_available available=True
+2026-01-11 14:56:05 INFO action=stt_init mode='deferred' reason='picovoice+pro'
+2026-01-11 14:56:05 INFO action=models tts_engine='piper' tts_model='en_US-amy-low' llm_model='llama3.2:1b'
+2026-01-11 14:56:06 INFO action=init_tts seconds=1.215 engine='piper' model='en_US-amy-low'
+2026-01-11 14:56:06 INFO action=init_speaker seconds=0.001
+2026-01-11 14:56:06 INFO action=init_leds seconds=0.233
+2026-01-11 14:56:06 INFO action=init_touch seconds=0.004
+2026-01-11 14:56:06 INFO action=battery_status voltage=7.337 percent=22
+2026-01-11 14:56:06 INFO action=stations_loaded count=18 names=['NPO Radio 1 (MP3)', 'NPO Radio 2 (MP3)', 'NPO 3FM (MP3)', 'NPO Klassiek (MP3)', 'NPO Radio 5 (MP3)', 'NPO Blend (MP3)', 'FunX (MP3)', 'BBC World Service (MP3)', 'Frequence 3 (MP3 256)', 'Frequence 3 Urban (MP3 256)', 'Frequence 3 (MP3 128)', 'Frequence 3 Urban (MP3 128)', 'Frequence 3 (AAC 64)', 'Frequence 3 Urban (AAC 64)', 'Frequence 3 Gold (MP3 160)', 'Frequence 3 Gold (AAC 64)', 'Frequence 3 Dance (MP3 160)', 'Frequence 3 Dance (AAC 64)']
+2026-01-11 14:56:06 INFO action=touch_watchers_started
+2026-01-11 14:56:08 INFO action=mode_smart_pro enabled=True
+2026-01-11 14:56:08 INFO action=ready wake_source='picovoice' picovoice_keyword='jarvis'
+2026-01-11 14:56:08 INFO action=convo_window seconds=5 wake_word_delayed=False
+2026-01-11 14:56:08 INFO action=wake_listen_start
+2026-01-11 14:56:19 INFO action=wake_word_heard word='jarvis' source='picovoice'
+2026-01-11 14:56:19 INFO action=listen_start mode='chatgpt_pro' mic_device=2
+2026-01-11 14:56:21 INFO action=audio_recorded ok=True duration=1.800 rms=0.005 mode='chatgpt_pro'
+2026-01-11 14:56:21 INFO action=audio_low_rms rms=0.005 threshold=0.006
+2026-01-11 14:56:21 INFO action=convo_active seconds_left=3
+2026-01-11 14:56:21 INFO action=listen_start mode='chatgpt_pro' mic_device=2
+2026-01-11 14:56:27 INFO action=audio_recorded ok=True duration=6.000 rms=0.005 mode='chatgpt_pro'
+2026-01-11 14:56:27 INFO action=audio_low_rms rms=0.005 threshold=0.006
+2026-01-11 14:56:27 INFO action=wake_listen_start
+2026-01-11 14:56:30 INFO action=wake_word_heard word='jarvis' source='picovoice'
+2026-01-11 14:56:30 INFO action=listen_start mode='chatgpt_pro' mic_device=2
+2026-01-11 14:56:32 INFO action=audio_recorded ok=True duration=2.600 rms=0.005 mode='chatgpt_pro'
+2026-01-11 14:56:32 INFO action=audio_low_rms rms=0.005 threshold=0.006
+2026-01-11 14:56:32 INFO action=convo_active seconds_left=2
+2026-01-11 14:56:32 INFO action=listen_start mode='chatgpt_pro' mic_device=2
+2026-01-11 14:56:36 INFO action=audio_recorded ok=True duration=3.600 rms=0.004 mode='chatgpt_pro'
+2026-01-11 14:56:36 INFO action=audio_low_rms rms=0.004 threshold=0.006
+2026-01-11 14:56:36 INFO action=wake_listen_start
+2026-01-11 14:56:44 INFO action=wake_word_heard word='jarvis' source='picovoice'
+2026-01-11 14:56:44 INFO action=listen_start mode='chatgpt_pro' mic_device=2
+2026-01-11 14:56:46 INFO action=audio_recorded ok=True duration=2.200 rms=0.008 mode='chatgpt_pro'
+2026-01-11 14:56:47 INFO action=transcript text='Battery' engine='openai' language='en'
+2026-01-11 14:56:47 INFO action=command_received raw='Battery' normalized='battery' confidence=1.000 mode='chatgpt_pro'
+2026-01-11 14:56:47 INFO action=answering active=True context='battery'
+2026-01-11 14:56:47 INFO action=battery_query voltage=7.371 percent=24
+2026-01-11 14:56:50 INFO action=answering active=False context='battery'
+2026-01-11 14:56:50 INFO action=convo_active seconds_left=4
+2026-01-11 14:56:50 INFO action=listen_start mode='chatgpt_pro' mic_device=2
+2026-01-11 14:56:56 INFO action=audio_recorded ok=True duration=6.000 rms=0.002 mode='chatgpt_pro'
+2026-01-11 14:56:56 INFO action=audio_low_rms rms=0.002 threshold=0.008
+2026-01-11 14:56:56 INFO action=wake_listen_start
+2026-01-11 14:56:58 INFO action=wake_word_heard word='jarvis' source='picovoice'
+2026-01-11 14:56:58 INFO action=listen_start mode='chatgpt_pro' mic_device=2
+2026-01-11 14:57:00 INFO action=audio_recorded ok=True duration=2.200 rms=0.008 mode='chatgpt_pro'
+2026-01-11 14:57:01 INFO action=transcript text='Battery.' engine='openai' language='en'
+2026-01-11 14:57:01 INFO action=command_received raw='Battery.' normalized='battery.' confidence=1.000 mode='chatgpt_pro'
+2026-01-11 14:57:01 INFO action=answering active=True context='battery'
+2026-01-11 14:57:01 INFO action=battery_query voltage=7.403 percent=25
+2026-01-11 14:57:04 INFO action=answering active=False context='battery'
+2026-01-11 14:57:04 INFO action=convo_active seconds_left=4
+2026-01-11 14:57:04 INFO action=listen_start mode='chatgpt_pro' mic_device=2
+2026-01-11 14:57:10 INFO action=audio_recorded ok=True duration=6.000 rms=0.002 mode='chatgpt_pro'
+2026-01-11 14:57:10 INFO action=audio_low_rms rms=0.002 threshold=0.008
+2026-01-11 14:57:10 INFO action=wake_listen_start
+2026-01-11 14:57:58 INFO action=wake_word_heard word='jarvis' source='picovoice'
+2026-01-11 14:57:58 INFO action=listen_start mode='chatgpt_pro' mic_device=2
+2026-01-11 14:58:02 INFO action=audio_recorded ok=True duration=4.000 rms=0.010 mode='chatgpt_pro'
+2026-01-11 14:58:03 INFO action=transcript text='Tell me something more about Uganda.' engine='openai' language='en'
+2026-01-11 14:58:03 INFO action=command_received raw='Tell me something more about Uganda.' normalized='tell me something more about uganda.' confidence=1.000 mode='chatgpt_pro'
+2026-01-11 14:58:03 INFO action=answering active=True context='response'
+2026-01-11 14:58:20 INFO action=response text="Uganda is known for its diverse wildlife and stunning landscapes, including Lake Victoria and the Rwenzori Mountains. It is also famous for being home to half of the world's remaining mountain gorillas." mode='chatgpt_pro'
+2026-01-11 14:58:20 INFO action=answering active=False context='response'
+2026-01-11 14:58:20 INFO action=convo_active seconds_left=4
+2026-01-11 14:58:20 INFO action=listen_start mode='chatgpt_pro' mic_device=2
+2026-01-11 14:58:26 INFO action=audio_recorded ok=True duration=6.000 rms=0.002 mode='chatgpt_pro'
+2026-01-11 14:58:26 INFO action=audio_low_rms rms=0.002 threshold=0.008
+2026-01-11 14:58:26 INFO action=wake_listen_start
+2026-01-11 14:58:34 INFO action=wake_word_heard word='jarvis' source='picovoice'
+2026-01-11 14:58:34 INFO action=listen_start mode='chatgpt_pro' mic_device=2
+2026-01-11 14:58:37 INFO action=audio_recorded ok=True duration=2.600 rms=0.010 mode='chatgpt_pro'
+2026-01-11 14:58:38 INFO action=transcript text='Play Radio 3.' engine='openai' language='en'
+2026-01-11 14:58:38 INFO action=command_received raw='Play Radio 3.' normalized='play radio 3.' confidence=1.000 mode='chatgpt_pro'
+2026-01-11 14:58:38 INFO action=command_normalized normalized='play radio 3'
+2026-01-11 14:58:38 INFO action=answering active=True context='radio_start'
+2026-01-11 14:58:40 INFO action=answering active=False context='radio_start'
+2026-01-11 14:58:40 INFO action=radio_start source='voice' name='Radio 3' url='https://icecast.omroep.nl/3fm-bb-mp3'
+2026-01-11 15:03:08 INFO action=shutdown reason='keyboard_interrupt'
+2026-01-11 15:03:09 INFO action=shutdown reason='cleanup_complete'
+2026-01-11 15:03:23 INFO logging ready path=/home/pat/pidog/logs/pidog.log level=INFO
+2026-01-11 15:03:23 INFO action=startup pid=21671 args={'mic_test': False, 'list_audio': False, 'mic_device': None, 'debug_latency': True} log_path='/home/pat/pidog/logs/pidog.log'
+2026-01-11 15:03:23 INFO action=config_audio max_utterance_seconds=6 silence_threshold=0.012 silence_seconds=0.650 notes='threshold=rms cutoff, silence=end-of-speech window'
+2026-01-11 15:03:23 INFO action=single_instance pidfile='/tmp/pidog.pid' pid=21671
+2026-01-11 15:03:23 INFO action=mic_device_selected index=1 name='USB PnP Sound Device: Audio (hw:3,0)'
+2026-01-11 15:03:23 INFO action=pro_available available=True
+2026-01-11 15:03:23 INFO action=stt_init mode='deferred' reason='picovoice+pro'
+2026-01-11 15:03:23 INFO action=models tts_engine='piper' tts_model='en_US-amy-low' llm_model='llama3.2:1b'
+2026-01-11 15:03:24 INFO action=init_tts seconds=1.339 engine='piper' model='en_US-amy-low'
+2026-01-11 15:03:24 INFO action=init_speaker seconds=0.001
+2026-01-11 15:03:25 INFO action=init_leds seconds=0.233
+2026-01-11 15:03:25 INFO action=init_touch seconds=0.004
+2026-01-11 15:03:25 INFO action=battery_status voltage=7.352 percent=23
+2026-01-11 15:03:25 INFO action=stations_loaded count=18 names=['NPO Radio 1 (MP3)', 'NPO Radio 2 (MP3)', 'NPO 3FM (MP3)', 'NPO Klassiek (MP3)', 'NPO Radio 5 (MP3)', 'NPO Blend (MP3)', 'FunX (MP3)', 'BBC World Service (MP3)', 'Frequence 3 (MP3 256)', 'Frequence 3 Urban (MP3 256)', 'Frequence 3 (MP3 128)', 'Frequence 3 Urban (MP3 128)', 'Frequence 3 (AAC 64)', 'Frequence 3 Urban (AAC 64)', 'Frequence 3 Gold (MP3 160)', 'Frequence 3 Gold (AAC 64)', 'Frequence 3 Dance (MP3 160)', 'Frequence 3 Dance (AAC 64)']
+2026-01-11 15:03:25 INFO action=voice_barge_in_started keyword='jarvis' sensitivity=0.400
+2026-01-11 15:03:25 INFO action=touch_watchers_started
+2026-01-11 15:03:27 INFO action=mode_smart_pro enabled=True
+2026-01-11 15:03:27 INFO action=ready wake_source='picovoice' picovoice_keyword='jarvis'
+2026-01-11 15:03:27 INFO action=convo_window seconds=5 wake_word_delayed=False
+2026-01-11 15:03:27 INFO action=wake_listen_start
+2026-01-11 15:03:37 INFO action=wake_word_heard word='jarvis' source='picovoice'
+2026-01-11 15:03:37 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-11 15:03:40 INFO action=audio_recorded ok=True duration=2.800 rms=0.012 mode='chatgpt_pro'
+2026-01-11 15:03:42 INFO action=transcript text='Tell me something about Uganda.' engine='openai' language='en'
+2026-01-11 15:03:42 INFO action=command_received raw='Tell me something about Uganda.' normalized='tell me something about uganda.' confidence=1.000 mode='chatgpt_pro'
+2026-01-11 15:03:42 INFO action=answering active=True context='response'
+2026-01-11 15:04:00 INFO action=response text='Uganda is known for its diverse wildlife and is home to the endangered mountain gorillas in Bwindi Impenetrable National Park. The country also features beautiful landscapes, including Lake Victoria, one of the largest lakes in the world.' mode='chatgpt_pro'
+2026-01-11 15:04:00 INFO action=answering active=False context='response'
+2026-01-11 15:04:00 INFO action=convo_active seconds_left=4
+2026-01-11 15:04:00 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-11 15:04:04 INFO action=audio_recorded ok=True duration=3.200 rms=0.009 mode='chatgpt_pro'
+2026-01-11 15:04:06 INFO action=transcript text='Thank you.' engine='openai' language='en'
+2026-01-11 15:04:06 INFO action=command_received raw='Thank you.' normalized='thank you.' confidence=1.000 mode='chatgpt_pro'
+2026-01-11 15:04:06 INFO action=answering active=True context='response'
+2026-01-11 15:04:12 INFO action=response text="You're welcome! Uganda's wildlife and landscapes are truly remarkable." mode='chatgpt_pro'
+2026-01-11 15:04:12 INFO action=answering active=False context='response'
+2026-01-11 15:04:12 INFO action=convo_active seconds_left=4
+2026-01-11 15:04:12 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-11 15:04:16 INFO action=audio_recorded ok=True duration=3.600 rms=0.011 mode='chatgpt_pro'
+2026-01-11 15:04:17 INFO action=transcript text='Yeah' engine='openai' language='en'
+2026-01-11 15:04:17 INFO action=command_received raw='Yeah' normalized='yeah' confidence=1.000 mode='chatgpt_pro'
+2026-01-11 15:04:17 INFO action=answering active=True context='response'
+2026-01-11 15:04:24 INFO action=response text='Absolutely! Uganda is known for its stunning national parks and diverse wildlife.' mode='chatgpt_pro'
+2026-01-11 15:04:24 INFO action=answering active=False context='response'
+2026-01-11 15:04:24 INFO action=convo_active seconds_left=4
+2026-01-11 15:04:24 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-11 15:04:27 INFO action=audio_recorded ok=True duration=2.000 rms=0.007 mode='chatgpt_pro'
+2026-01-11 15:04:27 INFO action=audio_low_rms rms=0.007 threshold=0.008
+2026-01-11 15:04:27 INFO action=convo_active seconds_left=1
+2026-01-11 15:04:27 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-11 15:04:33 INFO action=audio_recorded ok=True duration=4.600 rms=0.003 mode='chatgpt_pro'
+2026-01-11 15:04:33 INFO action=audio_low_rms rms=0.003 threshold=0.008
+2026-01-11 15:04:33 INFO action=wake_listen_start
+2026-01-11 15:04:35 INFO action=wake_word_heard word='jarvis' source='picovoice'
+2026-01-11 15:04:35 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-11 15:04:38 INFO action=audio_recorded ok=True duration=2.600 rms=0.031 mode='chatgpt_pro'
+2026-01-11 15:04:39 INFO action=transcript text='Tell me something about compile.' engine='openai' language='en'
+2026-01-11 15:04:39 INFO action=command_received raw='Tell me something about compile.' normalized='tell me something about compile.' confidence=1.000 mode='chatgpt_pro'
+2026-01-11 15:04:39 INFO action=answering active=True context='response'
+2026-01-11 15:04:49 INFO action=barge_in_heard word='jarvis'
+2026-01-11 15:04:50 INFO action=response text='Compile refers to the process of converting source code written in a programming language into executable code. This allows the program to run on a computer.' mode='chatgpt_pro'
+2026-01-11 15:04:50 INFO action=answering active=False context='response'
+2026-01-11 15:04:50 INFO action=answer_interrupted reason='voice'
+2026-01-11 15:04:50 INFO action=wake_listen_start
+2026-01-11 15:05:09 INFO action=wake_word_heard word='jarvis' source='picovoice'
+2026-01-11 15:05:09 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-11 15:05:16 INFO action=audio_recorded ok=True duration=5.600 rms=0.002 mode='chatgpt_pro'
+2026-01-11 15:05:16 INFO action=audio_low_rms rms=0.002 threshold=0.006
+2026-01-11 15:05:16 INFO action=wake_listen_start
+2026-01-11 15:05:40 INFO action=wake_word_heard word='jarvis' source='picovoice'
+2026-01-11 15:05:40 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-11 15:05:45 INFO action=audio_recorded ok=True duration=3.400 rms=0.016 mode='chatgpt_pro'
+2026-01-11 15:05:46 INFO action=transcript text='Tell me something about Lake Vika.' engine='openai' language='en'
+2026-01-11 15:05:46 INFO action=command_received raw='Tell me something about Lake Vika.' normalized='tell me something about lake vika.' confidence=1.000 mode='chatgpt_pro'
+2026-01-11 15:05:46 INFO action=answering active=True context='response'
+2026-01-11 15:05:56 INFO action=barge_in_heard word='jarvis'
+2026-01-11 15:05:56 INFO action=response text='Lake Vika is a lesser-known lake in Uganda, often overshadowed by larger bodies of water. It offers beautiful scenery and opportunities for birdwatching and fishing.' mode='chatgpt_pro'
+2026-01-11 15:05:56 INFO action=answering active=False context='response'
+2026-01-11 15:05:56 INFO action=answer_interrupted reason='voice'
+2026-01-11 15:05:56 INFO action=wake_listen_start
+2026-01-11 15:06:05 INFO action=wake_word_heard word='jarvis' source='picovoice'
+2026-01-11 15:06:05 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-11 15:06:08 INFO action=audio_recorded ok=True duration=2.400 rms=0.008 mode='chatgpt_pro'
+2026-01-11 15:06:09 INFO action=transcript text='Go on.' engine='openai' language='en'
+2026-01-11 15:06:09 INFO action=command_received raw='Go on.' normalized='go on.' confidence=1.000 mode='chatgpt_pro'
+2026-01-11 15:06:09 INFO action=answering active=True context='response'
+2026-01-11 15:06:15 INFO action=led_pulse count=1 context='answer_interrupt'
+2026-01-11 15:06:15 INFO action=touch_tap zone='rear' context='answer_interrupt'
+2026-01-11 15:06:15 INFO action=response text="Uganda offers incredible experiences like gorilla trekking and birdwatching. It's a paradise for nature lovers!" mode='chatgpt_pro'
+2026-01-11 15:06:15 INFO action=answering active=False context='response'
+2026-01-11 15:06:15 INFO action=answer_interrupted reason='tap'
+2026-01-11 15:06:15 INFO action=wake_listen_start
+2026-01-11 15:06:15 INFO action=led_pulse count=1 context='idle_tap'
+2026-01-11 15:06:15 INFO action=touch_tap zone='rear' count=1 context='idle_start'
+2026-01-11 15:06:52 INFO action=wake_word_heard word='jarvis' source='picovoice'
+2026-01-11 15:06:52 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-11 15:06:54 INFO action=audio_recorded ok=True duration=2.000 rms=0.009 mode='chatgpt_pro'
+2026-01-11 15:06:55 INFO action=transcript text='Play Radio 2.' engine='openai' language='en'
+2026-01-11 15:06:55 INFO action=command_received raw='Play Radio 2.' normalized='play radio 2.' confidence=1.000 mode='chatgpt_pro'
+2026-01-11 15:06:55 INFO action=command_normalized normalized='play radio 2'
+2026-01-11 15:06:55 INFO action=answering active=True context='radio_start'
+2026-01-11 15:06:56 INFO action=answering active=False context='radio_start'
+2026-01-11 15:06:56 INFO action=radio_start source='voice' name='Radio 2' url='https://icecast.omroep.nl/radio2-bb-mp3'
+2026-01-11 15:07:24 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-11 15:07:24 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-11 15:07:25 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-11 15:07:25 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-11 15:07:27 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-11 15:07:27 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-11 15:07:27 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-11 15:07:27 INFO action=touch_tap zone='rear' count=2 context='radio_playing'
+2026-01-11 15:07:30 INFO action=led_pulse count=2 context='radio_double_tap'
+2026-01-11 15:07:30 INFO action=radio_stop source='touch_double_tap'
+2026-01-11 15:07:30 INFO action=wake_listen_start
+2026-01-11 15:07:37 INFO action=led_pulse count=1 context='resume_tap'
+2026-01-11 15:07:37 INFO action=touch_tap zone='rear' context='resume'
+2026-01-11 15:07:37 INFO action=led_pulse count=1 context='idle_tap'
+2026-01-11 15:07:37 INFO action=touch_tap zone='rear' count=1 context='idle_start'
+2026-01-11 15:07:37 INFO action=led_pulse count=1 context='idle_tap'
+2026-01-11 15:07:37 INFO action=touch_tap zone='rear' count=2 context='idle_start'
+2026-01-11 15:07:37 INFO action=led_pulse count=2 context='idle_double_tap'
+2026-01-11 15:07:37 INFO action=touch_double_tap context='start_radio'
+2026-01-11 15:07:41 INFO action=radio_start source='touch_double_tap' name='NPO Radio 1 (MP3)' url='https://icecast.omroep.nl/radio1-bb-mp3'
+2026-01-11 15:09:11 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-11 15:09:11 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-11 15:09:12 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-11 15:09:12 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-11 15:09:13 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-11 15:09:13 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-11 15:09:14 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-11 15:09:14 INFO action=touch_tap zone='rear' count=2 context='radio_playing'
+2026-01-11 15:09:17 INFO action=led_pulse count=2 context='radio_double_tap'
+2026-01-11 15:09:17 INFO action=radio_stop source='touch_double_tap'
+2026-01-11 15:09:17 INFO action=wake_listen_start
+2026-01-11 15:09:19 INFO action=wake_word_heard word='jarvis' source='picovoice'
+2026-01-11 15:09:19 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-11 15:09:21 INFO action=audio_recorded ok=True duration=1.600 rms=0.016 mode='chatgpt_pro'
+2026-01-11 15:09:22 INFO action=transcript text='Radio 3' engine='openai' language='en'
+2026-01-11 15:09:22 INFO action=command_received raw='Radio 3' normalized='radio 3' confidence=1.000 mode='chatgpt_pro'
+2026-01-11 15:09:22 INFO action=command_normalized normalized='play radio 3'
+2026-01-11 15:09:22 INFO action=answering active=True context='radio_start'
+2026-01-11 15:09:23 INFO action=answering active=False context='radio_start'
+2026-01-11 15:09:23 INFO action=radio_start source='voice' name='Radio 3' url='https://icecast.omroep.nl/3fm-bb-mp3'
