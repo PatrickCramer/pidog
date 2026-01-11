@@ -2,6 +2,7 @@ from robot_hat.stt import *
 
 import time
 import threading
+import re
 from pathlib import Path
 import numpy as np
 import sounddevice as sd
@@ -85,7 +86,7 @@ def _resample_audio(audio, src_rate, dst_rate):
     return np.interp(x_new, x_old, audio).astype(np.float32)
 
 
-def listen_for_wake_word(stt, wake_words, device=None, break_event=None):
+def listen_for_wake_word(stt, wake_words, device=None, break_event=None, strict=False):
     if isinstance(wake_words, str):
         wake_words = [wake_words]
     wake_words = [w.lower() for w in wake_words]
@@ -103,6 +104,21 @@ def listen_for_wake_word(stt, wake_words, device=None, break_event=None):
             continue
         partial = result.get("partial", "").lower()
         final = result.get("final", "").lower()
+        if strict:
+            if not final:
+                continue
+            tokens = set(re.findall(r"[a-z0-9']+", final))
+            for word in wake_words:
+                if not word:
+                    continue
+                if " " in word:
+                    if re.search(rf"\\b{re.escape(word)}\\b", final):
+                        stt.stop_listening_event.set()
+                        return word
+                elif word in tokens:
+                    stt.stop_listening_event.set()
+                    return word
+            continue
         for word in wake_words:
             if word and (word in partial or word in final):
                 stt.stop_listening_event.set()

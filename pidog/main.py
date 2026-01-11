@@ -32,7 +32,8 @@ from .dual_touch import DualTouch, TouchStyle
 from robot_hat import utils as rh_utils
 
 
-WAKE_WORDS = ["ziggy", "pidog", "pie dog", "hi dog"]
+WAKE_WORDS = ["jarvis"]
+WAKE_WORDS_STRICT = True
 # Fallback index when named device is not found.
 MIC_DEVICE = 2
 MIC_DEVICE_NAME = "USB PnP Sound Device"
@@ -1056,6 +1057,7 @@ def main():
                     WAKE_WORDS,
                     device=mic_device,
                     break_event=interrupt_event if (radio_paused or idle_event.is_set()) else None,
+                    strict=WAKE_WORDS_STRICT,
                 )
                 idle_event.clear()
                 if heard is not None:
@@ -1348,10 +1350,8 @@ def main():
                 leds.set_state("speak")
                 url, started, error = video.start()
                 if url:
-                    if started:
-                        msg = f"Camera activated at {url}."
-                    else:
-                        msg = f"Camera already active at {url}."
+                    print(f"Camera feed: {url}")
+                    msg = "Camera activated." if started else "Camera already active."
                 else:
                     msg = "Sorry, I could not start the camera."
                 speaker.say(msg)
@@ -1364,6 +1364,29 @@ def main():
                     url=url,
                     error=error,
                 )
+                if _handle_answer_interrupt(answer_interrupt_event, answering_event, speaker, leds):
+                    convo_deadline = None
+                    continue
+                if convo_deadline is not None:
+                    convo_deadline = time.time() + CONVO_WINDOW_SECONDS
+                continue
+            if (
+                command == "camera off"
+                or "turn the camera off" in command
+                or "turn off camera" in command
+                or "stop camera" in command
+            ):
+                _begin_answering(answering_event, answer_interrupt_event, context="camera_off")
+                leds.set_state("speak")
+                stopped = video.stop()
+                if stopped:
+                    msg = "Camera turned off."
+                else:
+                    msg = "Camera is not running."
+                speaker.say(msg)
+                _wait_for_speaker_or_interrupt(speaker, answer_interrupt_event)
+                _end_answering(answering_event, context="camera_off")
+                log_action("camera_stop", ok=stopped)
                 if _handle_answer_interrupt(answer_interrupt_event, answering_event, speaker, leds):
                     convo_deadline = None
                     continue
