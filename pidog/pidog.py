@@ -116,10 +116,10 @@ class Pidog():
 
     HEAD_PITCH_OFFSET = 45
 
-    HEAD_YAW_MIN = -90
+    HEAD_YAW_MIN = -170
     HEAD_YAW_MAX = 90
-    HEAD_ROLL_MIN = -70
-    HEAD_ROLL_MAX = 70
+    HEAD_ROLL_MIN = -30
+    HEAD_ROLL_MAX = 30
     HEAD_PITCH_MIN = -45
     HEAD_PITCH_MAX = 30
 
@@ -173,6 +173,10 @@ class Pidog():
                             init_angles=head_init_angles, db=config_file)
             self.tail = Robot(pin_list=tail_pin, name='tail',
                             init_angles=tail_init_angle, db=config_file)
+            try:
+                self.head_roll_trim = float(self.head.db.get('head_roll_trim', default_value='0'))
+            except (TypeError, ValueError):
+                self.head_roll_trim = 0.0
             # add thread
             self.thread_list.extend(["legs", "head", "tail"])
             # via
@@ -402,6 +406,7 @@ class Pidog():
                 # Release lock after copying data before the next operations
                 _angles = list.copy(self.head_current_angles)
                 _angles[0] = self.limit(self.HEAD_YAW_MIN, self.HEAD_YAW_MAX, _angles[0])
+                _angles[1] += getattr(self, "head_roll_trim", 0)
                 _angles[1] = self.limit(self.HEAD_ROLL_MIN, self.HEAD_ROLL_MAX, _angles[1])
                 _angles[2] = self.limit(self.HEAD_PITCH_MIN, self.HEAD_PITCH_MAX, _angles[2])
                 _angles[2] += self.HEAD_PITCH_OFFSET
