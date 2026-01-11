@@ -3,6 +3,7 @@ from robot_hat.stt import *
 import time
 import threading
 import re
+import os
 from pathlib import Path
 import numpy as np
 import sounddevice as sd
@@ -107,22 +108,111 @@ def listen_for_wake_word(stt, wake_words, device=None, break_event=None, strict=
         if strict:
             if not final:
                 continue
-            tokens = set(re.findall(r"[a-z0-9']+", final))
+            final_tokens = re.findall(r"[a-z0-9']+", final)
             for word in wake_words:
                 if not word:
                     continue
                 if " " in word:
-                    if re.search(rf"\\b{re.escape(word)}\\b", final):
+                    target_tokens = re.findall(r"[a-z0-9']+", word)
+                    if final_tokens == target_tokens:
                         stt.stop_listening_event.set()
                         return word
-                elif word in tokens:
-                    stt.stop_listening_event.set()
-                    return word
+                else:
+                    if len(final_tokens) == 1 and final_tokens[0] == word:
+                        stt.stop_listening_event.set()
+                        return word
             continue
         for word in wake_words:
             if word and (word in partial or word in final):
                 stt.stop_listening_event.set()
                 return word
+    return None
+
+
+def listen_for_wake_word_picovoice(
+    keyword="jarvis",
+    sensitivity=0.5,
+    device=None,
+    break_event=None,
+):
+    try:
+        import pvporcupine
+    except ImportError as exc:
+        raise RuntimeError(
+            "Picovoice Porcupine is not installed. Install with: "
+            "/home/pat/pidog/.venv/bin/python -m pip install pvporcupine "
+            "or /home/pat/pidog/.venv/bin/python -m pip install -e .[picovoice]"
+        ) from exc
+    access_key = os.environ.get("PICOVOICE_ACCESS_KEY", "").strip()
+    if not access_key:
+        raise RuntimeError("PICOVOICE_ACCESS_KEY is not set. Put it in /home/pat/pidog/.env.")
+    porcupine = pvporcupine.create(
+        access_key=access_key,
+        keywords=[keyword],
+        sensitivities=[sensitivity],
+    )
+    stop_event = threading.Event()
+    watcher = None
+    if break_event is not None:
+        def _watch_break():
+            break_event.wait()
+            stop_event.set()
+        watcher = threading.Thread(target=_watch_break, daemon=True)
+        watcher.start()
+    target_rate = porcupine.sample_rate
+    stream_rate = target_rate
+    blocksize = porcupine.frame_length
+    try:
+        stream = sd.InputStream(
+            samplerate=stream_rate,
+            channels=1,
+            dtype="int16",
+            device=device,
+            blocksize=blocksize,
+        )
+    except Exception:
+        try:
+            dev_info = sd.query_devices(device, "input")
+            stream_rate = int(dev_info.get("default_samplerate", target_rate))
+        except Exception:
+            stream_rate = target_rate
+        blocksize = max(1, int(stream_rate * 0.2))
+        stream = sd.InputStream(
+            samplerate=stream_rate,
+            channels=1,
+            dtype="int16",
+            device=device,
+            blocksize=blocksize,
+        )
+    try:
+        buffer = np.zeros(0, dtype=np.int16)
+        with stream:
+            while not stop_event.is_set():
+                pcm, _ = stream.read(blocksize)
+                if not pcm.size:
+                    continue
+                mono = pcm[:, 0] if pcm.ndim > 1 else pcm
+                if stream_rate != target_rate:
+                    float_audio = mono.astype(np.float32) / 32768.0
+                    resampled = _resample_audio(float_audio, stream_rate, target_rate)
+                    resampled = np.clip(resampled, -1.0, 1.0)
+                    frame_audio = (resampled * 32767.0).astype(np.int16)
+                else:
+                    frame_audio = mono.astype(np.int16)
+                if not frame_audio.size:
+                    continue
+                buffer = np.concatenate([buffer, frame_audio])
+                while buffer.size >= porcupine.frame_length:
+                    frame = buffer[:porcupine.frame_length]
+                    buffer = buffer[porcupine.frame_length:]
+                    result = porcupine.process(frame)
+                    if result >= 0:
+                        return keyword
+    finally:
+        try:
+            porcupine.delete()
+        except Exception:
+            pass
     return None
 
 

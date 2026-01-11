@@ -20,6 +20,7 @@ from .stt import (
     create_stt,
     create_whisper_stt,
     listen_for_wake_word,
+    listen_for_wake_word_picovoice,
     record_utterance,
     record_utterance_whisper,
     record_audio_wav,
@@ -32,6 +33,9 @@ from .dual_touch import DualTouch, TouchStyle
 from robot_hat import utils as rh_utils
 
 
+USE_PICOVOICE_WAKE_WORD = True
+PICOVOICE_KEYWORD = "jarvis"
+PICOVOICE_SENSITIVITY = 0.5
 WAKE_WORDS = ["jarvis"]
 WAKE_WORDS_STRICT = True
 # Fallback index when named device is not found.
@@ -107,10 +111,10 @@ RADIO_ALIASES = {
 VOLUME_STEP = 5
 TAP_WINDOW_SECONDS = 0.6
 RESUME_TAP_WINDOW_SECONDS = 0.6
-CONVO_WINDOW_SECONDS = 15
+CONVO_WINDOW_SECONDS = 5
 PIDFILE = "/tmp/pidog.pid"
 STT_INIT_ASYNC = True
-SKIP_WAKE_UNTIL_STT_READY = True
+SKIP_WAKE_UNTIL_STT_READY = False
 TAP_PULSE_COLOR = [0, 140, 255]
 CAMERA_PORT = 9000
 CAMERA_VFLIP = False
@@ -761,6 +765,10 @@ def main():
         print(f"Default device: {sd.default.device}")
         return
 
+    if USE_PICOVOICE_WAKE_WORD:
+        if not os.environ.get("PICOVOICE_ACCESS_KEY", "").strip():
+            raise RuntimeError("PICOVOICE_ACCESS_KEY is not set. Put it in /home/pat/pidog/.env.")
+
     _ensure_single_instance(PIDFILE)
     log_action("single_instance", pidfile=PIDFILE, pid=os.getpid())
 
@@ -940,13 +948,22 @@ def main():
         print("Smart mode: pro")
         log_action("mode_smart_pro", enabled=True)
 
-    print(f"Wake words: {WAKE_WORDS}")
+    if USE_PICOVOICE_WAKE_WORD:
+        print(f"Wake word: {PICOVOICE_KEYWORD} (Picovoice)")
+    else:
+        print(f"Wake words: {WAKE_WORDS}")
     print("Ready.")
-    log_action("ready", wake_words=WAKE_WORDS)
+    log_action(
+        "ready",
+        wake_source="picovoice" if USE_PICOVOICE_WAKE_WORD else "vosk",
+        wake_words=WAKE_WORDS if not USE_PICOVOICE_WAKE_WORD else None,
+        picovoice_keyword=PICOVOICE_KEYWORD if USE_PICOVOICE_WAKE_WORD else None,
+    )
     try:
         convo_deadline = None
         wake_word_delayed = False
-        if use_chatgpt_pro and STT_INIT_ASYNC and SKIP_WAKE_UNTIL_STT_READY:
+        if (use_chatgpt_pro and STT_INIT_ASYNC and SKIP_WAKE_UNTIL_STT_READY
+                and not USE_PICOVOICE_WAKE_WORD):
             convo_deadline = time.time() + CONVO_WINDOW_SECONDS
             wake_word_delayed = True
             print("Smart mode: pro (wake word enabled after STT init)")
@@ -1051,19 +1068,31 @@ def main():
                 leds.set_state("wake")
                 idle_event.set()
                 log_action("wake_listen_start")
-                wake_stt, asr_stt, stt_model = _await_stt(stt_ready, stt_error, stt_state)
-                heard = listen_for_wake_word(
-                    wake_stt,
-                    WAKE_WORDS,
-                    device=mic_device,
-                    break_event=interrupt_event if (radio_paused or idle_event.is_set()) else None,
-                    strict=WAKE_WORDS_STRICT,
-                )
+                if USE_PICOVOICE_WAKE_WORD:
+                    heard = listen_for_wake_word_picovoice(
+                        keyword=PICOVOICE_KEYWORD,
+                        sensitivity=PICOVOICE_SENSITIVITY,
+                        device=mic_device,
+                        break_event=interrupt_event if (radio_paused or idle_event.is_set()) else None,
+                    )
+                else:
+                    wake_stt, asr_stt, stt_model = _await_stt(stt_ready, stt_error, stt_state)
+                    heard = listen_for_wake_word(
+                        wake_stt,
+                        WAKE_WORDS,
+                        device=mic_device,
+                        break_event=interrupt_event if (radio_paused or idle_event.is_set()) else None,
+                        strict=WAKE_WORDS_STRICT,
+                    )
                 idle_event.clear()
                 if heard is not None:
                     convo_deadline = time.time() + CONVO_WINDOW_SECONDS
                     just_woke = True
-                    log_action("wake_word_heard", word=heard)
+                    log_action(
+                        "wake_word_heard",
+                        word=heard,
+                        source="picovoice" if USE_PICOVOICE_WAKE_WORD else "vosk",
+                    )
             else:
                 if stt_ready.is_set() or not SKIP_WAKE_UNTIL_STT_READY:
                     heard = "active"

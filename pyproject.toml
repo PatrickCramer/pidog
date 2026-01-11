@@ -23,6 +23,7 @@ dependencies = []
 
 [project.optional-dependencies]
 openai = ["openai>=1.0.0"]
+picovoice = ["pvporcupine>=2.2.0"]
 
 [project.scripts]
 pidog = "pidog:__main__"
@@ -38,4 +39,3 @@ packages = [
 
 [tool.setuptools.dynamic]
 version = {attr = "pidog.version.__version__"}
-
