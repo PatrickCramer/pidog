@@ -16,7 +16,6 @@ import wave
 import sounddevice as sd
 import signal
 import shutil
-import pwd
 from pathlib import Path
 
 from .stt import (
@@ -45,10 +44,9 @@ BARGE_IN_SENSITIVITY = 0.4
 RADIO_WAKE_ENABLED = True
 RADIO_WAKE_KEYWORD = "jarvis"
 RADIO_WAKE_SENSITIVITY = 0.5
-SOFTMASTER_ENABLE = True
+SOFTMASTER_ENABLE = False
 SOFTMASTER_CARD = "Device_1"
 SOFTMASTER_STARTUP_PERCENT = 10
-MOC_USER = "pat"
 WAKE_WORDS = ["jarvis"]
 WAKE_WORDS_STRICT = True
 SOUND_DIR = Path(__file__).resolve().parents[1] / "sounds"
@@ -730,109 +728,83 @@ def get_default_station(stations):
     return {"name": "BBC World Service", "url": BBC_WORLD_SERVICE_URL}
 
 
-def _moc_env():
+def start_moc_stream(url):
     env = os.environ.copy()
-    target_uid = os.getuid()
-    if os.geteuid() == 0:
-        try:
-            target_uid = pwd.getpwnam(MOC_USER).pw_uid
-        except KeyError:
-            target_uid = os.getuid()
-    env.setdefault("XDG_RUNTIME_DIR", f"/run/user/{target_uid}")
-    return env
+    env.setdefault("XDG_RUNTIME_DIR", f"/run/user/{os.getuid()}")
 
+    def _ensure_moc_server():
+        if os.geteuid() == 0:
+            cmd = [
+                "sudo",
+                "-u",
+                "pat",
+                "-H",
+                "env",
+                f"XDG_RUNTIME_DIR={env['XDG_RUNTIME_DIR']}",
+                "mocp",
+                "-S",
+            ]
+            subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False)
+            return
+        subprocess.run(["mocp", "-S"], env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False)
 
-def _mocp_run(args, env, capture=False):
-    kwargs = {"check": False}
-    if capture:
-        kwargs["stdout"] = subprocess.PIPE
-        kwargs["stderr"] = subprocess.PIPE
-        kwargs["text"] = True
-    else:
-        kwargs["stdout"] = subprocess.DEVNULL
-        kwargs["stderr"] = subprocess.DEVNULL
     if os.geteuid() == 0:
+        _ensure_moc_server()
         cmd = [
             "sudo",
             "-u",
-            MOC_USER,
+            "pat",
             "-H",
             "env",
             f"XDG_RUNTIME_DIR={env['XDG_RUNTIME_DIR']}",
             "mocp",
-        ] + args
-        return subprocess.run(cmd, **kwargs)
-    return subprocess.run(["mocp"] + args, env=env, **kwargs)
-
-
-def _mocp_state(env):
-    result = _mocp_run(["-i"], env, capture=True)
-    if result.returncode != 0:
-        return None
-    for line in result.stdout.splitlines():
-        if line.startswith("State:"):
-            return line.split(":", 1)[1].strip()
-    return None
-
-
-def _wait_moc_state(env, target, timeout=3.0):
-    deadline = time.time() + timeout
-    while time.time() < deadline:
-        state = _mocp_state(env)
-        if state == target:
-            return True
-        time.sleep(0.25)
-    return False
-
-
-def _wait_moc_ready(env, timeout=2.5):
-    deadline = time.time() + timeout
-    while time.time() < deadline:
-        if _mocp_state(env) is not None:
-            return True
-        time.sleep(0.2)
-    return False
-
-
-def _moc_try_play(env, url):
-    _mocp_run(["-l", url], env)
-    if _wait_moc_state(env, "PLAY", timeout=3.5):
-        return True
-    _mocp_run(["-U"], env)
-    _mocp_run(["-p"], env)
-    if _wait_moc_state(env, "PLAY", timeout=3.5):
-        return True
-    _mocp_run(["-c"], env)
-    _mocp_run(["-a", url], env)
-    _mocp_run(["-p"], env)
-    if _wait_moc_state(env, "PLAY", timeout=3.5):
-        return True
-    return False
-
-
-def start_moc_stream(url):
-    env = _moc_env()
-    for attempt in range(2):
-        _mocp_run(["-S"], env)
-        if not _wait_moc_ready(env, timeout=2.5):
-            _mocp_run(["-x"], env)
-            continue
-        if _moc_try_play(env, url):
-            return True
-        _mocp_run(["-x"], env)
-    log_action("radio_start_failed", url=url, state=_mocp_state(env))
-    return False
+            "-l",
+            url,
+        ]
+        subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        return
+    _ensure_moc_server()
+    subprocess.Popen(["mocp", "-l", url], env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 
 def stop_moc_stream():
-    env = _moc_env()
-    _mocp_run(["-s"], env)
+    env = os.environ.copy()
+    env.setdefault("XDG_RUNTIME_DIR", f"/run/user/{os.getuid()}")
+    if os.geteuid() == 0:
+        cmd = [
+            "sudo",
+            "-u",
+            "pat",
+            "-H",
+            "env",
+            f"XDG_RUNTIME_DIR={env['XDG_RUNTIME_DIR']}",
+            "mocp",
+            "-s",
+        ]
+        subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        return
+    subprocess.Popen(["mocp", "-s"], env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 
 def adjust_moc_volume(delta):
-    env = _moc_env()
+    env = os.environ.copy()
+    env.setdefault("XDG_RUNTIME_DIR", f"/run/user/{os.getuid()}")
     op = f"{delta:+d}"
-    _mocp_run(["-v", op], env)
+    if os.geteuid() == 0:
+        cmd = [
+            "sudo",
+            "-u",
+            "pat",
+            "-H",
+            "env",
+            f"XDG_RUNTIME_DIR={env['XDG_RUNTIME_DIR']}",
+            "mocp",
+            "-v",
+            op,
+        ]
+        subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        return
+    subprocess.Popen(["mocp", "-v", op], env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 
 def wait_for_pet(touch):
@@ -1364,32 +1336,28 @@ def main():
                     leds.set_state("speak")
                     speaker.say("Resuming radio.")
                     speaker.wait_idle()
-                    started = start_moc_stream(radio_last_url)
-                    if started:
-                        radio_station_index = find_station_index(stations, radio_last_url)
-                        radio_playing = True
-                        radio_paused = False
-                        radio_resume_on_no_followup = False
-                        _sync_radio_mode(radio_mode_event, radio_playing, radio_paused)
-                        paused_event.clear()
-                        log_action("radio_resume", source="touch_double_tap", url=radio_last_url)
-                        continue
-                    log_action("radio_resume_failed", source="touch_double_tap", url=radio_last_url)
+                    start_moc_stream(radio_last_url)
+                    radio_station_index = find_station_index(stations, radio_last_url)
+                    radio_playing = True
+                    radio_paused = False
+                    radio_resume_on_no_followup = False
+                    _sync_radio_mode(radio_mode_event, radio_playing, radio_paused)
+                    paused_event.clear()
+                    log_action("radio_resume", source="touch_double_tap", url=radio_last_url)
+                    continue
 
             if convo_deadline is not None and time.time() > convo_deadline:
                 convo_deadline = None
                 resumed_radio = False
                 if radio_resume_on_no_followup and radio_paused and radio_last_url:
-                    if start_moc_stream(radio_last_url):
-                        radio_station_index = find_station_index(stations, radio_last_url)
-                        radio_playing = True
-                        radio_paused = False
-                        _sync_radio_mode(radio_mode_event, radio_playing, radio_paused)
-                        paused_event.clear()
-                        log_action("radio_resume", source="voice_wake_timeout", url=radio_last_url)
-                        resumed_radio = True
-                    else:
-                        log_action("radio_resume_failed", source="voice_wake_timeout", url=radio_last_url)
+                    start_moc_stream(radio_last_url)
+                    radio_station_index = find_station_index(stations, radio_last_url)
+                    radio_playing = True
+                    radio_paused = False
+                    _sync_radio_mode(radio_mode_event, radio_playing, radio_paused)
+                    paused_event.clear()
+                    log_action("radio_resume", source="voice_wake_timeout", url=radio_last_url)
+                    resumed_radio = True
                 radio_resume_on_no_followup = False
                 if resumed_radio:
                     continue
@@ -1648,26 +1616,21 @@ def main():
                 speaker.say("Starting BBC World Service.")
                 _wait_for_speaker_or_interrupt(speaker, answer_interrupt_event)
                 _end_answering(answering_event, context="radio_start")
-                if start_moc_stream(BBC_WORLD_SERVICE_URL):
-                    radio_playing = True
-                    radio_paused = False
-                    radio_resume_on_no_followup = False
-                    radio_last_url = BBC_WORLD_SERVICE_URL
-                    radio_station_index = find_station_index(stations, BBC_WORLD_SERVICE_URL)
-                    _sync_radio_mode(radio_mode_event, radio_playing, radio_paused)
-                    paused_event.clear()
-                    interrupt_event.clear()
-                    log_action(
-                        "radio_start",
-                        source="voice",
-                        name="BBC World Service",
-                        url=BBC_WORLD_SERVICE_URL,
-                    )
-                else:
-                    radio_playing = False
-                    radio_paused = False
-                    radio_resume_on_no_followup = False
-                    _sync_radio_mode(radio_mode_event, radio_playing, radio_paused)
+                start_moc_stream(BBC_WORLD_SERVICE_URL)
+                radio_playing = True
+                radio_paused = False
+                radio_resume_on_no_followup = False
+                radio_last_url = BBC_WORLD_SERVICE_URL
+                radio_station_index = find_station_index(stations, BBC_WORLD_SERVICE_URL)
+                _sync_radio_mode(radio_mode_event, radio_playing, radio_paused)
+                paused_event.clear()
+                interrupt_event.clear()
+                log_action(
+                    "radio_start",
+                    source="voice",
+                    name="BBC World Service",
+                    url=BBC_WORLD_SERVICE_URL,
+                )
                 if _handle_answer_interrupt(answer_interrupt_event, answering_event, speaker, leds):
                     convo_deadline = None
                     continue
@@ -1688,26 +1651,21 @@ def main():
                         speaker.say(f"Starting radio {key}.")
                         _wait_for_speaker_or_interrupt(speaker, answer_interrupt_event)
                         _end_answering(answering_event, context="radio_start")
-                        if start_moc_stream(url):
-                            radio_playing = True
-                            radio_paused = False
-                            radio_resume_on_no_followup = False
-                            radio_last_url = url
-                            radio_station_index = find_station_index(stations, url)
-                            _sync_radio_mode(radio_mode_event, radio_playing, radio_paused)
-                            paused_event.clear()
-                            interrupt_event.clear()
-                            log_action(
-                                "radio_start",
-                                source="voice",
-                                name=f"Radio {key}",
-                                url=url,
-                            )
-                        else:
-                            radio_playing = False
-                            radio_paused = False
-                            radio_resume_on_no_followup = False
-                            _sync_radio_mode(radio_mode_event, radio_playing, radio_paused)
+                        start_moc_stream(url)
+                        radio_playing = True
+                        radio_paused = False
+                        radio_resume_on_no_followup = False
+                        radio_last_url = url
+                        radio_station_index = find_station_index(stations, url)
+                        _sync_radio_mode(radio_mode_event, radio_playing, radio_paused)
+                        paused_event.clear()
+                        interrupt_event.clear()
+                        log_action(
+                            "radio_start",
+                            source="voice",
+                            name=f"Radio {key}",
+                            url=url,
+                        )
                         if _handle_answer_interrupt(answer_interrupt_event, answering_event, speaker, leds):
                             convo_deadline = None
                             break

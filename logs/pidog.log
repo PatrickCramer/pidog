@@ -7641,3 +7641,136 @@
 2026-01-11 19:38:15 INFO action=audio_recorded ok=True duration=4.800 rms=0.001 mode='chatgpt_pro'
 2026-01-11 19:38:15 INFO action=audio_low_rms rms=0.001 threshold=0.008
 2026-01-11 19:38:15 INFO action=wake_listen_start
+2026-01-11 19:40:03 INFO action=shutdown reason='keyboard_interrupt'
+2026-01-11 19:40:03 INFO action=shutdown reason='cleanup_complete'
+2026-01-11 19:40:06 INFO logging ready path=/home/pat/pidog/logs/pidog.log level=INFO
+2026-01-11 19:40:06 INFO action=startup pid=68426 args={'mic_test': False, 'list_audio': False, 'mic_device': None, 'debug_latency': True} log_path='/home/pat/pidog/logs/pidog.log'
+2026-01-11 19:40:06 INFO action=config_audio max_utterance_seconds=6 silence_threshold=0.012 silence_seconds=0.650 notes='threshold=rms cutoff, silence=end-of-speech window'
+2026-01-11 19:40:06 INFO action=single_instance pidfile='/tmp/pidog.pid' pid=68426
+2026-01-11 19:40:06 INFO action=mic_device_selected index=1 name='USB PnP Sound Device: Audio (hw:3,0)'
+2026-01-11 19:40:06 INFO action=pro_available available=True
+2026-01-11 19:40:06 INFO action=stt_init mode='deferred' reason='picovoice+pro'
+2026-01-11 19:40:06 INFO action=models tts_engine='piper' tts_model='en_US-amy-low' llm_model='llama3.2:1b'
+2026-01-11 19:40:08 INFO action=init_tts seconds=1.299 engine='piper' model='en_US-amy-low'
+2026-01-11 19:40:08 INFO action=init_speaker seconds=0.001
+2026-01-11 19:40:08 INFO action=softmaster_set percent=10
+2026-01-11 19:40:08 INFO action=init_leds seconds=0.233
+2026-01-11 19:40:08 INFO action=init_touch seconds=0.004
+2026-01-11 19:40:08 INFO action=battery_status voltage=7.685 percent=49
+2026-01-11 19:40:08 INFO action=stations_loaded count=18 names=['NPO Radio 1 (MP3)', 'NPO Radio 2 (MP3)', 'NPO 3FM (MP3)', 'NPO Klassiek (MP3)', 'NPO Radio 5 (MP3)', 'NPO Blend (MP3)', 'FunX (MP3)', 'BBC World Service (MP3)', 'Frequence 3 (MP3 256)', 'Frequence 3 Urban (MP3 256)', 'Frequence 3 (MP3 128)', 'Frequence 3 Urban (MP3 128)', 'Frequence 3 (AAC 64)', 'Frequence 3 Urban (AAC 64)', 'Frequence 3 Gold (MP3 160)', 'Frequence 3 Gold (AAC 64)', 'Frequence 3 Dance (MP3 160)', 'Frequence 3 Dance (AAC 64)']
+2026-01-11 19:40:08 INFO action=voice_barge_in_started keyword='jarvis' sensitivity=0.400
+2026-01-11 19:40:08 INFO action=radio_wake_started keyword='jarvis' sensitivity=0.500
+2026-01-11 19:40:08 INFO action=touch_watchers_started
+2026-01-11 19:40:10 INFO action=mode_smart_pro enabled=True
+2026-01-11 19:40:10 INFO action=ready wake_source='picovoice' picovoice_keyword='jarvis'
+2026-01-11 19:40:10 INFO action=convo_window seconds=5 wake_word_delayed=False
+2026-01-11 19:40:10 INFO action=wake_listen_start
+2026-01-11 19:40:16 INFO action=wake_word_heard word='jarvis' source='picovoice'
+2026-01-11 19:40:16 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-11 19:40:19 INFO action=audio_recorded ok=True duration=2.400 rms=0.018 mode='chatgpt_pro'
+2026-01-11 19:40:20 INFO action=transcript text='Play Radio 2.' engine='openai' language='en'
+2026-01-11 19:40:20 INFO action=command_received raw='Play Radio 2.' normalized='play radio 2.' confidence=1.000 mode='chatgpt_pro'
+2026-01-11 19:40:20 INFO action=command_normalized normalized='play radio 2'
+2026-01-11 19:40:20 INFO action=answering active=True context='radio_start'
+2026-01-11 19:40:22 INFO action=answering active=False context='radio_start'
+2026-01-11 19:40:27 INFO action=radio_start_failed url='https://icecast.omroep.nl/radio2-bb-mp3'
+2026-01-11 19:40:27 INFO action=convo_active seconds_left=4
+2026-01-11 19:40:27 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-11 19:40:34 INFO action=audio_recorded ok=True duration=5.600 rms=0.001 mode='chatgpt_pro'
+2026-01-11 19:40:34 INFO action=audio_low_rms rms=0.001 threshold=0.008
+2026-01-11 19:40:34 INFO action=wake_listen_start
+2026-01-11 19:40:55 INFO action=shutdown reason='keyboard_interrupt'
+2026-01-11 19:40:55 INFO action=shutdown reason='cleanup_complete'
+2026-01-11 19:46:31 INFO logging ready path=/home/pat/pidog/logs/pidog.log level=INFO
+2026-01-11 19:46:31 INFO action=startup pid=69367 args={'mic_test': False, 'list_audio': False, 'mic_device': None, 'debug_latency': True} log_path='/home/pat/pidog/logs/pidog.log'
+2026-01-11 19:46:31 INFO action=config_audio max_utterance_seconds=6 silence_threshold=0.012 silence_seconds=0.650 notes='threshold=rms cutoff, silence=end-of-speech window'
+2026-01-11 19:46:31 INFO action=single_instance pidfile='/tmp/pidog.pid' pid=69367
+2026-01-11 19:46:31 INFO action=mic_device_selected index=1 name='USB PnP Sound Device: Audio (hw:3,0)'
+2026-01-11 19:46:32 INFO action=pro_available available=True
+2026-01-11 19:46:32 INFO action=stt_init mode='deferred' reason='picovoice+pro'
+2026-01-11 19:46:32 INFO action=models tts_engine='piper' tts_model='en_US-amy-low' llm_model='llama3.2:1b'
+2026-01-11 19:46:33 INFO action=init_tts seconds=1.346 engine='piper' model='en_US-amy-low'
+2026-01-11 19:46:33 INFO action=init_speaker seconds=0.001
+2026-01-11 19:46:33 INFO action=init_leds seconds=0.233
+2026-01-11 19:46:33 INFO action=init_touch seconds=0.004
+2026-01-11 19:46:33 INFO action=battery_status voltage=7.671 percent=47
+2026-01-11 19:46:33 INFO action=stations_loaded count=18 names=['NPO Radio 1 (MP3)', 'NPO Radio 2 (MP3)', 'NPO 3FM (MP3)', 'NPO Klassiek (MP3)', 'NPO Radio 5 (MP3)', 'NPO Blend (MP3)', 'FunX (MP3)', 'BBC World Service (MP3)', 'Frequence 3 (MP3 256)', 'Frequence 3 Urban (MP3 256)', 'Frequence 3 (MP3 128)', 'Frequence 3 Urban (MP3 128)', 'Frequence 3 (AAC 64)', 'Frequence 3 Urban (AAC 64)', 'Frequence 3 Gold (MP3 160)', 'Frequence 3 Gold (AAC 64)', 'Frequence 3 Dance (MP3 160)', 'Frequence 3 Dance (AAC 64)']
+2026-01-11 19:46:33 INFO action=voice_barge_in_started keyword='jarvis' sensitivity=0.400
+2026-01-11 19:46:33 INFO action=radio_wake_started keyword='jarvis' sensitivity=0.500
+2026-01-11 19:46:33 INFO action=touch_watchers_started
+2026-01-11 19:46:35 INFO action=mode_smart_pro enabled=True
+2026-01-11 19:46:35 INFO action=ready wake_source='picovoice' picovoice_keyword='jarvis'
+2026-01-11 19:46:35 INFO action=convo_window seconds=5 wake_word_delayed=False
+2026-01-11 19:46:35 INFO action=wake_listen_start
+2026-01-11 19:46:41 INFO action=wake_word_heard word='jarvis' source='picovoice'
+2026-01-11 19:46:41 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-11 19:46:45 INFO action=audio_recorded ok=True duration=3.200 rms=0.009 mode='chatgpt_pro'
+2026-01-11 19:46:47 INFO action=transcript text='at Radio 2' engine='openai' language='en'
+2026-01-11 19:46:47 INFO action=command_received raw='at Radio 2' normalized='at radio 2' confidence=1.000 mode='chatgpt_pro'
+2026-01-11 19:46:47 INFO action=command_normalized normalized='play radio 2'
+2026-01-11 19:46:47 INFO action=answering active=True context='radio_start'
+2026-01-11 19:46:49 INFO action=answering active=False context='radio_start'
+2026-01-11 19:46:49 INFO action=radio_start source='voice' name='Radio 2' url='https://icecast.omroep.nl/radio2-bb-mp3'
+2026-01-11 19:47:31 INFO action=radio_wake_heard word='jarvis'
+2026-01-11 19:47:32 INFO action=radio_stop source='voice_wake'
+2026-01-11 19:47:32 INFO action=convo_active seconds_left=4
+2026-01-11 19:47:32 INFO action=listen_start mode='chatgpt_pro' mic_device=1
+2026-01-11 19:47:36 INFO action=audio_recorded ok=True duration=3.000 rms=0.014 mode='chatgpt_pro'
+2026-01-11 19:47:37 INFO action=transcript text='Play Radio 3.' engine='openai' language='en'
+2026-01-11 19:47:37 INFO action=command_received raw='Play Radio 3.' normalized='play radio 3.' confidence=1.000 mode='chatgpt_pro'
+2026-01-11 19:47:37 INFO action=command_normalized normalized='play radio 3'
+2026-01-11 19:47:37 INFO action=answering active=True context='radio_start'
+2026-01-11 19:47:38 INFO action=answering active=False context='radio_start'
+2026-01-11 19:47:38 INFO action=radio_start source='voice' name='Radio 3' url='https://icecast.omroep.nl/3fm-bb-mp3'
+2026-01-11 19:47:43 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-11 19:47:43 INFO action=touch_tap zone='front' count=1 context='radio_playing'
+2026-01-11 19:47:43 INFO action=radio_volume delta=-5 source='touch_swipe' direction='front_to_rear'
+2026-01-11 19:47:46 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-11 19:47:46 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-11 19:47:46 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-11 19:47:46 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-11 19:47:47 INFO action=radio_volume delta=5 source='touch_swipe' direction='rear_to_front'
+2026-01-11 19:47:47 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-11 19:47:47 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-11 19:47:48 INFO action=radio_volume delta=5 source='touch_swipe' direction='rear_to_front'
+2026-01-11 19:47:48 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-11 19:47:48 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-11 19:47:48 INFO action=radio_volume delta=5 source='touch_swipe' direction='rear_to_front'
+2026-01-11 19:47:50 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-11 19:47:50 INFO action=touch_tap zone='front' count=1 context='radio_playing'
+2026-01-11 19:47:50 INFO action=radio_volume delta=-5 source='touch_swipe' direction='front_to_rear'
+2026-01-11 19:47:50 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-11 19:47:50 INFO action=touch_tap zone='front' count=1 context='radio_playing'
+2026-01-11 19:47:50 INFO action=radio_volume delta=-5 source='touch_swipe' direction='front_to_rear'
+2026-01-11 19:47:53 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-11 19:47:53 INFO action=touch_tap zone='front' count=1 context='radio_playing'
+2026-01-11 19:47:53 INFO action=radio_volume delta=-5 source='touch_swipe' direction='front_to_rear'
+2026-01-11 19:47:54 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-11 19:47:54 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-11 19:47:55 INFO action=led_pulse count=1 context='radio_tap'
+2026-01-11 19:47:55 INFO action=touch_tap zone='rear' count=1 context='radio_playing'
+2026-01-11 19:47:55 INFO action=radio_volume delta=5 source='touch_swipe' direction='rear_to_front'
+2026-01-11 19:48:20 INFO action=shutdown reason='keyboard_interrupt'
+2026-01-11 19:48:21 INFO action=shutdown reason='cleanup_complete'
+2026-01-11 19:48:21 INFO action=radio_wake_error error="Picovoice stream read failed: Unanticipated host error [PaErrorCode -9999]: '' [<host API not found> error 0]"
+2026-01-11 19:48:34 INFO logging ready path=/home/pat/pidog/logs/pidog.log level=INFO
+2026-01-11 19:48:34 INFO action=startup pid=69736 args={'mic_test': False, 'list_audio': False, 'mic_device': None, 'debug_latency': True} log_path='/home/pat/pidog/logs/pidog.log'
+2026-01-11 19:48:34 INFO action=config_audio max_utterance_seconds=6 silence_threshold=0.012 silence_seconds=0.650 notes='threshold=rms cutoff, silence=end-of-speech window'
+2026-01-11 19:48:34 INFO action=single_instance pidfile='/tmp/pidog.pid' pid=69736
+2026-01-11 19:48:34 INFO action=mic_device_selected index=1 name='USB PnP Sound Device: Audio (hw:3,0)'
+2026-01-11 19:48:34 INFO action=pro_available available=True
+2026-01-11 19:48:34 INFO action=stt_init mode='deferred' reason='picovoice+pro'
+2026-01-11 19:48:34 INFO action=models tts_engine='piper' tts_model='en_US-amy-low' llm_model='llama3.2:1b'
+2026-01-11 19:48:35 INFO action=init_tts seconds=1.322 engine='piper' model='en_US-amy-low'
+2026-01-11 19:48:35 INFO action=init_speaker seconds=0.001
+2026-01-11 19:48:36 INFO action=init_leds seconds=0.233
+2026-01-11 19:48:36 INFO action=init_touch seconds=0.004
+2026-01-11 19:48:36 INFO action=battery_status voltage=7.630 percent=43
+2026-01-11 19:48:36 INFO action=stations_loaded count=18 names=['NPO Radio 1 (MP3)', 'NPO Radio 2 (MP3)', 'NPO 3FM (MP3)', 'NPO Klassiek (MP3)', 'NPO Radio 5 (MP3)', 'NPO Blend (MP3)', 'FunX (MP3)', 'BBC World Service (MP3)', 'Frequence 3 (MP3 256)', 'Frequence 3 Urban (MP3 256)', 'Frequence 3 (MP3 128)', 'Frequence 3 Urban (MP3 128)', 'Frequence 3 (AAC 64)', 'Frequence 3 Urban (AAC 64)', 'Frequence 3 Gold (MP3 160)', 'Frequence 3 Gold (AAC 64)', 'Frequence 3 Dance (MP3 160)', 'Frequence 3 Dance (AAC 64)']
+2026-01-11 19:48:36 INFO action=voice_barge_in_started keyword='jarvis' sensitivity=0.400
+2026-01-11 19:48:36 INFO action=radio_wake_started keyword='jarvis' sensitivity=0.500
+2026-01-11 19:48:36 INFO action=touch_watchers_started
+2026-01-11 19:48:38 INFO action=mode_smart_pro enabled=True
+2026-01-11 19:48:38 INFO action=ready wake_source='picovoice' picovoice_keyword='jarvis'
+2026-01-11 19:48:38 INFO action=convo_window seconds=5 wake_word_delayed=False
+2026-01-11 19:48:38 INFO action=wake_listen_start
