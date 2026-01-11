@@ -11,6 +11,8 @@ import wave
 from sunfounder_voice_assistant.stt import STT
 from sunfounder_voice_assistant.stt import vosk as vosk_module
 
+MIC_LOCK = threading.Lock()
+
 
 def _ensure_vosk_model_dir():
     base = Path.home() / ".cache" / "pidog" / "vosk_models"
@@ -100,32 +102,33 @@ def listen_for_wake_word(stt, wake_words, device=None, break_event=None, strict=
             stt.stop_listening_event.set()
         watcher = threading.Thread(target=_watch_break, daemon=True)
         watcher.start()
-    for result in stt.listen(stream=True, device=device):
-        if not result:
-            continue
-        partial = result.get("partial", "").lower()
-        final = result.get("final", "").lower()
-        if strict:
-            if not final:
+    with MIC_LOCK:
+        for result in stt.listen(stream=True, device=device):
+            if not result:
                 continue
-            final_tokens = re.findall(r"[a-z0-9']+", final)
-            for word in wake_words:
-                if not word:
+            partial = result.get("partial", "").lower()
+            final = result.get("final", "").lower()
+            if strict:
+                if not final:
                     continue
-                if " " in word:
-                    target_tokens = re.findall(r"[a-z0-9']+", word)
-                    if final_tokens == target_tokens:
-                        stt.stop_listening_event.set()
-                        return word
-                else:
-                    if len(final_tokens) == 1 and final_tokens[0] == word:
-                        stt.stop_listening_event.set()
-                        return word
-            continue
-        for word in wake_words:
-            if word and (word in partial or word in final):
-                stt.stop_listening_event.set()
-                return word
+                final_tokens = re.findall(r"[a-z0-9']+", final)
+                for word in wake_words:
+                    if not word:
+                        continue
+                    if " " in word:
+                        target_tokens = re.findall(r"[a-z0-9']+", word)
+                        if final_tokens == target_tokens:
+                            stt.stop_listening_event.set()
+                            return word
+                    else:
+                        if len(final_tokens) == 1 and final_tokens[0] == word:
+                            stt.stop_listening_event.set()
+                            return word
+                continue
+            for word in wake_words:
+                if word and (word in partial or word in final):
+                    stt.stop_listening_event.set()
+                    return word
     return None
 
 
@@ -198,30 +201,34 @@ def listen_for_wake_word_picovoice(
             pass
         raise RuntimeError("Unable to open Picovoice input stream (no supported sample rate).")
     try:
-        buffer = np.zeros(0, dtype=np.int16)
-        with stream:
-            while not stop_event.is_set():
-                pcm, _ = stream.read(stream.blocksize)
-                if not pcm.size:
-                    continue
-                mono = pcm[:, 0] if pcm.ndim > 1 else pcm
-                if stream_dtype == "int16":
-                    float_audio = mono.astype(np.float32) / 32768.0
-                else:
-                    float_audio = mono.astype(np.float32)
-                if stream_rate != target_rate:
-                    float_audio = _resample_audio(float_audio, stream_rate, target_rate)
-                float_audio = np.clip(float_audio, -1.0, 1.0)
-                frame_audio = (float_audio * 32767.0).astype(np.int16)
-                if not frame_audio.size:
-                    continue
-                buffer = np.concatenate([buffer, frame_audio])
-                while buffer.size >= porcupine.frame_length:
-                    frame = buffer[:porcupine.frame_length]
-                    buffer = buffer[porcupine.frame_length:]
-                    result = porcupine.process(frame)
-                    if result >= 0:
-                        return keyword
+        with MIC_LOCK:
+            buffer = np.zeros(0, dtype=np.int16)
+            with stream:
+                while not stop_event.is_set():
+                    try:
+                        pcm, _ = stream.read(stream.blocksize)
+                    except Exception as exc:
+                        raise RuntimeError(f"Picovoice stream read failed: {exc}") from exc
+                    if not pcm.size:
+                        continue
+                    mono = pcm[:, 0] if pcm.ndim > 1 else pcm
+                    if stream_dtype == "int16":
+                        float_audio = mono.astype(np.float32) / 32768.0
+                    else:
+                        float_audio = mono.astype(np.float32)
+                    if stream_rate != target_rate:
+                        float_audio = _resample_audio(float_audio, stream_rate, target_rate)
+                    float_audio = np.clip(float_audio, -1.0, 1.0)
+                    frame_audio = (float_audio * 32767.0).astype(np.int16)
+                    if not frame_audio.size:
+                        continue
+                    buffer = np.concatenate([buffer, frame_audio])
+                    while buffer.size >= porcupine.frame_length:
+                        frame = buffer[:porcupine.frame_length]
+                        buffer = buffer[porcupine.frame_length:]
+                        result = porcupine.process(frame)
+                        if result >= 0:
+                            return keyword
     finally:
         try:
             porcupine.delete()
@@ -232,7 +239,8 @@ def listen_for_wake_word_picovoice(
 
 def record_utterance(stt, device=None, max_seconds=8, stream=True):
     if not stream:
-        text = stt.listen(stream=False, device=device) or ""
+        with MIC_LOCK:
+            text = stt.listen(stream=False, device=device) or ""
         return {"text": text.strip(), "confidence": 1.0 if text else 0.0}
 
     last_partial = ""
@@ -246,15 +254,16 @@ def record_utterance(stt, device=None, max_seconds=8, stream=True):
         stop_timer = threading.Thread(target=_stop_after_timeout, daemon=True)
         stop_timer.start()
 
-    for result in stt.listen(stream=True, device=device):
-        if not result:
-            continue
-        partial = result.get("partial", "").strip()
-        if partial:
-            last_partial = partial
-        if result.get("done"):
-            text = result.get("final", "").strip()
-            return {"text": text, "confidence": 1.0 if text else 0.0}
+    with MIC_LOCK:
+        for result in stt.listen(stream=True, device=device):
+            if not result:
+                continue
+            partial = result.get("partial", "").strip()
+            if partial:
+                last_partial = partial
+            if result.get("done"):
+                text = result.get("final", "").strip()
+                return {"text": text, "confidence": 1.0 if text else 0.0}
 
     text = last_partial.strip()
     return {"text": text, "confidence": 1.0 if text else 0.0}
@@ -316,22 +325,23 @@ def record_utterance_whisper(
         raise RuntimeError("Unable to open microphone input stream for Whisper.")
 
     blocksize = max(1, int(samplerate * 0.2))
-    with stream_ctx as stream:
-        while True:
-            data, _ = stream.read(blocksize)
-            if data.size:
-                if stream_dtype == "int16":
-                    data = data.astype(np.float32) / 32768.0
-                frames.append(data.copy())
-                rms = float(np.sqrt(np.mean(data**2)))
-                now = time.time()
-                if rms > silence_threshold:
-                    heard = True
-                    last_voice_time = now
-                if heard and last_voice_time is not None and (now - last_voice_time) >= silence_seconds:
+    with MIC_LOCK:
+        with stream_ctx as stream:
+            while True:
+                data, _ = stream.read(blocksize)
+                if data.size:
+                    if stream_dtype == "int16":
+                        data = data.astype(np.float32) / 32768.0
+                    frames.append(data.copy())
+                    rms = float(np.sqrt(np.mean(data**2)))
+                    now = time.time()
+                    if rms > silence_threshold:
+                        heard = True
+                        last_voice_time = now
+                    if heard and last_voice_time is not None and (now - last_voice_time) >= silence_seconds:
+                        break
+                if time.time() - start >= max_seconds:
                     break
-            if time.time() - start >= max_seconds:
-                break
 
     if not frames:
         return {"text": "", "confidence": 0.0}
@@ -353,42 +363,76 @@ def record_audio_wav(
     input_dtype="int16",
 ):
     frames = []
-    blocksize = max(1, int(input_rate * 0.2))
     heard = False
     last_voice_time = None
     start = time.time()
+    stream = None
+    stream_rate = None
+    stream_dtype = None
+    rate_candidates = [input_rate]
+    try:
+        dev_info = sd.query_devices(device, "input")
+        rate_candidates.append(int(dev_info.get("default_samplerate", input_rate)))
+    except Exception:
+        pass
+    rate_candidates.extend([48000, 44100, 32000, 22050, 16000, 8000])
+    seen = set()
+    rate_candidates = [r for r in rate_candidates if r and not (r in seen or seen.add(r))]
+    device_candidates = [device]
+    if device is not None:
+        device_candidates.append(None)
+    for dev in device_candidates:
+        for rate in rate_candidates:
+            dtypes = (input_dtype, "int16", "float32") if input_dtype else ("int16", "float32")
+            for dtype in dtypes:
+                try:
+                    sd.check_input_settings(device=dev, samplerate=rate, channels=1, dtype=dtype)
+                    blocksize = max(1, int(rate * 0.2))
+                    stream = sd.InputStream(
+                        samplerate=rate,
+                        channels=1,
+                        dtype=dtype,
+                        device=dev,
+                        blocksize=blocksize,
+                    )
+                    stream_rate = rate
+                    stream_dtype = dtype
+                    break
+                except Exception:
+                    continue
+            if stream is not None:
+                break
+        if stream is not None:
+            break
+    if stream is None:
+        raise RuntimeError("Unable to open microphone input stream for recording.")
 
     def _to_float(data):
-        if input_dtype == "int16":
+        if stream_dtype == "int16":
             return data.astype(np.float32) / 32768.0
         return data.astype(np.float32)
 
-    with sd.InputStream(
-        samplerate=input_rate,
-        channels=1,
-        dtype=input_dtype,
-        device=device,
-        blocksize=blocksize,
-    ) as stream:
-        while True:
-            data, _ = stream.read(blocksize)
-            if data.size:
-                frames.append(data.copy())
-                rms = float(np.sqrt(np.mean(_to_float(data) ** 2)))
-                now = time.time()
-                if rms > silence_threshold:
-                    heard = True
-                    last_voice_time = now
-                if heard and last_voice_time is not None and (now - last_voice_time) >= silence_seconds:
+    with MIC_LOCK:
+        with stream:
+            while True:
+                data, _ = stream.read(stream.blocksize)
+                if data.size:
+                    frames.append(data.copy())
+                    rms = float(np.sqrt(np.mean(_to_float(data) ** 2)))
+                    now = time.time()
+                    if rms > silence_threshold:
+                        heard = True
+                        last_voice_time = now
+                    if heard and last_voice_time is not None and (now - last_voice_time) >= silence_seconds:
+                        break
+                if time.time() - start >= max_seconds:
                     break
-            if time.time() - start >= max_seconds:
-                break
 
     if not frames:
         return {"ok": False, "duration": 0.0, "rms": 0.0}
 
     audio = np.concatenate(frames, axis=0).flatten()
-    if input_dtype != "int16":
+    if stream_dtype != "int16":
         audio = np.clip(audio, -1.0, 1.0)
         audio = (audio * 32767.0).astype(np.int16)
     else:
@@ -397,9 +441,9 @@ def record_audio_wav(
     with wave.open(output_path, "wb") as wf:
         wf.setnchannels(1)
         wf.setsampwidth(2)
-        wf.setframerate(input_rate)
+        wf.setframerate(stream_rate or input_rate)
         wf.writeframes(audio.tobytes())
     float_audio = audio.astype(np.float32) / 32768.0
     rms = float(np.sqrt(np.mean(float_audio ** 2))) if float_audio.size else 0.0
-    duration = float_audio.size / float(input_rate)
+    duration = float_audio.size / float(stream_rate or input_rate)
     return {"ok": True, "duration": duration, "rms": rms}
