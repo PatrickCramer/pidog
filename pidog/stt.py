@@ -160,45 +160,59 @@ def listen_for_wake_word_picovoice(
         watcher = threading.Thread(target=_watch_break, daemon=True)
         watcher.start()
     target_rate = porcupine.sample_rate
-    stream_rate = target_rate
-    blocksize = porcupine.frame_length
+    stream = None
+    stream_rate = None
+    stream_dtype = None
+    rate_candidates = [target_rate]
     try:
-        stream = sd.InputStream(
-            samplerate=stream_rate,
-            channels=1,
-            dtype="int16",
-            device=device,
-            blocksize=blocksize,
-        )
+        dev_info = sd.query_devices(device, "input")
+        rate_candidates.append(int(dev_info.get("default_samplerate", target_rate)))
     except Exception:
+        pass
+    rate_candidates.extend([48000, 44100, 32000, 22050, 16000, 8000])
+    seen = set()
+    rate_candidates = [r for r in rate_candidates if r and not (r in seen or seen.add(r))]
+    for rate in rate_candidates:
+        for dtype in ("int16", "float32"):
+            try:
+                sd.check_input_settings(device=device, samplerate=rate, channels=1, dtype=dtype)
+                blocksize = porcupine.frame_length if rate == target_rate else max(1, int(rate * 0.2))
+                stream = sd.InputStream(
+                    samplerate=rate,
+                    channels=1,
+                    dtype=dtype,
+                    device=device,
+                    blocksize=blocksize,
+                )
+                stream_rate = rate
+                stream_dtype = dtype
+                break
+            except Exception:
+                continue
+        if stream is not None:
+            break
+    if stream is None:
         try:
-            dev_info = sd.query_devices(device, "input")
-            stream_rate = int(dev_info.get("default_samplerate", target_rate))
+            porcupine.delete()
         except Exception:
-            stream_rate = target_rate
-        blocksize = max(1, int(stream_rate * 0.2))
-        stream = sd.InputStream(
-            samplerate=stream_rate,
-            channels=1,
-            dtype="int16",
-            device=device,
-            blocksize=blocksize,
-        )
+            pass
+        raise RuntimeError("Unable to open Picovoice input stream (no supported sample rate).")
     try:
         buffer = np.zeros(0, dtype=np.int16)
         with stream:
             while not stop_event.is_set():
-                pcm, _ = stream.read(blocksize)
+                pcm, _ = stream.read(stream.blocksize)
                 if not pcm.size:
                     continue
                 mono = pcm[:, 0] if pcm.ndim > 1 else pcm
-                if stream_rate != target_rate:
+                if stream_dtype == "int16":
                     float_audio = mono.astype(np.float32) / 32768.0
-                    resampled = _resample_audio(float_audio, stream_rate, target_rate)
-                    resampled = np.clip(resampled, -1.0, 1.0)
-                    frame_audio = (resampled * 32767.0).astype(np.int16)
                 else:
-                    frame_audio = mono.astype(np.int16)
+                    float_audio = mono.astype(np.float32)
+                if stream_rate != target_rate:
+                    float_audio = _resample_audio(float_audio, stream_rate, target_rate)
+                float_audio = np.clip(float_audio, -1.0, 1.0)
+                frame_audio = (float_audio * 32767.0).astype(np.int16)
                 if not frame_audio.size:
                     continue
                 buffer = np.concatenate([buffer, frame_audio])

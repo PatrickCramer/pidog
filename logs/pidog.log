@@ -4088,3 +4088,69 @@
 2026-01-11 14:20:09 INFO action=audio_recorded ok=True duration=4.400 rms=0.001 mode='chatgpt_pro'
 2026-01-11 14:20:09 INFO action=audio_low_rms rms=0.001 threshold=0.008
 2026-01-11 14:20:09 INFO action=wake_listen_start
+2026-01-11 14:23:14 INFO logging ready path=/home/pat/pidog/logs/pidog.log level=INFO
+2026-01-11 14:23:14 INFO action=startup pid=19039 args={'mic_test': False, 'list_audio': False, 'mic_device': None, 'debug_latency': True} log_path='/home/pat/pidog/logs/pidog.log'
+2026-01-11 14:23:14 INFO action=config_audio max_utterance_seconds=6 silence_threshold=0.012 silence_seconds=0.650 notes='threshold=rms cutoff, silence=end-of-speech window'
+2026-01-11 14:23:17 INFO action=single_instance pidfile='/tmp/pidog.pid' pid=19039
+2026-01-11 14:23:17 INFO action=mic_device_selected index=2 name='pulse'
+2026-01-11 14:23:17 INFO action=pro_available available=True
+2026-01-11 14:23:17 INFO action=stt_init mode='deferred' reason='picovoice+pro'
+2026-01-11 14:23:17 INFO action=models tts_engine='piper' tts_model='en_US-amy-low' llm_model='llama3.2:1b'
+2026-01-11 14:23:18 INFO action=init_tts seconds=1.237 engine='piper' model='en_US-amy-low'
+2026-01-11 14:23:18 INFO action=init_speaker seconds=0.001
+2026-01-11 14:23:18 INFO action=init_leds seconds=0.233
+2026-01-11 14:23:18 INFO action=init_touch seconds=0.004
+2026-01-11 14:23:18 INFO action=battery_status voltage=7.502 percent=30
+2026-01-11 14:23:18 INFO action=stations_loaded count=18 names=['NPO Radio 1 (MP3)', 'NPO Radio 2 (MP3)', 'NPO 3FM (MP3)', 'NPO Klassiek (MP3)', 'NPO Radio 5 (MP3)', 'NPO Blend (MP3)', 'FunX (MP3)', 'BBC World Service (MP3)', 'Frequence 3 (MP3 256)', 'Frequence 3 Urban (MP3 256)', 'Frequence 3 (MP3 128)', 'Frequence 3 Urban (MP3 128)', 'Frequence 3 (AAC 64)', 'Frequence 3 Urban (AAC 64)', 'Frequence 3 Gold (MP3 160)', 'Frequence 3 Gold (AAC 64)', 'Frequence 3 Dance (MP3 160)', 'Frequence 3 Dance (AAC 64)']
+2026-01-11 14:23:18 INFO action=touch_watchers_started
+2026-01-11 14:23:21 INFO action=mode_smart_pro enabled=True
+2026-01-11 14:23:21 INFO action=ready wake_source='picovoice' picovoice_keyword='jarvis'
+2026-01-11 14:23:21 INFO action=convo_window seconds=5 wake_word_delayed=False
+2026-01-11 14:23:21 INFO action=wake_listen_start
+2026-01-11 14:23:24 INFO action=wake_word_heard word='jarvis' source='picovoice'
+2026-01-11 14:23:24 INFO action=listen_start mode='chatgpt_pro' mic_device=2
+2026-01-11 14:23:28 INFO action=audio_recorded ok=True duration=4.000 rms=0.013 mode='chatgpt_pro'
+2026-01-11 14:23:29 INFO action=transcript text='Tell me an interesting fact about Uganda.' engine='openai' language='en'
+2026-01-11 14:23:29 INFO action=command_received raw='Tell me an interesting fact about Uganda.' normalized='tell me an interesting fact about uganda.' confidence=1.000 mode='chatgpt_pro'
+2026-01-11 14:23:29 INFO action=answering active=True context='response'
+2026-01-11 14:23:49 INFO action=response text='Uganda is home to the endangered mountain gorillas, with about half of the world\'s population residing in the Bwindi Impenetrable National Park. The country is also known as the "Pearl of Africa" due to its stunning landscapes and biodiversity.' mode='chatgpt_pro'
+2026-01-11 14:23:49 INFO action=answering active=False context='response'
+2026-01-11 14:23:49 INFO action=convo_active seconds_left=4
+2026-01-11 14:23:49 INFO action=listen_start mode='chatgpt_pro' mic_device=2
+2026-01-11 14:23:53 INFO action=audio_recorded ok=True duration=4.600 rms=0.014 mode='chatgpt_pro'
+2026-01-11 14:23:55 INFO action=transcript text='The Pearl of Africa, what a cool name!' engine='openai' language='en'
+2026-01-11 14:23:55 INFO action=command_received raw='The Pearl of Africa, what a cool name!' normalized='the pearl of africa, what a cool name!' confidence=1.000 mode='chatgpt_pro'
+2026-01-11 14:23:55 INFO action=answering active=True context='response'
+2026-01-11 14:24:11 INFO action=response text="Yes, it's a beautiful nickname that highlights Uganda's rich natural beauty and unique wildlife! The landscapes and biodiversity truly make it a special place." mode='chatgpt_pro'
+2026-01-11 14:24:11 INFO action=answering active=False context='response'
+2026-01-11 14:24:11 INFO action=convo_active seconds_left=4
+2026-01-11 14:24:11 INFO action=listen_start mode='chatgpt_pro' mic_device=2
+2026-01-11 14:24:17 INFO action=audio_recorded ok=True duration=6.000 rms=0.001 mode='chatgpt_pro'
+2026-01-11 14:24:17 INFO action=audio_low_rms rms=0.001 threshold=0.008
+2026-01-11 14:24:17 INFO action=wake_listen_start
+2026-01-11 14:24:24 INFO action=wake_word_heard word='jarvis' source='picovoice'
+2026-01-11 14:24:24 INFO action=listen_start mode='chatgpt_pro' mic_device=2
+2026-01-11 14:24:26 INFO action=audio_recorded ok=True duration=2.400 rms=0.016 mode='chatgpt_pro'
+2026-01-11 14:24:27 INFO action=transcript text='Tell me more.' engine='openai' language='en'
+2026-01-11 14:24:27 INFO action=command_received raw='Tell me more.' normalized='tell me more.' confidence=1.000 mode='chatgpt_pro'
+2026-01-11 14:24:27 INFO action=answering active=True context='response'
+2026-01-11 14:24:43 INFO action=response text="Uganda is known for its stunning landscapes, including mountains, lakes, and savannas. It's also home to diverse wildlife, including gorillas, elephants, and numerous bird species." mode='chatgpt_pro'
+2026-01-11 14:24:43 INFO action=answering active=False context='response'
+2026-01-11 14:24:43 INFO action=convo_active seconds_left=4
+2026-01-11 14:24:43 INFO action=listen_start mode='chatgpt_pro' mic_device=2
+2026-01-11 14:24:49 INFO action=audio_recorded ok=True duration=6.000 rms=0.003 mode='chatgpt_pro'
+2026-01-11 14:24:49 INFO action=audio_low_rms rms=0.003 threshold=0.008
+2026-01-11 14:24:49 INFO action=wake_listen_start
+2026-01-11 14:24:52 INFO action=wake_word_heard word='jarvis' source='picovoice'
+2026-01-11 14:24:52 INFO action=listen_start mode='chatgpt_pro' mic_device=2
+2026-01-11 14:24:58 INFO action=audio_recorded ok=True duration=5.800 rms=0.016 mode='chatgpt_pro'
+2026-01-11 14:24:59 INFO action=transcript text='What according to you are the three most important supplements?' engine='openai' language='en'
+2026-01-11 14:24:59 INFO action=command_received raw='What according to you are the three most important supplements?' normalized='what according to you are the three most important supplements?' confidence=1.000 mode='chatgpt_pro'
+2026-01-11 14:24:59 INFO action=answering active=True context='response'
+2026-01-11 14:25:12 INFO action=response text='The three most important supplements often include vitamin D, omega-3 fatty acids, and probiotics. These can support overall health and wellness.' mode='chatgpt_pro'
+2026-01-11 14:25:12 INFO action=answering active=False context='response'
+2026-01-11 14:25:12 INFO action=convo_active seconds_left=4
+2026-01-11 14:25:12 INFO action=listen_start mode='chatgpt_pro' mic_device=2
+2026-01-11 14:25:18 INFO action=audio_recorded ok=True duration=6.000 rms=0.003 mode='chatgpt_pro'
+2026-01-11 14:25:18 INFO action=audio_low_rms rms=0.003 threshold=0.008
+2026-01-11 14:25:18 INFO action=wake_listen_start
