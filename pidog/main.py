@@ -66,10 +66,10 @@ LLM_OUT_USD_PER_1M = 0.60 # gpt-4o-mini output
 MIC_SAMPLE_RATE = None  # use device default for Vosk
 MIC_INPUT_RATE = 44100
 MIC_INPUT_DTYPE = "int16"
-CHATGPT_PRO_SILENCE_THRESHOLD = 0.007
+CHATGPT_PRO_SILENCE_THRESHOLD = 0.012
 CHATGPT_PRO_SILENCE_SECONDS = 0.65
-CHATGPT_PRO_MIN_RMS = 0.004
-CHATGPT_PRO_WAKE_MIN_RMS = 0.0
+CHATGPT_PRO_MIN_RMS = 0.008
+CHATGPT_PRO_WAKE_MIN_RMS = 0.006
 
 BATTERY_TABLE_2S = [
     (8.40, 100),
@@ -476,6 +476,17 @@ def _ensure_single_instance(pidfile):
     atexit.register(_cleanup_pidfile, pidfile)
 
 
+def _check_openai_available():
+    api_key = os.environ.get("OPENAI_API_KEY", "").strip()
+    if not api_key:
+        return False, "missing_api_key"
+    try:
+        import openai  # noqa: F401
+    except ModuleNotFoundError:
+        return False, "missing_openai_package"
+    return True, None
+
+
 def _init_stt_background(
     stt_ready,
     stt_error,
@@ -518,6 +529,43 @@ def _init_stt_background(
         LOGGER.exception("stt_init_failed")
     finally:
         stt_ready.set()
+
+
+def _start_stt_init(
+    stt_ready,
+    stt_error,
+    stt_state,
+    device,
+    samplerate,
+    async_mode,
+):
+    if stt_state.get("started"):
+        return
+    stt_state["started"] = True
+    if async_mode:
+        threading.Thread(
+            target=_init_stt_background,
+            args=(stt_ready, stt_error, stt_state, device, samplerate),
+            daemon=True,
+        ).start()
+        log_action("stt_init", mode="async", device=device, samplerate=samplerate)
+        print("STT: init in background.")
+    else:
+        _init_stt_background(stt_ready, stt_error, stt_state, device, samplerate)
+        _await_stt(stt_ready, stt_error, stt_state)
+        log_action("stt_init", mode="sync", device=device, samplerate=samplerate)
+
+
+def _ensure_local_stt_ready(
+    stt_ready,
+    stt_error,
+    stt_state,
+    device,
+    samplerate,
+    async_mode=False,
+):
+    _start_stt_init(stt_ready, stt_error, stt_state, device, samplerate, async_mode)
+    return _await_stt(stt_ready, stt_error, stt_state)
 
 
 def _await_stt(stt_ready, stt_error, stt_state):
@@ -788,21 +836,18 @@ def main():
     except Exception:
         pass
     log_action("mic_device_selected", index=mic_device, name=mic_device_name)
+    pro_available, pro_reason = _check_openai_available()
+    log_action("pro_available", available=pro_available, reason=pro_reason)
     stt_ready = threading.Event()
     stt_error = [None]
-    stt_state = {"printed": False}
-    if STT_INIT_ASYNC:
-        threading.Thread(
-            target=_init_stt_background,
-            args=(stt_ready, stt_error, stt_state, mic_device, MIC_SAMPLE_RATE),
-            daemon=True,
-        ).start()
-        log_action("stt_init", mode="async", device=mic_device, samplerate=MIC_SAMPLE_RATE)
-        print("STT: init in background.")
+    stt_state = {"printed": False, "started": False}
+    if args.mic_test:
+        _start_stt_init(stt_ready, stt_error, stt_state, mic_device, MIC_SAMPLE_RATE, async_mode=False)
+    elif not USE_PICOVOICE_WAKE_WORD or not pro_available:
+        _start_stt_init(stt_ready, stt_error, stt_state, mic_device, MIC_SAMPLE_RATE, async_mode=STT_INIT_ASYNC)
     else:
-        _init_stt_background(stt_ready, stt_error, stt_state, mic_device, MIC_SAMPLE_RATE)
-        _await_stt(stt_ready, stt_error, stt_state)
-        log_action("stt_init", mode="sync", device=mic_device, samplerate=MIC_SAMPLE_RATE)
+        log_action("stt_init", mode="deferred", reason="picovoice+pro")
+        print("STT: init deferred (Picovoice + Pro).")
     print(f"TTS: {TTS_ENGINE} {TTS_MODEL}")
     print(f"LLM: {LLM_MODEL}")
     print(
@@ -903,7 +948,14 @@ def main():
     )
 
     if args.mic_test:
-        wake_stt, asr_stt, stt_model = _await_stt(stt_ready, stt_error, stt_state)
+        wake_stt, asr_stt, stt_model = _ensure_local_stt_ready(
+            stt_ready,
+            stt_error,
+            stt_state,
+            mic_device,
+            MIC_SAMPLE_RATE,
+            async_mode=False,
+        )
         log_action("mic_test_start", device=mic_device, engine=STT_ENGINE)
         print("Mic test: speak into the microphone (Ctrl+C to exit).")
         try:
@@ -938,7 +990,7 @@ def main():
 
     history = deque(maxlen=MEMORY_SENTENCES)
     use_chatgpt = False
-    use_chatgpt_pro = True
+    use_chatgpt_pro = pro_available
     pro_cost_total = 0.0
     just_woke = False
     if use_chatgpt_pro:
@@ -947,6 +999,20 @@ def main():
         speaker.wait_idle()
         print("Smart mode: pro")
         log_action("mode_smart_pro", enabled=True)
+    else:
+        leds.set_state("speak")
+        speaker.say("Pro mode not available. Starting local LLM.")
+        speaker.wait_idle()
+        print("Smart mode: local")
+        log_action("mode_smart_pro", enabled=False, reason=pro_reason)
+        _start_stt_init(
+            stt_ready,
+            stt_error,
+            stt_state,
+            mic_device,
+            MIC_SAMPLE_RATE,
+            async_mode=STT_INIT_ASYNC,
+        )
 
     if USE_PICOVOICE_WAKE_WORD:
         print(f"Wake word: {PICOVOICE_KEYWORD} (Picovoice)")
@@ -1076,7 +1142,14 @@ def main():
                         break_event=interrupt_event if (radio_paused or idle_event.is_set()) else None,
                     )
                 else:
-                    wake_stt, asr_stt, stt_model = _await_stt(stt_ready, stt_error, stt_state)
+                    wake_stt, asr_stt, stt_model = _ensure_local_stt_ready(
+                        stt_ready,
+                        stt_error,
+                        stt_state,
+                        mic_device,
+                        MIC_SAMPLE_RATE,
+                        async_mode=False,
+                    )
                     heard = listen_for_wake_word(
                         wake_stt,
                         WAKE_WORDS,
@@ -1148,7 +1221,14 @@ def main():
                 mic_device=mic_device,
             )
             if not use_chatgpt_pro:
-                wake_stt, asr_stt, stt_model = _await_stt(stt_ready, stt_error, stt_state)
+                wake_stt, asr_stt, stt_model = _ensure_local_stt_ready(
+                    stt_ready,
+                    stt_error,
+                    stt_state,
+                    mic_device,
+                    MIC_SAMPLE_RATE,
+                    async_mode=False,
+                )
             if use_chatgpt_pro:
                 timing = {
                     "record": 0.0,
@@ -1218,13 +1298,22 @@ def main():
                         print(f"Pro STT text: {text!r}")
                 except RuntimeError as exc:
                     use_chatgpt_pro = False
+                    use_chatgpt = False
+                    _start_stt_init(
+                        stt_ready,
+                        stt_error,
+                        stt_state,
+                        mic_device,
+                        MIC_SAMPLE_RATE,
+                        async_mode=STT_INIT_ASYNC,
+                    )
                     leds.set_state("speak")
-                    speaker.say("Smart mode needs an API key. Switching to local model.")
+                    speaker.say("Pro mode not available. Starting local LLM.")
                     speaker.wait_idle()
                     log_action("mode_smart_pro", enabled=False, reason=str(exc))
                     if convo_deadline is not None:
                         convo_deadline = time.time() + CONVO_WINDOW_SECONDS
-                    print("Smart mode: off")
+                    print("Smart mode: local")
                     continue
                 finally:
                     try:
@@ -1629,7 +1718,7 @@ def main():
                     use_chatgpt = False
                     use_chatgpt_pro = False
                     leds.set_state("speak")
-                    speaker.say("Smart mode needs an API key. Switching to local model.")
+                    speaker.say("ChatGPT mode not available. Starting local LLM.")
                     _wait_for_speaker_or_interrupt(speaker, answer_interrupt_event)
                     log_action("mode_smart", enabled=False, reason="missing_api_key")
                     api_key_missing = True
